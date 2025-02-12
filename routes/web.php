@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CityAndAreaController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -19,6 +20,16 @@ use Illuminate\Support\Facades\Route;
 Route::get('/home', [HomeController::class, 'index'])->middleware('auth')->name('home');
 
 // Route::get('/adminpage', [HomeController::class, 'adminpage'])->middleware(['auth','admin'])->name('adminpage');
+
+//city
+Route::get('/city', [CityAndAreaController::class, 'city'])->middleware(['auth','admin'])->name('city');
+Route::post('/store-city', [CityAndAreaController::class, 'store_city'])->name('store-city');
+Route::post('/city/update', [CityAndAreaController::class, 'update'])->name('city.update');
+
+Route::get('/Area', [CityAndAreaController::class, 'Area'])->middleware(['auth','admin'])->name('Area');
+Route::post('/store-Area', [CityAndAreaController::class, 'store_Area'])->name('store-Area');
+Route::post('/Area/update', [CityAndAreaController::class, 'update_area'])->name('Area.update');
+
 
 Route::get('/', function () {
     return view('welcome');
