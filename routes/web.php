@@ -39,7 +39,9 @@ Route::post('/Area/update', [CityAndAreaController::class, 'update_area'])->name
 
 Route::get('/Distributor', [DistributorController::class, 'Distributor'])->middleware(['auth','admin'])->name('Distributor');
 Route::post('/store-Distributor', [DistributorController::class, 'store_Distributor'])->name('store-Distributor');
-Route::post('/Distributor/update', [DistributorController::class, 'update_Distributor'])->name('Distributor.update');
+Route::put('/Distributor/update/{id}', [DistributorController::class, 'update_Distributor'])->name('Distributor.update');
+
+// Route::post('/Distributor/update', [DistributorController::class, 'update_Distributor'])->name('Distributor.update');
 Route::get('/Distributor', [DistributorController::class, 'Distributor'])->middleware(['auth','admin'])->name('Distributor');
 Route::get('/get-areas', [DistributorController::class, 'get_areas'])->middleware(['auth','admin'])->name('get-areas');
 

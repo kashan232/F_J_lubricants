@@ -59,28 +59,37 @@ class DistributorController extends Controller
     }
 
     public function update_Distributor(Request $request, $id)
-    {
-        $request->validate([
-            'customer' => 'required',
-            'owner' => 'required',
-            'address' => 'required',
-            'contact' => 'required',
-            'city' => 'required',
-            'area' => 'required',
-        ]);
+{
+    $request->validate([
+        'Customer' => 'required',
+        'owner' => 'required',
+        'address' => 'required',
+        'contact' => 'required',
+        'city' => 'required',
+        'area' => 'required',
+        'email' => 'required|email',
+    ]);
 
-        Distributor::where('id', $id)->update([
-            'customer' => $request->customer,
-            'owner' => $request->owner,
-            'address' => $request->address,
-            'contact' => $request->contact,
-            'city' => $request->city,
-            'area' => $request->area,
-            'updated_at' => Carbon::now(),
-        ]);
-
-        return redirect()->back()->with('success', 'Distributor updated successfully');
+    $distributor = Distributor::find($id);
+    if (!$distributor) {
+        return redirect()->back()->with('error', 'Distributor not found.');
     }
+
+    $distributor->update([
+        'Customer' => $request->Customer,
+        'Owner' => $request->owner,
+        'Address' => $request->address,
+        'Contact' => $request->contact,
+        'City' => $request->city,
+        'Area' => $request->area,
+        'email' => $request->email,
+        'password' => bcrypt($request->password),
+        'updated_at' => now(),
+    ]);
+
+    return redirect()->back()->with('success', 'Distributor updated successfully.');
+}
+
 
     public function destroy($id)
     {
