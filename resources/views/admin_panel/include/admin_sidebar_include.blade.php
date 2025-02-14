@@ -23,6 +23,10 @@
                 <li>
                     <a href="{{ route('sub-category') }}"><i class="fas fa-boxes"></i><span> Sub-Category</span> </a>
                 </li>
+
+                <li>
+                    <a href="{{ route('size') }}"><i class="fas fa-boxes"></i><span> Size </span> </a>
+                </li>
                 <!-- <li class="submenu">
                     <a href="javascript:void(0);"><img src="assets/img/icons/product.svg" alt="img"><span> Product</span> <span class="menu-arrow"></span></a>
                     <ul>
