@@ -6,6 +6,8 @@ use App\Http\Controllers\DistributorController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SizeController;
+use App\Http\Controllers\ProductController;
+use App\Models\Product;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -50,10 +52,16 @@ Route::get('/sub-category', [CategoryAndSubCategoryController::class, 'sub_categ
 Route::post('/store-sub-category', [CategoryAndSubCategoryController::class, 'store_sub_category'])->name('store-sub-category');
 Route::post('/sub-category/update', [CategoryAndSubCategoryController::class, 'update_sub_category'])->name('sub-category.update');
 
-//city
+//size
 Route::get('/size', [SizeController::class, 'size'])->middleware(['auth','admin'])->name('size');
 Route::post('/store-size', [SizeController::class, 'store_size'])->name('store-size');
 Route::post('/size/update', [SizeController::class, 'update'])->name('size.update');
+
+//Product
+Route::get('/product', [ProductController::class, 'product'])->middleware(['auth','admin'])->name('product');
+Route::post('/store-product', [ProductController::class, 'store_product'])->name('store-product');
+Route::post('/product/update', [ProductController::class, 'update'])->name('product.update');
+Route::get('/fetch-subcategories', [ProductController::class, 'fetchSubCategories'])->name('fetch-subcategories');
 
 
 

@@ -1,0 +1,248 @@
+@include('admin_panel.include.header_include')
+<div class="main-wrapper">
+    @include('admin_panel.include.navbar_include')
+    @include('admin_panel.include.admin_sidebar_include')
+
+    <div class="page-wrapper">
+        <div class="content">
+            <div class="page-header">
+                <div class="page-title">
+                    <h4>Product List</h4>
+                    <h6>Manage Products</h6>
+                </div>
+                <div class="page-btn">
+                    <button class="btn btn-added" data-bs-toggle="modal" data-bs-target="#addProductModal">
+                        <img src="assets/img/icons/plus.svg" class="me-1" alt="img">Add Product
+                    </button>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    @if (session()->has('success'))
+                        <div class="alert alert-success">
+                            <strong>Success!</strong> {{ session('success') }}.
+                        </div>
+                    @endif
+                    <div class="table-responsive">
+                        <table class="table datanew">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Category</th>
+                                    <th>Sub-Category</th>
+                                    <th>Item Code</th>
+                                    <th>Item Name</th>
+                                    <th>Size</th>
+                                    <th>Pcs</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($products as $key => $product)
+                                <tr>
+                                    <td>{{ $key + 1 }}</td>
+                                    <td>{{ $product->category }}</td>
+                                    <td>{{ $product->sub_category }}</td>
+                                    <td>{{ $product->item_code }}</td>
+                                    <td>{{ $product->item_name }}</td>
+                                 
+                                    <td>{{ $product->size }}</td>
+                                    <td>{{ $product->pcs }}</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-primary editProductBtn"
+                                            data-id="{{ $product->id }}" 
+                                            data-category="{{ $product->category }}" 
+                                            data-sub_category="{{ $product->sub_category }}" 
+                                            data-item_code="{{ $product->item_code }}" 
+                                            data-item_name="{{ $product->item_name }}" 
+                                            data-size_id="{{ $product->size_id }}" 
+                                            data-pcs="{{ $product->pcs }}" 
+                                            data-bs-toggle="modal" data-bs-target="#editProductModal">Edit
+                                        </button>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade bd-example-modal-lg" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Product</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{{ route('store-product') }}" method="POST">
+                @csrf
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Category</label>
+                            <select class="form-control" name="category" id="categorySelect" required>
+                                <option value="">Select Category</option>
+                                @foreach($categories as $category)
+                                    <option value="{{ $category->category_name }}">{{ $category->category_name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Sub-Category</label>
+                            <select class="form-control" name="sub_category" id="subCategorySelect" required>
+                                <option value="">Select Sub-Category</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Item Code</label>
+                            <input type="text" class="form-control" name="item_code" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Item Name</label>
+                            <input type="text" class="form-control" name="item_name" required>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6  mb-3">
+                            <label class="form-label">Size</label>
+                            <select class="form-control" name="size" id="sizeSelect" required>
+                                <option value="">Select Size</option>
+                                @foreach ($sizes as $size)
+                                    <option value="{{ $size->size_name }}">{{ $size->size_name }}</option>
+                                @endforeach
+                            </select>
+                            
+                        </div>
+                        
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Pieces</label>
+                            <input type="number" class="form-control" name="pcs" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<!-- Edit Product Modal -->
+<div class="modal fade" id="editProductModal" tabindex="-1" aria-labelledby="editProductModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Product</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{{ route('product.update') }}" method="POST">
+                @csrf
+                <input type="hidden" name="product_id" id="edit_product_id">
+                <div class="modal-body">
+                    <div class="row">
+                        <!-- Category -->
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Category</label>
+                            <input type="text" class="form-control" name="category" id="edit_category" required>
+                        </div>
+                        <!-- Sub-Category -->
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Sub-Category</label>
+                            <input type="text" class="form-control" name="sub_category" id="edit_sub_category" required>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <!-- Item Code -->
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Item Code</label>
+                            <input type="text" class="form-control" name="item_code" id="edit_item_code" required>
+                        </div>
+                        <!-- Item Name -->
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Item Name</label>
+                            <input type="text" class="form-control" name="item_name" id="edit_item_name" required>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <!-- Size -->
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Size</label>
+                            <select class="form-control" name="size_id" id="edit_size" required>
+                                <option value="">Select Size</option>
+                                @foreach ($sizes as $size)
+                                    <option value="{{ $size->id }}">{{ $size->size_name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <!-- Pieces -->
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Pieces</label>
+                            <input type="number" class="form-control" name="pcs" id="edit_pcs" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Update</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@include('admin_panel.include.footer_include')
+
+<script>
+    // Script for editing a product
+    $(document).on("click", ".editProductBtn", function() {
+        $("#edit_product_id").val($(this).data("id"));
+        $("#edit_category").val($(this).data("category"));
+        $("#edit_sub_category").val($(this).data("sub_category"));
+        $("#edit_item_code").val($(this).data("item_code"));
+        $("#edit_item_name").val($(this).data("item_name"));
+        $("#edit_size").val($(this).data("size_id"));
+        $("#edit_pcs").val($(this).data("pcs"));
+    });
+</script>
+<script>
+
+$(document).ready(function () {
+    $('#categorySelect').change(function () {
+        var categoryId = $(this).val();
+        $('#subCategorySelect').html('<option value="">Loading...</option>');
+
+        if (categoryId) {
+            $.ajax({
+                url: "{{ route('fetch-subcategories') }}",
+                type: "GET",
+                data: { category_id: categoryId },
+                success: function (data) {
+                    $('#subCategorySelect').html('<option value="">Select Sub-Category</option>');
+                    $.each(data, function (key, subCategory) {
+                        $('#subCategorySelect').append('<option value="' + subCategory.sub_category_name + '">' + subCategory.sub_category_name + '</option>');
+                    });
+                },
+                error: function () {
+                    alert('Error fetching subcategories.');
+                }
+            });
+        } else {
+            $('#subCategorySelect').html('<option value="">Select Sub-Category</option>');
+        }
+    });
+});
+
+</script>

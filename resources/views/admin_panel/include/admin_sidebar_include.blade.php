@@ -25,15 +25,16 @@
                 </li>
 
                 <li>
-                    <a href="{{ route('size') }}"><i class="fas fa-boxes"></i><span> Size </span> </a>
+                    <a href="{{ route('size') }}"><i class="fas fa-oil-can"></i> <span> Size </span> </a>
                 </li>
-                <!-- <li class="submenu">
+              
+                <li class="submenu">
                     <a href="javascript:void(0);"><img src="assets/img/icons/product.svg" alt="img"><span> Product</span> <span class="menu-arrow"></span></a>
                     <ul>
-                        <li><a href="#">Product List</a></li>
-                        <li><a href="#">Add Product</a></li>
+                        <li><a href="{{ route('product') }}">Product List</a></li>
+                        <li><a href="{{ route('product') }}">Add Product</a></li>
                     </ul>
-                </li> -->
+                </li>
             </ul>
         </div>
     </div>
