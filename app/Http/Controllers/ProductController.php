@@ -49,6 +49,10 @@ class ProductController extends Controller
                 'item_name' => $request->item_name,
                 'size' => $request->size,
                 'pcs' => $request->pcs,
+                'wholesale_price' => $request->wholesale_price,
+                'retail_price' => $request->retail_price,
+                'initial_stock' => $request->initial_stock,
+                'alert_quantity' => $request->alert_quantity,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ]);
@@ -68,6 +72,10 @@ class ProductController extends Controller
             'item_name' => $request->item_name,
             'size' => Size::where('id', $request->size_id)->value('size_name'),
             'pcs' => $request->pcs,
+            'wholesale_price' => $request->wholesale_price,
+            'retail_price' => $request->retail_price,
+            'initial_stock' => $request->initial_stock,
+            'alert_quantity' => $request->alert_quantity,
         ]);
         return redirect()->back()->with('success', 'Product updated successfully');
     }

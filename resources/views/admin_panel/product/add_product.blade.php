@@ -35,6 +35,10 @@
                                     <th>Item Name</th>
                                     <th>Size</th>
                                     <th>Pcs</th>
+                                    <th>Wholesale Price</th>
+                                    <th>Retail Price</th>
+                                    <th>Initial Stock</th>
+                                    <th>Alert Quantity</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -46,24 +50,33 @@
                                     <td>{{ $product->sub_category }}</td>
                                     <td>{{ $product->item_code }}</td>
                                     <td>{{ $product->item_name }}</td>
-                                 
                                     <td>{{ $product->size }}</td>
                                     <td>{{ $product->pcs }}</td>
+                                    <td>{{ $product->wholesale_price }}</td>
+                                    <td>{{ $product->retail_price }}</td>
+                                    <td>{{ $product->initial_stock }}</td>
+                                    <td>{{ $product->alert_quantity }}</td>
                                     <td>
-                                        <button class="btn btn-sm btn-primary editProductBtn"
-                                            data-id="{{ $product->id }}" 
-                                            data-category="{{ $product->category }}" 
-                                            data-sub_category="{{ $product->sub_category }}" 
-                                            data-item_code="{{ $product->item_code }}" 
-                                            data-item_name="{{ $product->item_name }}" 
-                                            data-size_id="{{ $product->size_id }}" 
-                                            data-pcs="{{ $product->pcs }}" 
-                                            data-bs-toggle="modal" data-bs-target="#editProductModal">Edit
-                                        </button>
+                                        <button class="btn btn-sm btn-primary editProductBtn" 
+                                                data-id="{{ $product->id }}"
+                                                data-category="{{ $product->category }}"
+                                                data-sub_category="{{ $product->sub_category }}"
+                                                data-item_code="{{ $product->item_code }}"
+                                                data-item_name="{{ $product->item_name }}"
+                                                data-size_id="{{ $product->size }}"
+                                                data-pcs="{{ $product->pcs }}"
+                                                data-wholesale_price="{{ $product->wholesale_price }}"
+                                                data-retail_price="{{ $product->retail_price }}"
+                                                data-initial_stock="{{ $product->initial_stock }}"
+                                                data-alert_quantity="{{ $product->alert_quantity }}"
+                                                data-bs-toggle="modal" data-bs-target="#editProductModal">
+                                                Edit
+                                            </button>
                                     </td>
                                 </tr>
                                 @endforeach
                             </tbody>
+                            
                         </table>
                     </div>
                 </div>
@@ -128,6 +141,28 @@
                             <input type="number" class="form-control" name="pcs" required>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Wholesale Price</label>
+                            <input type="number" step="0.01" class="form-control" name="wholesale_price" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Retail Price</label>
+                            <input type="number" step="0.01" class="form-control" name="retail_price" required>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Initial Stock</label>
+                            <input type="number" class="form-control" name="initial_stock" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Alert Quantity</label>
+                            <input type="number" class="form-control" name="alert_quantity" required>
+                        </div>
+                    </div>
+                    
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary">Save</button>
@@ -194,7 +229,32 @@
                             <input type="number" class="form-control" name="pcs" id="edit_pcs" required>
                         </div>
                     </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Wholesale Price</label>
+                            <input type="number" step="0.01" class="form-control" name="wholesale_price" id="edit_wholesale_price" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Retail Price</label>
+                            <input type="number" step="0.01" class="form-control" name="retail_price" id="edit_retail_price" required>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Initial Stock</label>
+                            <input type="number" class="form-control" name="initial_stock" id="edit_initial_stock" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Alert Quantity</label>
+                            <input type="number" class="form-control" name="alert_quantity" id="edit_alert_quantity" required>
+                        </div>
+                    </div>
+                    
                 </div>
+
+                
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary">Update</button>
                 </div>
@@ -208,14 +268,20 @@
 <script>
     // Script for editing a product
     $(document).on("click", ".editProductBtn", function() {
-        $("#edit_product_id").val($(this).data("id"));
-        $("#edit_category").val($(this).data("category"));
-        $("#edit_sub_category").val($(this).data("sub_category"));
-        $("#edit_item_code").val($(this).data("item_code"));
-        $("#edit_item_name").val($(this).data("item_name"));
-        $("#edit_size").val($(this).data("size_id"));
-        $("#edit_pcs").val($(this).data("pcs"));
-    });
+    $("#edit_product_id").val($(this).data("id"));
+    $("#edit_category").val($(this).data("category"));
+    $("#edit_sub_category").val($(this).data("sub_category"));
+    $("#edit_item_code").val($(this).data("item_code"));
+    $("#edit_item_name").val($(this).data("item_name"));
+    $("#edit_size").val($(this).data("size_id"));
+    $("#edit_pcs").val($(this).data("pcs"));
+    $("#edit_wholesale_price").val($(this).data("wholesale_price"));
+    $("#edit_retail_price").val($(this).data("retail_price"));
+    $("#edit_initial_stock").val($(this).data("initial_stock"));
+    $("#edit_alert_quantity").val($(this).data("alert_quantity"));
+});
+
+
 </script>
 <script>
 
