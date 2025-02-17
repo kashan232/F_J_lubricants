@@ -125,7 +125,7 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-md-6  mb-3">
+                        <div class="col-md-6 mb-3">
                             <label class="form-label">Size</label>
                             <select class="form-control" name="size" id="sizeSelect" required>
                                 <option value="">Select Size</option>
@@ -133,12 +133,20 @@
                                     <option value="{{ $size->size_name }}">{{ $size->size_name }}</option>
                                 @endforeach
                             </select>
-                            
                         </div>
-                        
                         <div class="col-md-6 mb-3">
-                            <label class="form-label">Pieces</label>
-                            <input type="number" class="form-control" name="pcs" required>
+                            <label class="form-label">Carton Quantity</label>
+                            <input type="number" class="form-control" name="carton_quantity" id="carton_quantity" required>
+                        </div>    
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Pieces per Carton</label>
+                            <input type="number" class="form-control" name="pcs_in_carton" id="pieces_per_carton" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Loose Pieces</label>
+                            <input type="number" class="form-control" name="loose_pieces" id="loose_pieces">
                         </div>
                     </div>
                     <div class="row">
@@ -162,8 +170,6 @@
                             <input type="number" class="form-control" name="alert_quantity" required>
                         </div>
                     </div>
-                    
-                </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary">Save</button>
                 </div>
@@ -231,11 +237,19 @@
                                 @endforeach
                             </select>
                         </div>
-
-                        <!-- Pieces -->
                         <div class="col-md-6 mb-3">
-                            <label class="form-label">Pieces</label>
-                            <input type="number" class="form-control" name="pcs" id="edit_pcs" required>
+                            <label class="form-label">Carton Quantity</label>
+                            <input type="number" class="form-control" name="carton_quantity" id="carton_quantity" required>
+                        </div>    
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Pieces per Carton</label>
+                            <input type="number" class="form-control" name="pcs_in_carton" id="pieces_per_carton" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Loose Pieces</label>
+                            <input type="number" class="form-control" name="loose_pieces" id="loose_pieces">
                         </div>
                     </div>
 
@@ -356,6 +370,9 @@ $(document).ready(function () {
         $("#edit_item_name").val($(this).data("item_name"));
         $("#edit_size").val($(this).data("size_id"));
         $("#edit_pcs").val($(this).data("pcs"));
+        $("#carton_quantity").val($(this).data("carton_quantity"));
+        $("#pieces_per_carton").val($(this).data("pieces_per_carton"));
+        $("#loose_pieces").val($(this).data("loose_pieces"));
         $("#edit_wholesale_price").val($(this).data("wholesale_price"));
         $("#edit_retail_price").val($(this).data("retail_price"));
         $("#edit_initial_stock").val($(this).data("initial_stock"));
