@@ -27,12 +27,15 @@
                 <li>
                     <a href="{{ route('size') }}"><i class="fas fa-oil-can"></i> <span> Size </span> </a>
                 </li>
-              
+
+                <li>
+                    <a href="{{ route('product') }}"><i class="fas fa-box-open"></i> <span> Product </span> </a>
+                </li>
+
                 <li class="submenu">
-                    <a href="javascript:void(0);"><img src="assets/img/icons/product.svg" alt="img"><span> Product</span> <span class="menu-arrow"></span></a>
+                    <a href="javascript:void(0);"><i class="fas fa-store"></i><span> Purchase</span> <span class="menu-arrow"></span></a>
                     <ul>
-                        <li><a href="{{ route('product') }}">Product List</a></li>
-                        <li><a href="{{ route('product') }}">Add Product</a></li>
+                        <li><a href="{{ route('Purchase') }}">Add Purchase</a></li>
                     </ul>
                 </li>
             </ul>

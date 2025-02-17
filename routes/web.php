@@ -7,6 +7,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SizeController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\PurchaseController;
 use App\Models\Product;
 use Illuminate\Support\Facades\Route;
 
@@ -65,6 +66,10 @@ Route::post('/store-product', [ProductController::class, 'store_product'])->name
 Route::post('/product/update', [ProductController::class, 'update'])->name('product.update');
 Route::get('/fetch-subcategories', [ProductController::class, 'fetchSubCategories'])->name('fetch-subcategories');
 
+
+Route::get('/Purchase', [PurchaseController::class, 'Purchase'])->middleware(['auth','admin'])->name('Purchase');
+Route::get('/get-subcategories/{categoryname}', [PurchaseController::class, 'getSubcategories'])->name('get.subcategories');
+Route::get('/get-items', [PurchaseController::class, 'getItems'])->name('get.items');
 
 
 Route::get('/', function () {
