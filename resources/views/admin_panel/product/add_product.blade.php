@@ -186,16 +186,25 @@
                 <input type="hidden" name="product_id" id="edit_product_id">
                 <div class="modal-body">
                     <div class="row">
-                        <!-- Category -->
+                    <!-- Category -->
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Category</label>
-                            <input type="text" class="form-control" name="category" id="edit_category" required>
+                            <select class="form-control" name="category" id="edit_category" required>
+                                <option value="">Select Category</option>
+                                @foreach ($categories as $category)
+                                    <option value="{{ $category->category_name }}">{{ $category->category_name }}</option>
+                                @endforeach
+                            </select>
                         </div>
+
                         <!-- Sub-Category -->
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Sub-Category</label>
-                            <input type="text" class="form-control" name="sub_category" id="edit_sub_category" required>
+                            <select class="form-control" name="sub_category" id="edit_sub_category" required>
+                                <option value="">Select Sub-Category</option>
+                            </select>
                         </div>
+
                     </div>
 
                     <div class="row">
@@ -266,26 +275,8 @@
 @include('admin_panel.include.footer_include')
 
 <script>
-    // Script for editing a product
-    $(document).on("click", ".editProductBtn", function() {
-    $("#edit_product_id").val($(this).data("id"));
-    $("#edit_category").val($(this).data("category"));
-    $("#edit_sub_category").val($(this).data("sub_category"));
-    $("#edit_item_code").val($(this).data("item_code"));
-    $("#edit_item_name").val($(this).data("item_name"));
-    $("#edit_size").val($(this).data("size_id"));
-    $("#edit_pcs").val($(this).data("pcs"));
-    $("#edit_wholesale_price").val($(this).data("wholesale_price"));
-    $("#edit_retail_price").val($(this).data("retail_price"));
-    $("#edit_initial_stock").val($(this).data("initial_stock"));
-    $("#edit_alert_quantity").val($(this).data("alert_quantity"));
-});
-
-
-</script>
-<script>
-
 $(document).ready(function () {
+    // Add Product Modal: Fetch Subcategories on Category Change
     $('#categorySelect').change(function () {
         var categoryId = $(this).val();
         $('#subCategorySelect').html('<option value="">Loading...</option>');
@@ -309,6 +300,68 @@ $(document).ready(function () {
             $('#subCategorySelect').html('<option value="">Select Sub-Category</option>');
         }
     });
+
+    // Edit Product Modal: Fetch Subcategories when Category is Changed
+    $('#edit_category').change(function () {
+        var categoryId = $(this).val();
+        $('#edit_sub_category').html('<option value="">Loading...</option>');
+
+        if (categoryId) {
+            $.ajax({
+                url: "{{ route('fetch-subcategories') }}",
+                type: "GET",
+                data: { category_id: categoryId },
+                success: function (data) {
+                    $('#edit_sub_category').html('<option value="">Select Sub-Category</option>');
+                    $.each(data, function (key, subCategory) {
+                        $('#edit_sub_category').append('<option value="' + subCategory.sub_category_name + '">' + subCategory.sub_category_name + '</option>');
+                    });
+                },
+                error: function () {
+                    alert('Error fetching subcategories.');
+                }
+            });
+        } else {
+            $('#edit_sub_category').html('<option value="">Select Sub-Category</option>');
+        }
+    });
+
+    // When clicking "Edit" button, load subcategories and select the right one
+    $(document).on("click", ".editProductBtn", function () {
+        var productId = $(this).data("id");
+        var selectedCategory = $(this).data("category");
+        var selectedSubCategory = $(this).data("sub_category");
+
+        $("#edit_product_id").val(productId);
+        $("#edit_category").val(selectedCategory).change(); // Trigger category change event
+
+        // Fetch subcategories based on the selected category
+        $.ajax({
+            url: "{{ route('fetch-subcategories') }}",
+            type: "GET",
+            data: { category_id: selectedCategory },
+            success: function (data) {
+                $('#edit_sub_category').html('<option value="">Select Sub-Category</option>');
+                $.each(data, function (key, subCategory) {
+                    var isSelected = subCategory.sub_category_name === selectedSubCategory ? "selected" : "";
+                    $('#edit_sub_category').append('<option value="' + subCategory.sub_category_name + '" ' + isSelected + '>' + subCategory.sub_category_name + '</option>');
+                });
+            },
+            error: function () {
+                alert('Error fetching subcategories.');
+            }
+        });
+
+        $("#edit_item_code").val($(this).data("item_code"));
+        $("#edit_item_name").val($(this).data("item_name"));
+        $("#edit_size").val($(this).data("size_id"));
+        $("#edit_pcs").val($(this).data("pcs"));
+        $("#edit_wholesale_price").val($(this).data("wholesale_price"));
+        $("#edit_retail_price").val($(this).data("retail_price"));
+        $("#edit_initial_stock").val($(this).data("initial_stock"));
+        $("#edit_alert_quantity").val($(this).data("alert_quantity"));
+    });
 });
+
 
 </script>
