@@ -70,7 +70,7 @@ class ProductController extends Controller
             'item_code' => $request->item_code,
             'item_name' => $request->item_name,
             'size' => Size::where('id', $request->size_id)->value('size_name'),
-            'pcs_in_carton' => $request->pcs_in_carton,
+           'pcs_in_carton' => $request->pcs_in_carton,
             'carton_quantity' => $request->carton_quantity,
             'loose_pieces' => $request->loose_pieces,
             'wholesale_price' => $request->wholesale_price,

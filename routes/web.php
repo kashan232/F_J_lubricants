@@ -8,6 +8,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SizeController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\PurchaseController;
+use App\Http\Controllers\SalesmanController;
 use App\Models\Product;
 use Illuminate\Support\Facades\Route;
 
@@ -66,10 +67,21 @@ Route::post('/store-product', [ProductController::class, 'store_product'])->name
 Route::post('/product/update', [ProductController::class, 'update'])->name('product.update');
 Route::get('/fetch-subcategories', [ProductController::class, 'fetchSubCategories'])->name('fetch-subcategories');
 
+// purchase
 
 Route::get('/Purchase', [PurchaseController::class, 'Purchase'])->middleware(['auth','admin'])->name('Purchase');
 Route::get('/get-subcategories/{categoryname}', [PurchaseController::class, 'getSubcategories'])->name('get.subcategories');
 Route::get('/get-items', [PurchaseController::class, 'getItems'])->name('get.items');
+
+// sales men
+
+// Salesmen Routes
+Route::get('/salesmen', [SalesmanController::class, 'salesmen'])->middleware(['auth', 'admin'])->name('salesmen'); // Displays Salesmen List
+Route::post('/store-salesman', [SalesmanController::class, 'store_salesman'])->name('store-salesman'); // Store a new Salesman
+Route::post('/salesman/update', [SalesmanController::class, 'update_salesman'])->name('update-salesman'); // Update existing Salesman
+Route::get('/fetch-cities', [SalesmanController::class, 'fetchCities'])->name('fetch-cities'); // Fetch list of cities (adjust method to actual logic)
+Route::get('/fetch-areas', [SalesmanController::class, 'fetchAreas'])->name('fetch-areas'); // Fetch areas based on selected city
+
 
 
 Route::get('/', function () {
