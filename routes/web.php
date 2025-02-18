@@ -9,6 +9,7 @@ use App\Http\Controllers\SizeController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\SalesmanController;
+use App\Http\Controllers\ExpenseController;
 use App\Models\Product;
 use Illuminate\Support\Facades\Route;
 
@@ -61,14 +62,30 @@ Route::get('/size', [SizeController::class, 'size'])->middleware(['auth','admin'
 Route::post('/store-size', [SizeController::class, 'store_size'])->name('store-size');
 Route::post('/size/update', [SizeController::class, 'update'])->name('size.update');
 
+
+//expense
+Route::get('/expense', [ExpenseController::class, 'expense'])->middleware(['auth','admin'])->name('expense');
+Route::post('/store-expense', [ExpenseController::class, 'store_expense'])->name('store-expense');
+Route::post('/expense/update', [ExpenseController::class, 'update'])->name('expense.update');
+//add expense
+Route::get('/add-expenses', [ExpenseController::class, 'addExpenseScreen'])->name('add-expenses');
+Route::post('/update-expense', [ExpenseController::class, 'update'])->name('addexpense.update');
+Route::post('/store-expense', [ExpenseController::class, 'store_addexpense'])->name('store-expense');
+Route::get('/delete-expense/{id}', [ExpenseController::class, 'delete_add_expense'])->name('delete-expense');
+
+
+
+
+
 //Product
 Route::get('/product', [ProductController::class, 'product'])->middleware(['auth','admin'])->name('product');
 Route::post('/store-product', [ProductController::class, 'store_product'])->name('store-product');
 Route::put('/product/update/{id}', [ProductController::class, 'update'])->name('product.update');
 Route::get('/fetch-subcategories', [ProductController::class, 'fetchSubCategories'])->name('fetch-subcategories');
 
-// purchase
 
+
+// purchase 
 Route::get('/Purchase', [PurchaseController::class, 'Purchase'])->middleware(['auth','admin'])->name('Purchase');
 Route::get('/get-subcategories/{categoryname}', [PurchaseController::class, 'getSubcategories'])->name('get.subcategories');
 Route::get('/get-items', [PurchaseController::class, 'getItems'])->name('get.items');
@@ -80,7 +97,6 @@ Route::post('/store-salesman', [SalesmanController::class, 'store_salesman'])->n
 Route::post('/salesman/update', [SalesmanController::class, 'update_salesman'])->name('update-salesman'); // Update existing Salesman
 Route::get('/fetch-cities', [SalesmanController::class, 'fetchCities'])->name('fetch-cities'); // Fetch list of cities (adjust method to actual logic)
 Route::get('/fetch-areas', [SalesmanController::class, 'fetchAreas'])->name('fetch-areas');
-
 Route::post('/salesman/toggle-status', [SalesmanController::class, 'toggleStatus'])->name('toggle-salesman-status');
 
 
