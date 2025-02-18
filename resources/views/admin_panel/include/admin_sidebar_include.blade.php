@@ -38,6 +38,13 @@
                         <li><a href="{{ route('Purchase') }}">Add Purchase</a></li>
                     </ul>
                 </li>
+
+                <li class="submenu">
+                    <a href="javascript:void(0);"><i class="fas fa-store"></i><span> Sales Man</span> <span class="menu-arrow"></span></a>
+                    <ul>
+                        <li><a href="{{ route('salesmen') }}">Add Sales Man</a></li>
+                    </ul>
+                </li>
             </ul>
         </div>
     </div>
