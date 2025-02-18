@@ -187,9 +187,11 @@
                 <h5 class="modal-title">Edit Product</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form action="{{ route('product.update') }}" method="POST">
+            <form action="{{ route('product.update', $product->id) }}" method="POST">
                 @csrf
-                <input type="hidden" name="product_id" id="edit_product_id">
+                @method('PUT')
+                <input type="hidden" name="product_id" value="{{ $product->id }}">
+                <input type="text" name="item_name" value="{{ $product->item_name }}">
                 <div class="modal-body">
                     <div class="row">
                     <!-- Category -->
@@ -342,29 +344,31 @@ $(document).ready(function () {
 
     // When clicking "Edit" button, load subcategories and select the right one
     $(document).on("click", ".editProductBtn", function () {
-        var productId = $(this).data("id");
-        var selectedCategory = $(this).data("category");
-        var selectedSubCategory = $(this).data("sub_category");
+    var productId = $(this).data("id");
+    var selectedCategory = $(this).data("category");
+    var selectedSubCategory = $(this).data("sub_category");
 
-        $("#edit_product_id").val(productId);
-        $("#edit_category").val(selectedCategory).change(); // Trigger category change event
+    $("#edit_product_id").val(productId);
+    $("#edit_category").val(selectedCategory).trigger("change");
 
-        // Fetch subcategories based on the selected category
-        $.ajax({
-            url: "{{ route('fetch-subcategories') }}",
-            type: "GET",
-            data: { category_id: selectedCategory },
-            success: function (data) {
-                $('#edit_sub_category').html('<option value="">Select Sub-Category</option>');
-                $.each(data, function (key, subCategory) {
-                    var isSelected = subCategory.sub_category_name === selectedSubCategory ? "selected" : "";
-                    $('#edit_sub_category').append('<option value="' + subCategory.sub_category_name + '" ' + isSelected + '>' + subCategory.sub_category_name + '</option>');
-                });
-            },
-            error: function () {
-                alert('Error fetching subcategories.');
-            }
-        });
+    // Sub-Category Load karne ke liye AJAX
+    $.ajax({
+        url: "{{ route('fetch-subcategories') }}",
+        type: "GET",
+        data: { category_id: selectedCategory },
+        success: function (data) {
+            $("#edit_sub_category").html('<option value="">Select Sub-Category</option>');
+            $.each(data, function (key, subCategory) {
+                var selected = (subCategory.sub_category_name === selectedSubCategory) ? "selected" : "";
+                $("#edit_sub_category").append('<option value="' + subCategory.sub_category_name + '" ' + selected + '>' + subCategory.sub_category_name + '</option>');
+            });
+        },
+        error: function () {
+            alert("Error fetching subcategories.");
+        }
+    });
+});
+
 
         $("#edit_item_code").val($(this).data("item_code"));
         $("#edit_item_name").val($(this).data("item_name"));
@@ -378,7 +382,6 @@ $(document).ready(function () {
         $("#edit_initial_stock").val($(this).data("initial_stock"));
         $("#edit_alert_quantity").val($(this).data("alert_quantity"));
     });
-});
 
 
 </script>

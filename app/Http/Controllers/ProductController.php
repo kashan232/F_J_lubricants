@@ -19,7 +19,6 @@ class ProductController extends Controller
             $products = Product::where('admin_or_user_id', $userId)->get();
             $categories = Category::all();
             $sizes = Size::all(); // Size table se sab sizes le rahe hain
-    
             return view('admin_panel.product.add_product', compact('products', 'categories', 'sizes'));
         } else {
             return redirect()->back();
