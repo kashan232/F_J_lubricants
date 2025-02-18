@@ -5,7 +5,7 @@
                 <li class="active">
                     <a href="{{ route('home') }}"><img src="assets/img/icons/dashboard.svg" alt="img"><span> Dashboard</span> </a>
                 </li>
-                
+
                 <li>
                     <a href="{{ route('city') }}"><i class="fas fa-city"></i><span> City</span> </a>
                 </li>
@@ -36,6 +36,7 @@
                     <a href="javascript:void(0);"><i class="fas fa-store"></i><span> Purchase</span> <span class="menu-arrow"></span></a>
                     <ul>
                         <li><a href="{{ route('Purchase') }}">Add Purchase</a></li>
+                        <li><a href="{{ route('Purchase') }}">All Purchase</a></li>
                     </ul>
                 </li>
 

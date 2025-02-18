@@ -72,7 +72,8 @@ Route::get('/fetch-subcategories', [ProductController::class, 'fetchSubCategorie
 Route::get('/Purchase', [PurchaseController::class, 'Purchase'])->middleware(['auth','admin'])->name('Purchase');
 Route::get('/get-subcategories/{categoryname}', [PurchaseController::class, 'getSubcategories'])->name('get.subcategories');
 Route::get('/get-items', [PurchaseController::class, 'getItems'])->name('get.items');
-
+Route::post('/store-Purchase', [PurchaseController::class, 'store_Purchase'])->name('store-Purchase');
+Route::get('/all-Purchases', [PurchaseController::class, 'all_Purchases'])->middleware(['auth','admin'])->name('all-Purchases');
 // sales men
 
 // Salesmen Routes
