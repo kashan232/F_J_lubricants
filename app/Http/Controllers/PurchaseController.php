@@ -32,8 +32,9 @@ class PurchaseController extends Controller
 
     public function getItems(Request $request)
     {
-
-        $items = Product::where('category', $request->category_name)->where('sub_category', $request->sub_category_name)->pluck('item_name', 'id','pcs');
+        $items = Product::where('category', $request->category_name)
+            ->where('sub_category', $request->sub_category_name)
+            ->get(['id', 'item_name', 'pcs_in_carton']); // Fetch all required fields
 
         return response()->json($items);
     }

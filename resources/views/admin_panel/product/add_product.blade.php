@@ -34,7 +34,7 @@
                                     <th>Item Code</th>
                                     <th>Item Name</th>
                                     <th>Size</th>
-                                    <th>Pcs</th>
+                                    <th>pcs_in_carton</th>
                                     <th>Wholesale Price</th>
                                     <th>Retail Price</th>
                                     <th>Initial Stock</th>
@@ -51,7 +51,7 @@
                                     <td>{{ $product->item_code }}</td>
                                     <td>{{ $product->item_name }}</td>
                                     <td>{{ $product->size }}</td>
-                                    <td>{{ $product->pcs }}</td>
+                                    <td>{{ $product->pcs_in_carton }}</td>
                                     <td>{{ $product->wholesale_price }}</td>
                                     <td>{{ $product->retail_price }}</td>
                                     <td>{{ $product->initial_stock }}</td>
@@ -64,7 +64,7 @@
                                                 data-item_code="{{ $product->item_code }}"
                                                 data-item_name="{{ $product->item_name }}"
                                                 data-size_id="{{ $product->size }}"
-                                                data-pcs="{{ $product->pcs }}"
+                                                data-pcs_in_carton="{{ $product->pcs_in_carton }}"
                                                 data-wholesale_price="{{ $product->wholesale_price }}"
                                                 data-retail_price="{{ $product->retail_price }}"
                                                 data-initial_stock="{{ $product->initial_stock }}"
@@ -138,7 +138,7 @@
                         
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Pieces</label>
-                            <input type="number" class="form-control" name="pcs" required>
+                            <input type="number" class="form-control" name="pcs_in_carton" required>
                         </div>
                     </div>
                     <div class="row">
@@ -226,7 +226,7 @@
                         <!-- Pieces -->
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Pieces</label>
-                            <input type="number" class="form-control" name="pcs" id="edit_pcs" required>
+                            <input type="number" class="form-control" name="pcs_in_carton" id="edit_pcs_in_carton" required>
                         </div>
                     </div>
 
@@ -274,7 +274,7 @@
     $("#edit_item_code").val($(this).data("item_code"));
     $("#edit_item_name").val($(this).data("item_name"));
     $("#edit_size").val($(this).data("size_id"));
-    $("#edit_pcs").val($(this).data("pcs"));
+    $("#edit_pcs_in_carton").val($(this).data("pcs_in_carton"));
     $("#edit_wholesale_price").val($(this).data("wholesale_price"));
     $("#edit_retail_price").val($(this).data("retail_price"));
     $("#edit_initial_stock").val($(this).data("initial_stock"));
