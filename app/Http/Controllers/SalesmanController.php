@@ -11,76 +11,88 @@ use Illuminate\Support\Facades\Auth;
 
 class SalesmanController extends Controller
 {
-    // Display salesmen list
+   // Salesmen List and Add Salesman
     public function salesmen()
     {
         if (Auth::id()) {
             $userId = Auth::id();
-            $salesmen = Salesman::where('admin_or_user_id', $userId)->get(); // Fetch salesmen
+            $salesmen = Salesman::where('admin_or_user_id', $userId)
+            ->where('status', 1)
+            ->with(['city', 'area'])
+            ->get();
             $cities = City::all(); // Fetch all cities
             $areas = Area::all(); // Fetch all areas
-
-            return view('salesmen.add_salesmen', compact('salesmen', 'cities', 'areas')); // Ensure your view is correctly named
+            return view('admin_panel.salesmen.add_salesmen', compact('salesmen', 'cities', 'areas'));
         } else {
             return redirect()->back();
         }
     }
 
-    // Store a new salesman
-    public function store_salesman(Request $request)
-    {
-        if (Auth::id()) {
-            $userId = Auth::id();
-            Salesman::create([
-                'admin_or_user_id' => $userId, // Store the user's ID (ensure you have this field in your salesman table)
-                'name' => $request->name,
-                'email' => $request->email,
-                'phone_number' => $request->phone_number, // Add phone number
-                'address' => $request->address, // Add address
-                'status' => $request->status,
-                'city_id' => $request->city_id,
-                'area_id' => $request->area_id,
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-            ]);
-            return redirect()->back()->with('success', 'Salesman added successfully');
-        } else {
-            return redirect()->back();
-        }
+// Store Salesman (already correctly handles adding new salesman)
+public function store_salesman(Request $request)
+{
+    if (Auth::id()) {
+        $userId = Auth::id();
+        Salesman::create([
+            'admin_or_user_id' => $userId,
+            'name' => $request->name,
+            'phone' => $request->phone,
+            'city' => $request->city,
+            'area' => $request->area,
+            'address' => $request->address,
+            'salary' => $request->salary,
+            'status' => $request->status,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+        return redirect()->back()->with('success', 'Salesman added successfully');
+    } else {
+        return redirect()->back();
     }
+}
 
-    // Update an existing salesman
     public function update_salesman(Request $request)
     {
-        $salesman_id = $request->input('salesman_id');
-        Salesman::where('id', $salesman_id)->update([
+        Salesman::where('id', $request->salesman_id)->update([
             'name' => $request->name,
-            'email' => $request->email,
-            'phone_number' => $request->phone_number, // Add phone number
-            'address' => $request->address, // Add address
-            'status' => $request->status, // Update status
-            'city_id' => $request->city_id,
-            'area_id' => $request->area_id,
-            'updated_at' => Carbon::now(),
+            'phone' => $request->phone,
+            'city' => $request->city,
+            'area' => $request->area,
+            'address' => $request->address,
+            'salary' => $request->salary,
+            'status' => $request->status,
+            'updated_at' => now(),
         ]);
         return redirect()->back()->with('success', 'Salesman updated successfully');
     }
+    
 
-    // Fetch all cities
     public function fetchCities()
     {
-        $cities = City::all(); // Fetch all cities
-        return response()->json($cities); // Return cities as JSON
+        $cities = City::all();
+        return response()->json($cities);
     }
+    
 
     // Fetch areas based on selected city
     public function fetchAreas(Request $request)
     {
-        $validated = $request->validate([
-            'city_id' => 'required|exists:cities,id', // Ensure the city exists
-        ]);
-
-        $areas = Area::where('city_id', $validated['city_id'])->get(); // Fetch areas for the selected city
-        return response()->json($areas); // Return areas as JSON
+        $areas = Area::where('city_name', $request->city_id)->get(); // city_id ko city_name karein
+        return response()->json($areas);
+        dd($areas());
     }
+    
+
+
+    public function toggleStatus(Request $request)
+{
+    $salesman = Salesman::find($request->salesman_id);
+    if ($salesman) {
+        $salesman->status = $request->status;
+        $salesman->save();
+        return response()->json(['success' => 'Status updated successfully!']);
+    }
+    return response()->json(['error' => 'Salesman not found!'], 404);
+}
+
 }

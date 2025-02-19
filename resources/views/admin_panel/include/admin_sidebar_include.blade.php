@@ -46,6 +46,13 @@
                         <li><a href="{{ route('salesmen') }}">Add Sales Man</a></li>
                     </ul>
                 </li>
+                <li class="submenu">
+                    <a href="javascript:void(0);"><i class="fas fa-store"></i><span> Expenses</span> <span class="menu-arrow"></span></a>
+                    <ul>
+                        <li><a href="{{ route('expense') }}">Add Expense Categroy</a></li>
+                        <li><a href="{{ route('add-expenses') }}">Add Expenss</a></li>
+                    </ul>
+                </li>
             </ul>
         </div>
     </div>
