@@ -67,11 +67,12 @@ Route::post('/size/update', [SizeController::class, 'update'])->name('size.updat
 Route::get('/expense', [ExpenseController::class, 'expense'])->middleware(['auth','admin'])->name('expense');
 Route::post('/store-expense', [ExpenseController::class, 'store_expense'])->name('store-expense');
 Route::post('/expense/update', [ExpenseController::class, 'update'])->name('expense.update');
-//add expense
-Route::get('/add-expenses', [ExpenseController::class, 'addExpenseScreen'])->name('add-expenses');
-Route::post('/update-expense', [ExpenseController::class, 'update'])->name('addexpense.update');
-Route::post('/store-expense', [ExpenseController::class, 'store_addexpense'])->name('store-expense');
-Route::get('/delete-expense/{id}', [ExpenseController::class, 'delete_add_expense'])->name('delete-expense');
+// Expense Management Routes
+Route::get('/expenses', [ExpenseController::class, 'expense'])->name('expenses.index'); // Expense list page
+Route::get('/add-expenses', [ExpenseController::class, 'addExpenseScreen'])->name('add-expenses'); // Add expense screen
+Route::post('/store-expense', [ExpenseController::class, 'store_addexpense'])->name('store-expense'); // Store new expense
+Route::post('/update-expense', [ExpenseController::class, 'update_addexpense'])->name('update-expense'); // Update existing expense
+Route::delete('/delete-expense/{id}', [ExpenseController::class, 'delete_add_expense'])->name('delete-expense');
 
 
 
@@ -89,7 +90,9 @@ Route::get('/fetch-subcategories', [ProductController::class, 'fetchSubCategorie
 Route::get('/Purchase', [PurchaseController::class, 'Purchase'])->middleware(['auth','admin'])->name('Purchase');
 Route::get('/get-subcategories/{categoryname}', [PurchaseController::class, 'getSubcategories'])->name('get.subcategories');
 Route::get('/get-items', [PurchaseController::class, 'getItems'])->name('get.items');
-
+Route::post('/store-Purchase', [PurchaseController::class, 'store_Purchase'])->name('store-Purchase');
+Route::get('/all-Purchases', [PurchaseController::class, 'all_Purchases'])->middleware(['auth','admin'])->name('all-Purchases');
+// sales men
 
 // Salesmen Routes
 Route::get('/salesmen', [SalesmanController::class, 'salesmen'])->middleware(['auth', 'admin'])->name('salesmen'); // Displays Salesmen List

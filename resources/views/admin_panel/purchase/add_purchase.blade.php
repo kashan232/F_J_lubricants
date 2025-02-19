@@ -14,23 +14,32 @@
 
             <div class="card p-4">
                 <div class="card-body">
-                    <form>
+                @if (session()->has('success'))
+                    <div class="alert alert-success">
+                        <strong>Success!</strong> {{ session('success') }}.
+                    </div>
+                    @endif
+                    <form action="{{ route('store-Purchase') }}" method="POST">
+                        @csrf
                         <div class="row mb-3">
                             <div class="col-md-3">
                                 <label class="form-label">Invoice Number</label>
-                                <input type="text" class="form-control form-control-lg" name="invoice_number">
+                                <input type="text" class="form-control" name="invoice_number">
+
                             </div>
                             <div class="col-md-3">
                                 <label class="form-label">Purchase Date</label>
-                                <input type="date" class="form-control form-control-lg" name="purchase_date">
+                                <input type="date" class="form-control" name="purchase_date">
+
                             </div>
                             <div class="col-md-3">
                                 <label class="form-label">Party Code</label>
-                                <input type="text" class="form-control form-control-lg" name="party_code">
+                                <input type="text" class="form-control" name="party_code">
+
                             </div>
                             <div class="col-md-3">
                                 <label class="form-label">Party Name</label>
-                                <input type="text" class="form-control form-control-lg" name="party_name">
+                                <input type="text" class="form-control" name="party_name">
                             </div>
                         </div>
 
@@ -43,7 +52,7 @@
                                         <th>Item</th>
                                         <th>Rate (Per Carton)</th>
                                         <th>Carton Qty</th>
-                                        <th>Pcx</th>
+                                        <th>Pcs</th>
                                         <th>Gross Total</th>
                                         <th>Discount</th>
                                         <th>Amount</th>
@@ -54,33 +63,37 @@
                                 <tbody>
                                     <tr>
                                         <td>
-                                            <select class="form-control form-control-lg category-select" style="width: 150px;">
+                                            <select class="form-control form-control-lg category-select" name="category[]" style="width: 150px;">
                                                 <option value="">Select Category</option>
                                                 @foreach($categories as $category)
                                                 <option value="{{ $category->category_name }}">{{ $category->category_name }}</option>
                                                 @endforeach
                                             </select>
                                         </td>
-                                        <td><select class="form-control form-control-lg subcategory-select" style="width: 150px;">
+                                        <td>
+                                            <select class="form-control form-control-lg subcategory-select" name="subcategory[]" style="width: 150px;">
                                                 <option>Select Subcategory</option>
-                                            </select></td>
-                                        <td><select class="form-control form-control-lg item-select" style="width: 180px;">
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <select class="form-control form-control-lg item-select" name="item[]" style="width: 180px;">
                                                 <option>Select Item</option>
-                                            </select></td>
-                                        <td><input type="number" class="form-control form-control-lg rate" style="width: 100px;"></td>
-                                        <td><input type="number" class="form-control form-control-lg carton-qty" style="width: 100px;"></td>
-                                        <td><input type="number" class="form-control form-control-lg pcx" style="width: 100px;"></td>
-                                        <td><input type="number" class="form-control form-control-lg gross-total" style="width: 100px;" readonly></td>
-                                        <td><input type="number" class="form-control form-control-lg discount" style="width: 100px;"></td>
-                                        <td><input type="number" class="form-control form-control-lg amount" style="width: 100px;" readonly></td>
-                                        <td><input type="number" class="form-control form-control-lg pcs-carton" style="width: 100px;" readonly></td>
+                                            </select>
+                                        </td>
+                                        <td><input type="number" class="form-control form-control-lg rate" name="rate[]" style="width: 100px;"></td>
+                                        <td><input type="number" class="form-control form-control-lg carton-qty" name="carton_qty[]" style="width: 100px;"></td>
+                                        <td><input type="number" class="form-control form-control-lg pcx" name="pcs[]" style="width: 100px;"></td>
+                                        <td><input type="number" class="form-control form-control-lg gross-total" name="gross_total[]" style="width: 100px;" readonly></td>
+                                        <td><input type="number" class="form-control form-control-lg discount" name="discount[]" style="width: 100px;"></td>
+                                        <td><input type="number" class="form-control form-control-lg amount" name="amount[]" style="width: 100px;" readonly></td>
+                                        <td><input type="number" class="form-control form-control-lg pcs-carton" name="pcs_carton[]" style="width: 100px;" readonly></td>
                                         <td><button type="button" class="btn btn-danger remove-row">Delete</button></td>
                                     </tr>
                                 </tbody>
                                 <tfoot>
                                     <tr>
                                         <td colspan="8" class="text-end fw-bold">Grand Total:</td>
-                                        <td colspan="2"><input type="number" class="form-control form-control-lg fw-bold text-center" id="grandTotal" readonly></td>
+                                        <td colspan="2"><input type="number" class="form-control form-control-lg fw-bold text-center" id="grandTotal" name="grand_total" readonly></td>
                                     </tr>
                                 </tfoot>
                             </table>
@@ -100,42 +113,45 @@
 <script>
     $(document).ready(function() {
         // Add New Row
-        document.getElementById('addRow').addEventListener('click', function() {
-            const newRow = `
-        <tr>
-            <td>
-                <select class="form-control form-control-lg category-select">
-                    <option value="">Select Category</option>
-                    @foreach($categories as $category)
-                    <option value="{{ $category->category_name }}">{{ $category->category_name }}</option>
-                    @endforeach
-                </select>
-            </td>
-            <td>
-                <select class="form-control form-control-lg subcategory-select">
-                    <option>Select Subcategory</option>
-                </select>
-            </td>
-            <td>
-                <select class="form-control form-control-lg item-select">
-                    <option>Select Item</option>
-                </select>
-            </td>
-            <td><input type="number" class="form-control form-control-lg rate"></td>
-            <td><input type="number" class="form-control form-control-lg carton-qty"></td>
-            <td><input type="number" class="form-control form-control-lg pcx" readonly></td>
-            <td><input type="number" class="form-control form-control-lg gross-total" readonly></td>
-            <td><input type="number" class="form-control form-control-lg discount"></td>
-            <td><input type="number" class="form-control form-control-lg amount" readonly></td>
-            <td><input type="number" class="form-control form-control-lg pcs-carton" readonly></td>
-            <td><button type="button" class="btn btn-danger remove-row">Delete</button></td>
-        </tr>`;
-            document.querySelector("#purchaseTable tbody").insertAdjacentHTML('beforeend', newRow);
+        $(document).on('click', '#addRow', function() {
+            let newRow = `
+    <tr>
+        <td>
+            <select class="form-control form-control-lg category-select" name="category[]" style="width: 150px;">
+                <option value="">Select Category</option>
+                @foreach($categories as $category)
+                <option value="{{ $category->category_name }}">{{ $category->category_name }}</option>
+                @endforeach
+            </select>
+        </td>
+        <td>
+            <select class="form-control form-control-lg subcategory-select" name="subcategory[]" style="width: 150px;">
+                <option value="">Select Subcategory</option>
+            </select>
+        </td>
+        <td>
+            <select class="form-control form-control-lg item-select" name="item[]" style="width: 180px;">
+                <option value="">Select Item</option>
+            </select>
+        </td>
+        <td><input type="number" class="form-control form-control-lg rate" name="rate[]" style="width: 100px;"></td>
+        <td><input type="number" class="form-control form-control-lg carton-qty" name="carton_qty[]" style="width: 100px;"></td>
+        <td><input type="number" class="form-control form-control-lg pcx" name="pcs[]" style="width: 100px;"></td>
+        <td><input type="number" class="form-control form-control-lg gross-total" name="gross_total[]" style="width: 100px;" readonly></td>
+        <td><input type="number" class="form-control form-control-lg discount" name="discount[]" style="width: 100px;"></td>
+        <td><input type="number" class="form-control form-control-lg amount" name="amount[]" style="width: 100px;" readonly></td>
+        <td><input type="number" class="form-control form-control-lg pcs-carton" name="pcs_carton[]" style="width: 100px;" readonly></td>
+        <td><button type="button" class="btn btn-danger remove-row">Delete</button></td>
+    </tr>`;
+
+            $("#purchaseTable tbody").append(newRow);
         });
+
 
         // Remove row functionality
         $(document).on('click', '.remove-row', function() {
             $(this).closest('tr').remove();
+            calculateGrandTotal(); // Recalculate grand total after row removal
         });
 
         // Fetch Subcategories on Category Change
@@ -148,14 +164,17 @@
                     url: "{{ route('get.subcategories', ':categoryname') }}".replace(':categoryname', categoryName),
                     type: 'GET',
                     success: function(response) {
-                        subCategoryDropdown.empty().append('<option value="">Select Sub Category</option>');
+                        subCategoryDropdown.html('<option value="">Select Sub Category</option>');
                         $.each(response, function(index, name) {
                             subCategoryDropdown.append(`<option value="${name}">${name}</option>`);
                         });
+                    },
+                    error: function() {
+                        alert('Error fetching subcategories.');
                     }
                 });
             } else {
-                subCategoryDropdown.empty().append('<option value="">Select Sub Category</option>');
+                subCategoryDropdown.html('<option value="">Select Sub Category</option>');
             }
         });
 
@@ -174,22 +193,52 @@
                         sub_category_name: subCategoryName
                     },
                     success: function(response) {
-                        itemDropdown.empty().append('<option value="">Select Item</option>');
-                        $.each(response, function(id, itemName) {
-                            itemDropdown.append(`<option value="${id}" data-pcs="${id}">${itemName}</option>`);
+                        itemDropdown.html('<option value="">Select Item</option>');
+                        $.each(response, function(index, item) {
+                            itemDropdown.append(`<option value="${item.item_name}" data-pcs="${item.pcs_in_carton}">${item.item_name}</option>`);
                         });
+                    },
+                    error: function() {
+                        alert('Error fetching items.');
                     }
                 });
             } else {
-                itemDropdown.empty().append('<option value="">Select Item</option>');
+                itemDropdown.html('<option value="">Select Item</option>');
             }
         });
 
         // Fetch PCS when Item is Selected
         $(document).on('change', '.item-select', function() {
-            let pcsValue = $(this).find(":selected").data('pcs');
-            $(this).closest('tr').find('.pcx').val(pcsValue);
+            let pcsValue = $(this).find(":selected").data('pcs') || 0;
+            $(this).closest('tr').find('.pcs-carton').val(pcsValue);
         });
 
+        // Auto-Calculate Amount and Gross Total
+        $(document).on('input', '.rate, .carton-qty, .discount', function() {
+            let row = $(this).closest('tr');
+            let rate = parseFloat(row.find('.rate').val()) || 0;
+            let cartonQty = parseFloat(row.find('.carton-qty').val()) || 0;
+            let pcsPerCarton = parseFloat(row.find('.pcs-carton').val()) || 0;
+            let discount = parseFloat(row.find('.discount').val()) || 0;
+
+            // Calculate Gross Total (Rate * Carton Qty)
+            let grossTotal = rate * cartonQty;
+            row.find('.gross-total').val(grossTotal.toFixed(2));
+
+            // Calculate Amount (Gross Total - Discount)
+            let amount = grossTotal - discount;
+            row.find('.amount').val(amount.toFixed(2));
+
+            calculateGrandTotal(); // Recalculate Grand Total whenever there is a change
+        });
+
+        // Calculate Grand Total
+        function calculateGrandTotal() {
+            let grandTotal = 0;
+            $(".amount").each(function() {
+                grandTotal += parseFloat($(this).val()) || 0;
+            });
+            $("#grandTotal").val(grandTotal.toFixed(2));
+        }
     });
 </script>
