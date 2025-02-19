@@ -65,14 +65,21 @@ Route::post('/size/update', [SizeController::class, 'update'])->name('size.updat
 
 //expense
 Route::get('/expense', [ExpenseController::class, 'expense'])->middleware(['auth','admin'])->name('expense');
-Route::post('/store-expense', [ExpenseController::class, 'store_expense'])->name('store-expense');
+Route::post('/store-expense-category', [ExpenseController::class, 'store_expense_category'])->name('store-expense-category');
 Route::post('/expense/update', [ExpenseController::class, 'update'])->name('expense.update');
+Route::post('/expense/delete', [ExpenseController::class, 'delete'])->name('expense.delete');
+Route::delete('/delete-expense/{id}', [ExpenseController::class, 'delete_add_expense'])->name('delete-expense');
+
+// deleteAddExpenseBtn
+
 // Expense Management Routes
 Route::get('/expenses', [ExpenseController::class, 'expense'])->name('expenses.index'); // Expense list page
 Route::get('/add-expenses', [ExpenseController::class, 'addExpenseScreen'])->name('add-expenses'); // Add expense screen
 Route::post('/store-expense', [ExpenseController::class, 'store_addexpense'])->name('store-expense'); // Store new expense
 Route::post('/update-expense', [ExpenseController::class, 'update_addexpense'])->name('update-expense'); // Update existing expense
 Route::delete('/delete-expense/{id}', [ExpenseController::class, 'delete_add_expense'])->name('delete-expense');
+
+
 
 
 

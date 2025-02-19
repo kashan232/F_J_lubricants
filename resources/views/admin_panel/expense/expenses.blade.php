@@ -44,9 +44,12 @@
                                         data-name="{{ $expense->expense_category }}" 
                                         data-bs-toggle="modal" 
                                         data-bs-target="#editExpenseModal">Edit</button>
-                                    
+
+                                        <button class="btn btn-sm btn-danger deleteAddExpenseBtn" data-id="{{ $expense->id }}">Delete</button>
 
                                     </td>
+
+                                    
                                 </tr>
                                 @endforeach
                             </tbody>
@@ -66,7 +69,7 @@
                 <h5 class="modal-title">Add Expense</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form action="{{ route('store-expense') }}" method="POST">
+            <form action="{{ route('store-expense-category') }}" method="POST">
                 @csrf
                 <div class="modal-body">
                     <div class="mb-3">
@@ -117,6 +120,41 @@
         let name = $(this).data("name");
         $("#edit_expense_id").val(id);
         $("#edit_expense_category").val(name);
+    });
+
+    $(document).on("click", ".deleteAddExpenseBtn", function(e) {
+        e.preventDefault();
+
+        let id = $(this).data("id");
+        let deleteUrl = "{{ route('deleteAddExpenseBtn', ':id') }}".replace(':id', id);
+
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: deleteUrl,
+                    type: "DELETE",
+                    headers: {
+                        "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content") // Include CSRF token
+                    },
+                    success: function(response) {
+                        Swal.fire("Deleted!", response.success, "success")
+                            .then(() => location.reload());
+                    },
+                    error: function(xhr) {
+                        console.error(xhr.responseText);
+                        Swal.fire("Error!", "Something went wrong: " + xhr.responseText, "error");
+                    }
+                });
+            }
+        });
     });
 </script>
 

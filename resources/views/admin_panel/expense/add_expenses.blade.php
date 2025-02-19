@@ -47,7 +47,6 @@
                                     <td>{{ $expense->date }}</td>
                                     <td>{{ $expense->description }}</td>
                                     <td>
-                                        <button class="btn btn-sm btn-danger deleteExpenseBtn" data-id="{{ $expense->id }}">Delete</button>
                                         <button class="btn btn-sm btn-primary editExpenseBtn" 
                                             data-id="{{ $expense->id }}" 
                                             data-category="{{ $expense->expense_category }}"
@@ -59,6 +58,9 @@
                                             data-bs-target="#editExpenseModal">
                                             Edit
                                         </button>
+
+                                        <button class="btn btn-sm btn-danger deleteExpenseBtn" data-id="{{ $expense->id }}">Delete</button>
+
                                     </td>
                                 </tr>
                                 @endforeach
@@ -81,7 +83,7 @@
             </div>
             <form action="{{ route('store-expense') }}" method="POST">
                 @csrf
-                <meta name="csrf-token" content="{{ _token() }}">
+                <meta name="csrf-token" content="{{ csrf_token() }}">
 
                 <div class="modal-body">
                     <div class="mb-3">
