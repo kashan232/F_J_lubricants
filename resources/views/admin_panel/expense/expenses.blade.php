@@ -39,7 +39,13 @@
                                     <td>{{ $key + 1 }}</td>
                                     <td>{{ $expense->expense_category }}</td>
                                     <td>
-                                        <button class="btn btn-sm btn-primary editExpenseBtn" data-id="{{ $->id }}" data-name="{{ $size->expense_category }}" data-bs-toggle="modal" data-bs-target="#editSizeModal">Edit</button>
+                                        <button class="btn btn-sm btn-primary editExpenseBtn" 
+                                        data-id="{{ $expense->id }}" 
+                                        data-name="{{ $expense->expense_category }}" 
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#editExpenseModal">Edit</button>
+                                    
+
                                     </td>
                                 </tr>
                                 @endforeach
@@ -52,19 +58,19 @@
     </div>
 </div>
 
-<!-- Add Size Modal -->
-<div class="modal fade" id="addSizeModal" tabindex="-1" aria-labelledby="addSizeModalLabel" aria-hidden="true">
+<!-- Add Expense Modal -->
+<div class="modal fade" id="addExpenseModal" tabindex="-1" aria-labelledby="addExpenseModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Add Size</h5>
+                <h5 class="modal-title">Add Expense</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form action="{{ route('store-size') }}" method="POST">
+            <form action="{{ route('store-expense') }}" method="POST">
                 @csrf
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label class="form-label">Size Name</label>
+                        <label class="form-label">Expense Name</label>
                         <input type="text" class="form-control" name="expense_category" required>
                     </div>
                 </div>
@@ -76,20 +82,21 @@
     </div>
 </div>
 
-<!-- Edit Size Modal -->
-<div class="modal fade" id="editSizeModal" tabindex="-1" aria-labelledby="editSizeModalLabel" aria-hidden="true">
+
+<!-- Edit Expense Modal -->
+<div class="modal fade" id="editExpenseModal" tabindex="-1" aria-labelledby="editExpenseModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Edit Size</h5>
+                <h5 class="modal-title">Edit Expense</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form action="{{ route('size.update') }}" method="POST">
+            <form action="{{ route('expense.update') }}" method="POST">
                 @csrf
-                <input type="hidden" name="size_id" id="edit_size_id">
+                <input type="hidden" name="expense_id" id="edit_expense_id">
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label class="form-label">Size Name</label>
+                        <label class="form-label">Expense Name</label>
                         <input type="text" class="form-control" name="expense_category" id="edit_expense_category" required>
                     </div>
                 </div>
@@ -101,13 +108,15 @@
     </div>
 </div>
 
+
 @include('admin_panel.include.footer_include')
 
-<script>
+ <script>
     $(document).on("click", ".editExpenseBtn", function() {
         let id = $(this).data("id");
         let name = $(this).data("name");
-        $("#edit_size_id").val(id);
+        $("#edit_expense_id").val(id);
         $("#edit_expense_category").val(name);
     });
 </script>
+
