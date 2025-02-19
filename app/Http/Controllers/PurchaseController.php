@@ -124,4 +124,22 @@ class PurchaseController extends Controller
 
         return redirect()->back()->with('success', 'Purchase saved successfully and stock updated!');
     }
+
+    public function all_Purchases()
+    {
+        if (Auth::id()) {
+            $userId = Auth::id();
+            $Purchases = Purchase::where('admin_or_user_id', $userId)->get();
+
+            return view('admin_panel.purchase.all_purchase', compact('Purchases'));
+        } else {
+            return redirect()->back();
+        }
+    }
+
+    public function purchaseInvoice($id)
+    {
+        $purchase = Purchase::findOrFail($id);
+        return view('admin_panel.purchase.invoice', compact('purchase'));
+    }
 }
