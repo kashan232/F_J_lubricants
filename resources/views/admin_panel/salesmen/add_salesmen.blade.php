@@ -81,53 +81,98 @@
             </div>
         </div>
     </div>
-
-    <!-- Add Salesman Modal -->
-    <div class="modal fade" id="addSalesmanModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Add Salesman</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <form action="{{ route('store-salesman') }}" method="POST">
-                    @csrf
-                    <div class="modal-body">
-                        <label>Name</label>
-                        <input type="text" class="form-control" name="name" required>
-                        
-                        <label>Phone</label>
-                        <input type="text" class="form-control" name="phone" required>
-
-                        <label>City</label>
-                        <select class="form-control" name="city" id="city-dropdown" required>
-                            <option value="">Select City</option>
-                        </select>
-                        
-                        <label>Area</label>
-                        <select class="form-control" name="area" id="area-dropdown" required>
-                            <option value="">Select Area</option>
-                        </select>
-
-                        <label>Address</label>
-                        <input type="text" class="form-control" name="address" required>
-
-                        <label>Salary</label>
-                        <input type="number" class="form-control" name="salary" required>
-
-                        <label>Status</label>
-                        <select class="form-control" name="status" required>
-                            <option value="1">Active</option>
-                            <option value="0">Inactive</option>
-                        </select>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary">Save</button>
-                    </div>
-                </form>
+<!-- Add Salesman Modal -->
+<!-- Add Salesman Modal -->
+<div class="modal fade" id="addSalesmanModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg"> <!-- Increased modal size -->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Salesman</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
+            <form action="{{ route('store-salesman') }}" method="POST">
+                @csrf
+                <div class="modal-body">
+                    <div class="row">
+                        <!-- Name -->
+                        <div class="col-md-6 mb-3">
+                            <label for="name" class="form-label">Name</label>
+                            <input type="text" class="form-control" name="name" required>
+                        </div>
+
+                        <!-- Phone -->
+                        <div class="col-md-6 mb-3">
+                            <label for="phone" class="form-label">Phone</label>
+                            <input type="text" class="form-control" name="phone" required>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <!-- City -->
+                        <div class="col-md-6 mb-3">
+                            <label for="citySelect" class="form-label">City</label>
+                            <select class="form-control" name="city" id="citySelect" required>
+                                <option value="">Select City</option>
+                                @foreach($city as $city)
+                                    <option value="{{ $city->city_name }}">{{ $city->city_name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <!-- Area -->
+                        <div class="col-md-6 mb-3">
+                            <label for="areasSelect" class="form-label">Area</label>
+                            <select class="form-control" name="area" id="areasSelect" required>
+                                <option value="">Select Area</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <!-- Address -->
+                        <div class="col-md-6 mb-3">
+                            <label for="address" class="form-label">Address</label>
+                            <input type="text" class="form-control" name="address" required>
+                        </div>
+
+                        <!-- Salary -->
+                        <div class="col-md-6 mb-3">
+                            <label for="salary" class="form-label">Salary</label>
+                            <input type="number" class="form-control" name="salary" required>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <!-- Designation -->
+                        <div class="col-md-6 mb-3">
+                            <label for="designationSelect" class="form-label">Designation</label>
+                            <select class="form-control" name="designation" id="designationSelect" required>
+                                <option value="">Select Designation</option>
+                                @foreach($designation as $design)
+                                    <option value="{{ $design->designation }}">{{ $design->designation }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <!-- Status -->
+                        <div class="col-md-6 mb-3">
+                            <label for="status" class="form-label">Status</label>
+                            <select class="form-control" name="status" required>
+                                <option value="1">Active</option>
+                                <option value="0">Inactive</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
         </div>
     </div>
+</div>
+
 
     <!-- Edit Salesman Modal -->
 <div class="modal fade" id="editSalesmanModal" tabindex="-1" aria-hidden="true">
@@ -137,8 +182,11 @@
                 <h5 class="modal-title">Edit Salesman</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
+
             <form action="{{ route('update-salesman') }}" method="POST">
                 @csrf
+                <input type="hidden" name="salesman_id" value="{{ $salesman->id }}">
+
                 <input type="hidden" id="edit_salesman_id" name="salesman_id">
 
                 <div class="modal-body">
@@ -149,17 +197,35 @@
                     <input type="text" class="form-control" id="edit_phone" name="phone" required>
 
                     <label>City</label>
-                    <select class="form-control" id="edit_city" name="city" required></select>
+                    <select class="form-control" name="city" id="citySelect" required>
+                        <option value="">Select City</option>
+                        <select class="form-control" name="city_name" id="citySelect" required>
+                    </select>
 
                     <label>Area</label>
                     <select class="form-control" id="edit_area" name="area" required></select>
-
+                    
                     <label>Address</label>
                     <input type="text" class="form-control" id="edit_address" name="address" required>
 
                     <label>Salary</label>
                     <input type="number" class="form-control" id="edit_salary" name="salary" required>
 
+                    {{-- <select class="form-control" name="designation" id="designationSelect" required>
+                        <option value="">Select Designation</option>
+                        @foreach($designation as $design)
+                            <option value="{{ $design->designation }}">{{ $design->designation }}</option>
+                        @endforeach
+                    </select> --}}
+                    <label>Designation</label>
+                        <select class="form-control" name="designation" id="edit_designation" required>
+                            <option value="">Select Designation</option>
+                            @foreach($designation as $design)
+                                <option value="{{ $design->id }}">{{ $design->designation }}</option>
+                            @endforeach
+                        </select>
+
+                    
                     <label>Status</label>
                     <select class="form-control" id="edit_status" name="status" required>
                         <option value="1">Active</option>
@@ -177,88 +243,86 @@
     @include('admin_panel.include.footer_include')
 
     <script>
-    $(document).ready(function () {
-        $(document).on("click", ".editSalesmanBtn", function () {
-            $("#edit_salesman_id").val($(this).data("id"));
-            $("#edit_name").val($(this).data("name"));
-            $("#edit_phone").val($(this).data("phone"));
-            $("#edit_city").val($(this).data("city"));
-            $("#edit_area").val($(this).data("area"));
-            $("#edit_address").val($(this).data("address"));
-            $("#edit_salary").val($(this).data("salary"));
-            $("#edit_status").val($(this).data("status"));
-        });
-    });
-    $(document).ready(function () {
-    $(".toggle-status").click(function () {
-        var button = $(this);
-        var salesmanId = button.data("id");
-        var currentStatus = button.data("status");
+        
+    $(document).on("click", ".editSalesmanBtn", function () {
+    $("#edit_salesman_id").val($(this).data("id"));
+    $("#edit_name").val($(this).data("name"));
+    $("#edit_phone").val($(this).data("phone"));
+    $("#edit_city").val($(this).data("city")).trigger("change");
+    $("#edit_address").val($(this).data("address"));
+    $("#edit_salary").val($(this).data("salary"));
+    $("#edit_status").val($(this).data("status"));
 
+    // Fetch areas based on city selection
+    var selectedCity = $(this).data("city");
+    var selectedArea = $(this).data("area");
+
+    if (selectedCity) {
         $.ajax({
-            url: "{{ route('toggle-salesman-status') }}",
-            type: "POST",
-            data: {
-                _token: "{{ csrf_token() }}",
-                salesman_id: salesmanId,
-                status: currentStatus == 1 ? 0 : 1
+            url: "{{ route('fetch-areas') }}",
+            type: "GET",
+            data: { city_id: selectedCity },
+            success: function (data) {
+                $("#edit_area").html('<option value="">Select Area</option>');
+                $.each(data, function (key, area) {
+                    $("#edit_area").append('<option value="' + area.area_name + '">' + area.area_name + '</option>');
+                });
+
+                // Set the correct area
+                $("#edit_area").val(selectedArea);
             },
-            success: function (response) {
-                if (response.success) {
-                    let newStatus = currentStatus == 1 ? 0 : 1;
-                    button.data("status", newStatus);
-                    button.text(newStatus == 1 ? "Active" : "Inactive");
-                    button.toggleClass("btn-success btn-danger");
+        });
+    }
+});
+
+$(".toggle-status").click(function () {
+    var button = $(this);
+    var salesmanId = button.data("id");
+    var currentStatus = button.data("status");
+
+    $.ajax({
+        url: "{{ route('toggle-salesman-status') }}",
+        type: "POST",
+        data: {
+            _token: "{{ csrf_token() }}",
+            salesman_id: salesmanId,
+            status: currentStatus == 1 ? 0 : 1
+        },
+        success: function (response) {
+            if (response.success) {
+                let newStatus = currentStatus == 1 ? 0 : 1;
+                button.data("status", newStatus);
+                button.text(newStatus == 1 ? "Active" : "Inactive");
+
+                if (newStatus == 1) {
+                    button.removeClass("btn-danger").addClass("btn-success");
+                } else {
+                    button.removeClass("btn-success").addClass("btn-danger");
                 }
             }
-        });
+        }
     });
 });
 
 
 
-$(document).ready(function () {
-    // Fetch cities on page load
-    $.ajax({
-        url: "{{ route('fetch-cities') }}",
-        type: "GET",
-        success: function (cities) {
-            $("#city-dropdown, #edit_city").html('<option value="">Select City</option>');
-            $.each(cities, function (key, city) {
-                $("#city-dropdown, #edit_city").append(`<option value="${city.id}">${city.city_name}</option>`);
-            });
-        }
-    });
-// Fetch areas based on selected city
-$(document).ready(function () {
-    $("#city-dropdown").change(function () {
-        var cityId = $(this).val();
+    // When editing, fetch areas based on selected city
+    function fetchAreas(cityId, selectedAreaId) {
         if (cityId) {
             $.ajax({
-                url: "{{ route('fetch-areas') }}",
-                type: "GET",
-                data: { city_id: cityId },
-                dataType: "json",
-                success: function (response) {
-                    $("#area-dropdown").empty().append('<option value="">Select Area</option>');
-                    if (response.length > 0) {
-                        $.each(response, function (key, area) {
-                            $("#area-dropdown").append(`<option value="${area.id}">${area.area_name}</option>`);
-                        });
-                    } else {
-                        $("#area-dropdown").append('<option value="">No Areas Found</option>');
-                    }
-                    },
-                    error: function () {
-                        alert("Error fetching areas. Please check your setup.");
-                    }
+                url: '/get-areas/' + cityId,
+                type: 'GET',
+                success: function(response) {
+                    $('#edit_area').html('<option value="">Select Area</option>');
+                    $.each(response, function(key, area) {
+                        var selected = area.id == selectedAreaId ? 'selected' : '';
+                        $('#edit_area').append('<option value="' + area.id + '" ' + selected + '>' + area.area_name + '</option>');
+                    });
+                }
             });
-        } else {
-            $("#area-dropdown").html('<option value="">Select Area</option>');
         }
-    });
-});
-});
+    }
+
 
 
     </script>

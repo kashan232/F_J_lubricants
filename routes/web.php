@@ -10,6 +10,8 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\SalesmanController;
 use App\Http\Controllers\ExpenseController;
+use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\Business_tpyeController;
 use App\Models\Product;
 use Illuminate\Support\Facades\Route;
 
@@ -61,23 +63,24 @@ Route::post('/sub-category/update', [CategoryAndSubCategoryController::class, 'u
 Route::get('/size', [SizeController::class, 'size'])->middleware(['auth','admin'])->name('size');
 Route::post('/store-size', [SizeController::class, 'store_size'])->name('store-size');
 Route::post('/size/update', [SizeController::class, 'update'])->name('size.update');
+//business_tpye
+Route::get('/business-type', [Business_tpyeController::class, 'index'])->middleware(['auth','admin'])->name('business_type');
+Route::post('/business-type/store', [Business_tpyeController::class, 'store'])->name('business_type.store');
+Route::post('/business-type/update', [Business_tpyeController::class, 'update'])->name('business_type.update');
 
 
 //expense
 Route::get('/expense', [ExpenseController::class, 'expense'])->middleware(['auth','admin'])->name('expense');
 Route::post('/store-expense-category', [ExpenseController::class, 'store_expense_category'])->name('store-expense-category');
 Route::post('/expense/update', [ExpenseController::class, 'update'])->name('expense.update');
-Route::post('/expense/delete', [ExpenseController::class, 'delete'])->name('expense.delete');
-Route::delete('/delete-expense/{id}', [ExpenseController::class, 'delete_add_expense'])->name('delete-expense');
-
-// deleteAddExpenseBtn
+Route::delete('/delete-expense/{id}', [ExpenseController::class, 'delete_Add_ExpenseBtn'])->name('delete-expense');
 
 // Expense Management Routes
 Route::get('/expenses', [ExpenseController::class, 'expense'])->name('expenses.index'); // Expense list page
 Route::get('/add-expenses', [ExpenseController::class, 'addExpenseScreen'])->name('add-expenses'); // Add expense screen
 Route::post('/store-expense', [ExpenseController::class, 'store_addexpense'])->name('store-expense'); // Store new expense
 Route::post('/update-expense', [ExpenseController::class, 'update_addexpense'])->name('update-expense'); // Update existing expense
-Route::delete('/delete-expense/{id}', [ExpenseController::class, 'delete_add_expense'])->name('delete-expense');
+Route::delete('/delete-expense/{id}', [ExpenseController::class, 'delete_add_expense'])->name('deleteAddExpenseBtn');
 
 
 
@@ -106,12 +109,29 @@ Route::get('/salesmen', [SalesmanController::class, 'salesmen'])->middleware(['a
 Route::post('/store-salesman', [SalesmanController::class, 'store_salesman'])->name('store-salesman'); // Store a new Salesman
 Route::post('/salesman/update', [SalesmanController::class, 'update_salesman'])->name('update-salesman'); // Update existing Salesman
 Route::get('/fetch-cities', [SalesmanController::class, 'fetchCities'])->name('fetch-cities'); // Fetch list of cities (adjust method to actual logic)
-Route::get('/fetch-areas', [SalesmanController::class, 'fetchAreas'])->name('fetch-areas');
 Route::post('/salesman/toggle-status', [SalesmanController::class, 'toggleStatus'])->name('toggle-salesman-status');
+Route::get('/fetch-areas', [CustomerController::class, 'fetchAreas'])->name('fetch-areas');
+Route::get('/fetch-designation', [CustomerController::class, 'fetchdesignation'])->name('fetch-designation');
 
 
+// designation
+Route::get('/designation', [SalesmanController::class, 'designation'])->name('designation');
+Route::post('/store-designation', [SalesmanController::class, 'store_designation'])->name('designation.store');
+Route::post('/designation/update', [SalesmanController::class, 'update_designation'])->name('designation.update');
+Route::delete('/designation/delete/{id}', [SalesmanController::class, 'destroy'])->name('designation.delete');
 
-Route::get('/', function () {
+
+//Cutomer create 
+Route::get('/customer', [CustomerController::class, 'index'])->name('customer');
+    Route::post('/customer/store', [CustomerController::class, 'store'])->name('customer.store');
+    Route::post('/customer/update', [CustomerController::class, 'update'])->name('customers.update');
+    Route::delete('/customer/delete/{id}', [CustomerController::class, 'destroy'])->name('delete-customer');
+    Route::get('/fetch-business-types', [CustomerController::class, 'fetchBusinessTypes'])->name('fetch-business-types');
+    Route::get('/fetch-areas', [CustomerController::class, 'fetchAreas'])->name('fetch-areas');
+   
+   
+   
+    Route::get('/', function () {
     return view('welcome');
 });
 

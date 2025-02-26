@@ -86,6 +86,7 @@
         </div>
     </div>
 </div>
+{{-- add product modal --}}
 
 <div class="modal fade bd-example-modal-lg" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">

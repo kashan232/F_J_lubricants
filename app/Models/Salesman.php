@@ -20,10 +20,16 @@ class Salesman extends Model
     {
         return $this->belongsTo(Area::class);
     }
+    public function designationRelation()
+{
+    return $this->belongsTo(Designation::class, 'designation');
+}
+
     
     protected $fillable = [
         'admin_or_user_id',
         'name',
+        'designation',
         'phone',
         'city',
         'area',

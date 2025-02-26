@@ -56,7 +56,7 @@ class ExpenseController extends Controller
     return redirect()->back()->with('success', 'Expense updated successfully');
 }
 
-public function deleteAddExpenseBtn($id)
+public function delete_Add_ExpenseBtn($id)
 {
     $expense = AddExpense::find($id);
 

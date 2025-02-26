@@ -164,10 +164,11 @@
         </div>
     </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 @include('admin_panel.include.footer_include')
 <!-- SweetAlert2 Library -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 
 <script>
     // DELETE Expense with SweetAlert and AJAX

@@ -29,6 +29,10 @@
                 </li>
 
                 <li>
+                    <a href="{{ route('business_type') }}"><i class="fas fa-oil-can"></i> <span> Business Type </span> </a>
+                </li>
+
+                <li>
                     <a href="{{ route('product') }}"><i class="fas fa-box-open"></i> <span> Product </span> </a>
                 </li>
 
@@ -41,9 +45,11 @@
                 </li>
 
                 <li class="submenu">
-                    <a href="javascript:void(0);"><i class="fas fa-store"></i><span> Sales Man</span> <span class="menu-arrow"></span></a>
+                    <a href="javascript:void(0);"><i class="fas fa-store"></i><span> Staff Management</span> <span class="menu-arrow"></span></a>
                     <ul>
-                        <li><a href="{{ route('salesmen') }}">Add Sales Man</a></li>
+                        <li><a href="{{ route('designation') }}">Add Designation </a></li>
+                        <li><a href="{{ route('salesmen') }}">Add Staff</a></li>
+
                     </ul>
                 </li>
                 <li class="submenu">
@@ -51,6 +57,12 @@
                     <ul>
                         <li><a href="{{ route('expense') }}">Add Expense Categroy</a></li>
                         <li><a href="{{ route('add-expenses') }}">Add Expenss</a></li>
+                    </ul>
+                </li>
+                <li class="submenu">
+                    <a href="javascript:void(0);"><i class="fas fa-store"></i><span>Customer Management</span> <span class="menu-arrow"></span></a>
+                    <ul>
+                        <li><a href="{{ route('customer') }}">Add Cutomers </a></li>
                     </ul>
                 </li>
             </ul>

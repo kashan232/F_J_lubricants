@@ -121,6 +121,9 @@
         $("#edit_expense_id").val(id);
         $("#edit_expense_category").val(name);
     });
+    
+
+    
 
     $(document).on("click", ".deleteAddExpenseBtn", function(e) {
         e.preventDefault();
