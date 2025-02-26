@@ -16,7 +16,7 @@ class PurchaseController extends Controller
     {
         if (Auth::id()) {
             $userId = Auth::id();
-            $categories = Category::all();
+            $categories = Category::where('admin_or_user_id', $userId)->get();
             return view('admin_panel.purchase.add_purchase', compact('categories'));
         } else {
             return redirect()->back();
@@ -35,7 +35,7 @@ class PurchaseController extends Controller
     {
         $items = Product::where('category', $request->category_name)
             ->where('sub_category', $request->sub_category_name)
-            ->get(['id', 'item_name', 'pcs_in_carton']); // Fetch all required fields
+            ->get(['id', 'item_name','item_code', 'pcs_in_carton','size','retail_price']); // Fetch all required fields
 
         return response()->json($items);
     }
@@ -43,7 +43,6 @@ class PurchaseController extends Controller
     public function store_Purchase(Request $request)
     {
         $request->validate([
-            'invoice_number' => 'required|unique:purchases,invoice_number',
             'purchase_date' => 'required|date',
             'party_code' => 'required',
             'party_name' => 'required',
@@ -60,10 +59,11 @@ class PurchaseController extends Controller
             'grand_total' => 'required|numeric',
         ]);
         $userId = Auth::id();
+        $invoiceNo = Purchase::generateInvoiceNo();
         // JSON encode data to store in a single row
         $purchaseData = [
             'admin_or_user_id' => $userId,
-            'invoice_number' => $request->invoice_number,
+            'invoice_number' => $invoiceNo,
             'purchase_date' => $request->purchase_date,
             'party_code' => $request->party_code,
             'party_name' => $request->party_name,
@@ -140,6 +140,9 @@ class PurchaseController extends Controller
     public function purchaseInvoice($id)
     {
         $purchase = Purchase::findOrFail($id);
+        $purchase->gross_total_sum = array_sum(json_decode($purchase->amount));
+        $purchase->discount_total_sum = array_sum(json_decode($purchase->discount));
+        $purchase->grand_total = $purchase->gross_total_sum - $purchase->discount_total_sum;
         return view('admin_panel.purchase.invoice', compact('purchase'));
     }
 }

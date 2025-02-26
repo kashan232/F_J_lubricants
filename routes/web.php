@@ -10,8 +10,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\SalesmanController;
 use App\Http\Controllers\ExpenseController;
-use App\Http\Controllers\CustomerController;
-use App\Http\Controllers\Business_tpyeController;
+use App\Http\Controllers\SaleController;
 use App\Models\Product;
 use Illuminate\Support\Facades\Route;
 
@@ -49,6 +48,9 @@ Route::put('/Distributor/update/{id}', [DistributorController::class, 'update_Di
 // Route::post('/Distributor/update', [DistributorController::class, 'update_Distributor'])->name('Distributor.update');
 Route::get('/Distributor', [DistributorController::class, 'Distributor'])->middleware(['auth','admin'])->name('Distributor');
 Route::get('/get-areas', [DistributorController::class, 'get_areas'])->middleware(['auth','admin'])->name('get-areas');
+Route::get('/Distributor-ledger', [DistributorController::class, 'Distributor_ledger'])->middleware(['auth','admin'])->name('Distributor-ledger');
+Route::post('/recovery-store', [DistributorController::class, 'recovery_store'])->name('recovery-store');
+Route::get('/Distributor-recovery', [DistributorController::class, 'Distributor_recovery'])->middleware(['auth','admin'])->name('Distributor-recovery');
 
 
 Route::get('/category', [CategoryAndSubCategoryController::class, 'category'])->middleware(['auth','admin'])->name('category');
@@ -104,6 +106,11 @@ Route::post('/store-Purchase', [PurchaseController::class, 'store_Purchase'])->n
 Route::get('/all-Purchases', [PurchaseController::class, 'all_Purchases'])->middleware(['auth','admin'])->name('all-Purchases');
 Route::get('/purchase/invoice/{id}', [PurchaseController::class, 'purchaseInvoice'])->name('purchase.invoice');
 
+Route::get('/add-sale', [SaleController::class, 'add_sale'])->middleware(['auth','admin'])->name('add-sale');
+Route::post('/store-sale', [SaleController::class, 'store_sale'])->name('store-sale');
+Route::get('/all-sale', [SaleController::class, 'all_sale'])->middleware(['auth','admin'])->name('all-sale');
+Route::get('/sale/{id}', [SaleController::class, 'show_sale'])->name('show_sale');
+Route::get('/sale/invoice/{id}', [SaleController::class, 'saleInvoice'])->name('sale.invoice');
 
 // sales men
 
