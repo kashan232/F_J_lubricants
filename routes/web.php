@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\Business_tpyeController;
 use App\Http\Controllers\CategoryAndSubCategoryController;
 use App\Http\Controllers\CityAndAreaController;
+use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DistributorController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
