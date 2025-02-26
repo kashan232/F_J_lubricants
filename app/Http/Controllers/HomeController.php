@@ -13,9 +13,9 @@ class HomeController extends Controller
          {
             $usertype =Auth()->user()->usertype;
             $userId = Auth::id();
-            if($usertype=='user')
+            if($usertype=='distributor')
             {
-                return view('user_panel.dashboard', [
+                return view('distributor_panel.dashboard', [
                     'userId' => $userId,
                 ]);
             } 

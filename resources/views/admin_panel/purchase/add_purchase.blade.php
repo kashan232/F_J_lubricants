@@ -14,7 +14,7 @@
 
             <div class="card p-4">
                 <div class="card-body">
-                @if (session()->has('success'))
+                    @if (session()->has('success'))
                     <div class="alert alert-success">
                         <strong>Success!</strong> {{ session('success') }}.
                     </div>
@@ -22,22 +22,17 @@
                     <form action="{{ route('store-Purchase') }}" method="POST">
                         @csrf
                         <div class="row mb-3">
-                            <div class="col-md-3">
-                                <label class="form-label">Invoice Number</label>
-                                <input type="text" class="form-control" name="invoice_number">
-
-                            </div>
-                            <div class="col-md-3">
+                            <div class="col-md-4">
                                 <label class="form-label">Purchase Date</label>
                                 <input type="date" class="form-control" name="purchase_date">
 
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-4">
                                 <label class="form-label">Party Code</label>
                                 <input type="text" class="form-control" name="party_code">
 
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-4">
                                 <label class="form-label">Party Name</label>
                                 <input type="text" class="form-control" name="party_name">
                             </div>

@@ -6,14 +6,19 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Purchase extends Model
+class Sale extends Model
 {
     use HasFactory;
     use SoftDeletes;
 
     protected $guarded = [];
 
-    public static function generateInvoiceNo()
+    public function distributor()
+    {
+        return $this->belongsTo(Distributor::class, 'distributor_id');
+    }
+
+    public static function generateSaleInvoiceNo()
     {
         // Define the prefix for the invoice number
         $prefix = 'INVPURC-';
@@ -30,5 +35,4 @@ class Purchase extends Model
         // Return the new invoice number
         return $prefix . $newNumber;
     }
-
 }

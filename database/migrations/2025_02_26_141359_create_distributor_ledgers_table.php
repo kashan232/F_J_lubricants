@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('add_expenses', function (Blueprint $table) {
+        Schema::create('distributor_ledgers', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
             $table->softDeletes();
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('add_expenses');
+        Schema::dropIfExists('distributor_ledgers');
     }
 };
