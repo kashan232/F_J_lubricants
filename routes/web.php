@@ -102,6 +102,9 @@ Route::get('/get-subcategories/{categoryname}', [PurchaseController::class, 'get
 Route::get('/get-items', [PurchaseController::class, 'getItems'])->name('get.items');
 Route::post('/store-Purchase', [PurchaseController::class, 'store_Purchase'])->name('store-Purchase');
 Route::get('/all-Purchases', [PurchaseController::class, 'all_Purchases'])->middleware(['auth','admin'])->name('all-Purchases');
+Route::get('/purchase/invoice/{id}', [PurchaseController::class, 'purchaseInvoice'])->name('purchase.invoice');
+
+
 // sales men
 
 // Salesmen Routes
