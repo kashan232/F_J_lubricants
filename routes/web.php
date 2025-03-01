@@ -136,6 +136,7 @@ Route::delete('/designation/delete/{id}', [SalesmanController::class, 'destroy']
 Route::get('/vendors', [VendorController::class, 'vendors'])->middleware(['auth','admin'])->name('vendors');
 Route::post('/store-vendors', [VendorController::class, 'store_vendors'])->name('store-vendors');
 Route::put('/vendors/update/{id}', [VendorController::class, 'update_vendors'])->name('vendors.update');
+Route::get('/vendors-ledger', [VendorController::class, 'vendors_ledger'])->middleware(['auth','admin'])->name('vendors-ledger');
 
 
 //Cutomer create 

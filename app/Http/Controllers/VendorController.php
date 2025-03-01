@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\City;
 use App\Models\Vendor;
+use App\Models\VendorLedger;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -39,7 +40,17 @@ class VendorController extends Controller
                 'created_at' => Carbon::now(),
             ]);
 
-            return redirect()->back()->with('success', 'Distributor added successfully');
+            // Vendor Ledger Create (One-time Opening Balance)
+            VendorLedger::create([
+                'admin_or_user_id' => $userId,
+                'vendor_id' => $Vendor->id,
+                'previous_balance' => $request->opening_balance, // Pehli dafa opening balance = previous balance
+                'closing_balance' => $request->opening_balance, // Closing balance bhi initially same hoga
+                'created_at' => Carbon::now(),
+            ]);
+
+
+            return redirect()->back()->with('success', 'Vendor added successfully');
         } else {
             return redirect()->back();
         }

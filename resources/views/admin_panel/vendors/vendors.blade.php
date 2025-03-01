@@ -97,7 +97,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-6 mb-3">
+                        <div class="col-md-4 mb-3">
                             <label class="form-label">City</label>
                             <select class="form-control" name="city" id="citySelect" required>
                                 <option value="" disabled selected>Select City</option>
@@ -106,11 +106,15 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-md-6 mb-3">
+                        <div class="col-md-4 mb-3">
                             <label class="form-label">Area</label>
                             <select class="form-control" name="area" id="areaSelect" required>
                                 <option value="">Select Area</option>
                             </select>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">Opening Balance</label>
+                            <input type="number" class="form-control" name="opening_balance" required>
                         </div>
                     </div>
                     <div class="row">

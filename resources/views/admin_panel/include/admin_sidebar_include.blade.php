@@ -23,8 +23,13 @@
                     </ul>
                 </li>
 
-                <li>
-                    <a href="{{ route('vendors') }}"><i class="fas fa-building"></i><span> Vendors</span> </a>
+                <li class="submenu">
+                    <a href="javascript:void(0);"><i class="fas fa-users"></i><span> Vendors</span> <span class="menu-arrow"></span></a>
+                    <ul>
+                        <li><a href="{{ route('vendors') }}">Vendors</a></li>
+                        <li><a href="#">Vendors Ledger </a></li>
+                        <li><a href="#">Vendors Recoveries </a></li>
+                    </ul>
                 </li>
 
                 <li>
