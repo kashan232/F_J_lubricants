@@ -7,6 +7,7 @@ use App\Models\Product;
 use App\Models\Purchase;
 use App\Models\Size;
 use App\Models\SubCategory;
+use App\Models\Vendor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -17,7 +18,8 @@ class PurchaseController extends Controller
         if (Auth::id()) {
             $userId = Auth::id();
             $categories = Category::where('admin_or_user_id', $userId)->get();
-            return view('admin_panel.purchase.add_purchase', compact('categories'));
+            $Vendors = Vendor::where('admin_or_user_id', $userId)->get();
+            return view('admin_panel.purchase.add_purchase', compact('categories','Vendors'));
         } else {
             return redirect()->back();
         }

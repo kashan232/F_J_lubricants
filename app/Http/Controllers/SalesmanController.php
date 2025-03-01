@@ -22,6 +22,7 @@ class SalesmanController extends Controller
             ->get();
         
             $city = City::all();
+
             $designation = Designation::all(); // Fetch all designations
         
             return view('admin_panel.salesmen.add_salesmen', compact('salesmen', 'city', 'designation'));

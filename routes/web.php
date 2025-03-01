@@ -13,6 +13,7 @@ use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\SalesmanController;
 use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\SaleController;
+use App\Http\Controllers\VendorController;
 use App\Models\Product;
 use Illuminate\Support\Facades\Route;
 
@@ -131,6 +132,10 @@ Route::get('/designation', [SalesmanController::class, 'designation'])->name('de
 Route::post('/store-designation', [SalesmanController::class, 'store_designation'])->name('designation.store');
 Route::post('/designation/update', [SalesmanController::class, 'update_designation'])->name('designation.update');
 Route::delete('/designation/delete/{id}', [SalesmanController::class, 'destroy'])->name('designation.delete');
+
+Route::get('/vendors', [VendorController::class, 'vendors'])->middleware(['auth','admin'])->name('vendors');
+Route::post('/store-vendors', [VendorController::class, 'store_vendors'])->name('store-vendors');
+Route::put('/vendors/update/{id}', [VendorController::class, 'update_vendors'])->name('vendors.update');
 
 
 //Cutomer create 

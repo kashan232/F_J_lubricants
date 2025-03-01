@@ -30,9 +30,10 @@ class DistributorController extends Controller
 
     public function store_Distributor(Request $request)
     {
-
         if (Auth::id()) {
             $userId = Auth::id();
+
+            // Distributor Create
             $distributor = Distributor::create([
                 'admin_or_user_id' => $userId,
                 'Customer' => $request->Customer,
@@ -46,12 +47,22 @@ class DistributorController extends Controller
                 'created_at' => Carbon::now(),
             ]);
 
+            // Distributor Ledger Create (One-time Opening Balance)
+            DistributorLedger::create([
+                'admin_or_user_id' => $userId,
+                'distributor_id' => $distributor->id,
+                'previous_balance' => $request->opening_balance, // Pehli dafa opening balance = previous balance
+                'closing_balance' => $request->opening_balance, // Closing balance bhi initially same hoga
+                'created_at' => Carbon::now(),
+            ]);
+
+            // Create Distributor User Account
             User::create([
                 'user_id' => $distributor->id,
                 'name' => $request->Customer,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
-                'usertype' => 'distributor', // Agar database column ka naam "user_type" hai
+                'usertype' => 'distributor',
             ]);
 
             return redirect()->back()->with('success', 'Distributor added successfully');

@@ -29,12 +29,18 @@
                             </div>
                             <div class="col-md-4">
                                 <label class="form-label">Party Code</label>
-                                <input type="text" class="form-control" name="party_code">
+                                <input type="text" class="form-control party_code" name="party_code" readonly>
 
                             </div>
                             <div class="col-md-4">
                                 <label class="form-label">Party Name</label>
-                                <input type="text" class="form-control" name="party_name">
+                                <!-- <input type="text"  name="party_name"> -->
+                                <select name="party_name" id="party_name" class="form-control vendor-select">
+                                    <option value="" selected disabled>Choose One</option> 
+                                    @foreach($Vendors as $Vendor)
+                                    <option value="{{ $Vendor->id }}" data-code="{{ $Vendor->Party_code }}">{{ $Vendor->Party_name }}</option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
 
@@ -208,6 +214,11 @@
             $(this).closest('tr').find('.pcs-carton').val(pcsValue);
         });
 
+        $(document).on('change', '.vendor-select', function() {
+            let partycode = $(this).find(":selected").data('code') || 0;
+            $(".party_code").val(partycode);
+        });
+        
         // Auto-Calculate Amount and Gross Total
         $(document).on('input', '.rate, .carton-qty, .discount', function() {
             let row = $(this).closest('tr');
