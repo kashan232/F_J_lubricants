@@ -12,6 +12,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\SalesmanController;
 use App\Http\Controllers\ExpenseController;
+use App\Http\Controllers\LocalSaleController;
 use App\Http\Controllers\SaleController;
 use App\Http\Controllers\VendorController;
 use App\Models\Product;
@@ -34,48 +35,48 @@ Route::get('/home', [HomeController::class, 'index'])->middleware('auth')->name(
 // Route::get('/adminpage', [HomeController::class, 'adminpage'])->middleware(['auth','admin'])->name('adminpage');
 
 //city
-Route::get('/city', [CityAndAreaController::class, 'city'])->middleware(['auth','admin'])->name('city');
+Route::get('/city', [CityAndAreaController::class, 'city'])->middleware(['auth', 'admin'])->name('city');
 Route::post('/store-city', [CityAndAreaController::class, 'store_city'])->name('store-city');
 Route::post('/city/update', [CityAndAreaController::class, 'update'])->name('city.update');
 
-Route::get('/Area', [CityAndAreaController::class, 'Area'])->middleware(['auth','admin'])->name('Area');
+Route::get('/Area', [CityAndAreaController::class, 'Area'])->middleware(['auth', 'admin'])->name('Area');
 Route::post('/store-Area', [CityAndAreaController::class, 'store_Area'])->name('store-Area');
 Route::post('/Area/update', [CityAndAreaController::class, 'update_area'])->name('Area.update');
 
 
 
-Route::get('/Distributor', [DistributorController::class, 'Distributor'])->middleware(['auth','admin'])->name('Distributor');
+Route::get('/Distributor', [DistributorController::class, 'Distributor'])->middleware(['auth', 'admin'])->name('Distributor');
 Route::post('/store-Distributor', [DistributorController::class, 'store_Distributor'])->name('store-Distributor');
 Route::put('/Distributor/update/{id}', [DistributorController::class, 'update_Distributor'])->name('Distributor.update');
 
 // Route::post('/Distributor/update', [DistributorController::class, 'update_Distributor'])->name('Distributor.update');
-Route::get('/Distributor', [DistributorController::class, 'Distributor'])->middleware(['auth','admin'])->name('Distributor');
-Route::get('/get-areas', [DistributorController::class, 'get_areas'])->middleware(['auth','admin'])->name('get-areas');
-Route::get('/Distributor-ledger', [DistributorController::class, 'Distributor_ledger'])->middleware(['auth','admin'])->name('Distributor-ledger');
+Route::get('/Distributor', [DistributorController::class, 'Distributor'])->middleware(['auth', 'admin'])->name('Distributor');
+Route::get('/get-areas', [DistributorController::class, 'get_areas'])->middleware(['auth', 'admin'])->name('get-areas');
+Route::get('/Distributor-ledger', [DistributorController::class, 'Distributor_ledger'])->middleware(['auth', 'admin'])->name('Distributor-ledger');
 Route::post('/recovery-store', [DistributorController::class, 'recovery_store'])->name('recovery-store');
-Route::get('/Distributor-recovery', [DistributorController::class, 'Distributor_recovery'])->middleware(['auth','admin'])->name('Distributor-recovery');
+Route::get('/Distributor-recovery', [DistributorController::class, 'Distributor_recovery'])->middleware(['auth', 'admin'])->name('Distributor-recovery');
 
 
-Route::get('/category', [CategoryAndSubCategoryController::class, 'category'])->middleware(['auth','admin'])->name('category');
+Route::get('/category', [CategoryAndSubCategoryController::class, 'category'])->middleware(['auth', 'admin'])->name('category');
 Route::post('/store-category', [CategoryAndSubCategoryController::class, 'store_category'])->name('store-category');
 Route::post('/category/update', [CategoryAndSubCategoryController::class, 'update_category'])->name('category.update');
 
-Route::get('/sub-category', [CategoryAndSubCategoryController::class, 'sub_category'])->middleware(['auth','admin'])->name('sub-category');
+Route::get('/sub-category', [CategoryAndSubCategoryController::class, 'sub_category'])->middleware(['auth', 'admin'])->name('sub-category');
 Route::post('/store-sub-category', [CategoryAndSubCategoryController::class, 'store_sub_category'])->name('store-sub-category');
 Route::post('/sub-category/update', [CategoryAndSubCategoryController::class, 'update_sub_category'])->name('sub-category.update');
 
 //size
-Route::get('/size', [SizeController::class, 'size'])->middleware(['auth','admin'])->name('size');
+Route::get('/size', [SizeController::class, 'size'])->middleware(['auth', 'admin'])->name('size');
 Route::post('/store-size', [SizeController::class, 'store_size'])->name('store-size');
 Route::post('/size/update', [SizeController::class, 'update'])->name('size.update');
 //business_tpye
-Route::get('/business-type', [Business_tpyeController::class, 'index'])->middleware(['auth','admin'])->name('business_type');
+Route::get('/business-type', [Business_tpyeController::class, 'index'])->middleware(['auth', 'admin'])->name('business_type');
 Route::post('/business-type/store', [Business_tpyeController::class, 'store'])->name('business_type.store');
 Route::post('/business-type/update', [Business_tpyeController::class, 'update'])->name('business_type.update');
 
 
 //expense
-Route::get('/expense', [ExpenseController::class, 'expense'])->middleware(['auth','admin'])->name('expense');
+Route::get('/expense', [ExpenseController::class, 'expense'])->middleware(['auth', 'admin'])->name('expense');
 Route::post('/store-expense-category', [ExpenseController::class, 'store_expense_category'])->name('store-expense-category');
 Route::post('/expense/update', [ExpenseController::class, 'update'])->name('expense.update');
 Route::delete('/delete-expense/{id}', [ExpenseController::class, 'delete_Add_ExpenseBtn'])->name('delete-expense');
@@ -94,7 +95,7 @@ Route::delete('/delete-expense/{id}', [ExpenseController::class, 'delete_add_exp
 
 
 //Product
-Route::get('/product', [ProductController::class, 'product'])->middleware(['auth','admin'])->name('product');
+Route::get('/product', [ProductController::class, 'product'])->middleware(['auth', 'admin'])->name('product');
 Route::post('/store-product', [ProductController::class, 'store_product'])->name('store-product');
 Route::put('/product/update/{id}', [ProductController::class, 'update'])->name('product.update');
 Route::get('/fetch-subcategories', [ProductController::class, 'fetchSubCategories'])->name('fetch-subcategories');
@@ -102,16 +103,16 @@ Route::get('/fetch-subcategories', [ProductController::class, 'fetchSubCategorie
 
 
 // purchase 
-Route::get('/Purchase', [PurchaseController::class, 'Purchase'])->middleware(['auth','admin'])->name('Purchase');
+Route::get('/Purchase', [PurchaseController::class, 'Purchase'])->middleware(['auth', 'admin'])->name('Purchase');
 Route::get('/get-subcategories/{categoryname}', [PurchaseController::class, 'getSubcategories'])->name('get.subcategories');
 Route::get('/get-items', [PurchaseController::class, 'getItems'])->name('get.items');
 Route::post('/store-Purchase', [PurchaseController::class, 'store_Purchase'])->name('store-Purchase');
-Route::get('/all-Purchases', [PurchaseController::class, 'all_Purchases'])->middleware(['auth','admin'])->name('all-Purchases');
+Route::get('/all-Purchases', [PurchaseController::class, 'all_Purchases'])->middleware(['auth', 'admin'])->name('all-Purchases');
 Route::get('/purchase/invoice/{id}', [PurchaseController::class, 'purchaseInvoice'])->name('purchase.invoice');
 
-Route::get('/add-sale', [SaleController::class, 'add_sale'])->middleware(['auth','admin'])->name('add-sale');
+Route::get('/add-sale', [SaleController::class, 'add_sale'])->middleware(['auth', 'admin'])->name('add-sale');
 Route::post('/store-sale', [SaleController::class, 'store_sale'])->name('store-sale');
-Route::get('/all-sale', [SaleController::class, 'all_sale'])->middleware(['auth','admin'])->name('all-sale');
+Route::get('/all-sale', [SaleController::class, 'all_sale'])->middleware(['auth', 'admin'])->name('all-sale');
 Route::get('/sale/{id}', [SaleController::class, 'show_sale'])->name('show_sale');
 Route::get('/sale/invoice/{id}', [SaleController::class, 'saleInvoice'])->name('sale.invoice');
 
@@ -133,23 +134,34 @@ Route::post('/store-designation', [SalesmanController::class, 'store_designation
 Route::post('/designation/update', [SalesmanController::class, 'update_designation'])->name('designation.update');
 Route::delete('/designation/delete/{id}', [SalesmanController::class, 'destroy'])->name('designation.delete');
 
-Route::get('/vendors', [VendorController::class, 'vendors'])->middleware(['auth','admin'])->name('vendors');
+Route::get('/vendors', [VendorController::class, 'vendors'])->middleware(['auth', 'admin'])->name('vendors');
 Route::post('/store-vendors', [VendorController::class, 'store_vendors'])->name('store-vendors');
 Route::put('/vendors/update/{id}', [VendorController::class, 'update_vendors'])->name('vendors.update');
-Route::get('/vendors-ledger', [VendorController::class, 'vendors_ledger'])->middleware(['auth','admin'])->name('vendors-ledger');
+Route::get('/vendors-ledger', [VendorController::class, 'vendors_ledger'])->middleware(['auth', 'admin'])->name('vendors-ledger');
+Route::post('/vendors-payment', [VendorController::class, 'vendors_payment'])->name('vendors-payment');
+Route::get('/amount-paid-vendors', [VendorController::class, 'amount_paid_vendors'])->middleware(['auth', 'admin'])->name('amount-paid-vendors');
 
 
 //Cutomer create 
 Route::get('/customer', [CustomerController::class, 'index'])->name('customer');
-    Route::post('/customer/store', [CustomerController::class, 'store'])->name('customer.store');
-    Route::post('/customer/update', [CustomerController::class, 'update'])->name('customers.update');
-    Route::delete('/customer/delete/{id}', [CustomerController::class, 'destroy'])->name('delete-customer');
-    Route::get('/fetch-business-types', [CustomerController::class, 'fetchBusinessTypes'])->name('fetch-business-types');
-    Route::get('/fetch-areas', [CustomerController::class, 'fetchAreas'])->name('fetch-areas');
-   
-   
-   
-    Route::get('/', function () {
+Route::post('/customer/store', [CustomerController::class, 'store'])->name('customer.store');
+Route::post('/customer/update', [CustomerController::class, 'update'])->name('customers.update');
+Route::delete('/customer/delete/{id}', [CustomerController::class, 'destroy'])->name('delete-customer');
+Route::get('/fetch-business-types', [CustomerController::class, 'fetchBusinessTypes'])->name('fetch-business-types');
+Route::get('/fetch-areas', [CustomerController::class, 'fetchAreas'])->name('fetch-areas');
+Route::get('/customer-ledger', [CustomerController::class, 'customer_ledger'])->middleware(['auth', 'admin'])->name('customer-ledger');
+Route::post('/customer-recovery-store', [CustomerController::class, 'customer_recovery_store'])->name('customer-recovery-store');
+Route::get('/customer-recovery', [CustomerController::class, 'customer_recovery'])->middleware(['auth', 'admin'])->name('customer-recovery');
+
+
+Route::get('/local-sale', [LocalSaleController::class, 'local_sale'])->middleware(['auth', 'admin'])->name('local-sale');
+Route::post('/store-local-sale', [LocalSaleController::class, 'store_local_sale'])->name('store-local-sale');
+Route::get('/all-local-sale', [LocalSaleController::class, 'all_local_sale'])->middleware(['auth', 'admin'])->name('all-local-sale');
+Route::get('/show-local-sale/{id}', [LocalSaleController::class, 'show_local_sale'])->name('show-local-sale');
+Route::get('/local/sale/invoice/{id}', [LocalSaleController::class, 'localsaleInvoice'])->name('local.sale.invoice');
+
+
+Route::get('/', function () {
     return view('welcome');
 });
 
@@ -163,4 +175,4 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

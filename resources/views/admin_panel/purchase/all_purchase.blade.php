@@ -3,6 +3,57 @@
     @include('admin_panel.include.navbar_include')
     @include('admin_panel.include.admin_sidebar_include')
 
+    <!-- Payment Modal -->
+    <div class="modal fade" id="payModal" tabindex="-1" aria-labelledby="payModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="payModalLabel">Make Payment</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="{{ route('vendors-payment') }}" method="POST">
+                    @csrf
+                    <div class="modal-body">
+                        <input type="hidden" name="purchase_id" id="purchase_id">
+                        <input type="hidden" name="vendor_id" id="vendor_id">
+                        <div class="mb-3">
+                            <label class="form-label">Invoice Number</label>
+                            <input type="text" class="form-control" id="Invoice_Number" disabled>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Invoice Grand Total</label>
+                            <input type="text" class="form-control" id="grand_total" disabled>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Remaining Amount</label>
+                            <input type="text" class="form-control" id="remaining_amount" disabled>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Amount Paid</label>
+                            <input type="number" class="form-control" name="amount_paid" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Payment Date</label>
+                            <input type="date" class="form-control" name="payment_date" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Description</label>
+                            <textarea class="form-control" name="description" required></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-success">Make Payment</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <div class="page-wrapper">
         <div class="content">
             <div class="page-header d-flex justify-content-between align-items-center">
@@ -33,6 +84,8 @@
                                     <th>Carton Qty</th>
                                     <th>Pcs</th>
                                     <th>Amount</th>
+                                    <th>Remaining Amount</th>
+                                    <th>Status</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -40,8 +93,9 @@
                                 @foreach($Purchases as $purchase)
                                 <tr>
                                     <td>{{ $purchase->invoice_number }}</td>
-                                    <td>{{ $purchase->purchase_date }}</td>
-                                    <td>{{ $purchase->party_name }}</td>
+                                    <td>{{ $purchase->purchase_date }} <br>{{ $purchase->vendorLedger->closing_balance ?? 'N/A' }}</td>
+                                    <td>{{ $purchase->vendor?->Party_name ?? 'N/A' }}</td>
+
                                     <td>
                                         @foreach(json_decode($purchase->category) as $category)
                                         {{ $category }},
@@ -77,10 +131,31 @@
                                         {{ $amount }},
                                         @endforeach
                                     </td>
+                                    <td>{{ $purchase->remaining_amount }}</td>
+                                    <td>
+                                        <span class="badge 
+            @if($purchase->status == 'Unpaid') bg-danger 
+            @elseif($purchase->status == 'Paid') bg-success 
+            @endif">
+                                            {{ $purchase->status }}
+                                        </span>
+                                    </td>
                                     <td>
                                         <a href="{{ route('purchase.invoice', $purchase->id) }}" class="btn btn-primary btn-sm text-white">
-                                             Invoice
+                                            Invoice
                                         </a>
+
+                                        <button class="btn btn-success btn-sm pay-btn"
+                                            data-id="{{ $purchase->id }}"
+                                            data-invoice-no="{{ $purchase->invoice_number }}"
+                                            data-vendor-id="{{ $purchase->vendor->id }}"
+                                            data-grand-total="{{ $purchase->grand_total }}"
+                                            data-remaining-amount="{{ $purchase->remaining_amount }}"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#payModal">
+                                            Pay
+                                        </button>
+
                                     </td>
                                 </tr>
                                 @endforeach
@@ -93,3 +168,21 @@
     </div>
 </div>
 @include('admin_panel.include.footer_include')
+
+<script>
+    $(document).ready(function() {
+        $(".pay-btn").click(function() {
+            let purchaseId = $(this).data("id");
+            let invoiceno = $(this).data("invoice-no");
+            let vendorId = $(this).data("vendor-id");
+            let grandTotal = $(this).data("grand-total");
+            let remainingAmount = $(this).data("remaining-amount");
+
+            $("#purchase_id").val(purchaseId);
+            $("#Invoice_Number").val(invoiceno);
+            $("#vendor_id").val(vendorId);
+            $("#grand_total").val(grandTotal);
+            $("#remaining_amount").val(remainingAmount);
+        });
+    });
+</script>

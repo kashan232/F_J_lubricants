@@ -7,8 +7,8 @@
         <div class="content">
             <div class="page-header d-flex justify-content-between align-items-center">
                 <div class="page-title">
-                    <h4>Distributor Sales Management</h4>
-                    <h6>Manage Distributor Sales Efficiently</h6>
+                    <h4>Local Sales Management</h4>
+                    <h6>Manage Local Sales Efficiently</h6>
                 </div>
             </div>
 
@@ -26,7 +26,7 @@
                                 <tr>
                                     <th>Invoice No</th>
                                     <th>Date</th>
-                                    <th>Customer | Owner</th>
+                                    <th>Customer</th>
                                     <th>City | Area</th>
                                     <th>Address | Phone</th>
                                     <th>Booker</th>
@@ -42,9 +42,9 @@
                                     <tr>
                                         <td>{{ $sale->invoice_number }}</td>
                                         <td>{{ $sale->Date }}</td>
-                                        <td>{{ $sale->distributor->Customer }} <br> {{ $sale->distributor->Owner }}</td>
-                                        <td>{{ $sale->distributor_city }} <br> {{ $sale->distributor_area }}</td>
-                                        <td>{{ $sale->distributor_address }} <br> {{ $sale->distributor_phone }}</td>
+                                        <td>{{ $sale->customer->customer_name }} </td>
+                                        <td>{{ $sale->customer_city	 }} <br> {{ $sale->customer_area }}</td>
+                                        <td>{{ $sale->customer_address }} <br> {{ $sale->customer_phone }}</td>
                                         <td>{{ $sale->Booker }}</td>
                                         <td>{{ $sale->Saleman }}</td>
                                         <td>
@@ -61,8 +61,8 @@
                                         </td>
                                         <td>{{ number_format($sale->net_amount, 2) }}</td>
                                         <td>
-                                            <a href="{{ route('show_sale', $sale->id) }}" class="btn btn-sm btn-primary text-white">View</a>
-                                            <a href="{{ route('sale.invoice', $sale->id) }}" class="btn btn-dark btn-sm text-white">
+                                            <a href="{{ route('show-local-sale', $sale->id) }}" class="btn btn-sm btn-primary text-white">View</a>
+                                            <a href="{{ route('local.sale.invoice', $sale->id) }}" class="btn btn-dark btn-sm text-white">
                                                 Invoice
                                             </a>
                                         </td>

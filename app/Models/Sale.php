@@ -21,7 +21,7 @@ class Sale extends Model
     public static function generateSaleInvoiceNo()
     {
         // Define the prefix for the invoice number
-        $prefix = 'INVPURC-';
+        $prefix = 'INVSALE-';
 
         // Fetch the last invoice number from the database
         $lastInvoice = self::orderBy('id', 'desc')->first();

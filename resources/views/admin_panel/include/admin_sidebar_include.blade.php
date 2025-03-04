@@ -27,8 +27,8 @@
                     <a href="javascript:void(0);"><i class="fas fa-users"></i><span> Vendors</span> <span class="menu-arrow"></span></a>
                     <ul>
                         <li><a href="{{ route('vendors') }}">Vendors</a></li>
-                        <li><a href="#">Vendors Ledger </a></li>
-                        <li><a href="#">Vendors Recoveries </a></li>
+                        <li><a href="{{ route('vendors-ledger') }}">Vendors Ledger </a></li>
+                        <li><a href="{{ route('amount-paid-vendors') }}">Vendors Payments </a></li>
                     </ul>
                 </li>
 
@@ -61,10 +61,18 @@
                 </li>
 
                 <li class="submenu">
-                    <a href="javascript:void(0);"><i class="fas fa-store"></i><span> Sale</span> <span class="menu-arrow"></span></a>
+                    <a href="javascript:void(0);"><i class="fas fa-store"></i><span> Distributor Sale</span> <span class="menu-arrow"></span></a>
                     <ul>
                         <li><a href="{{ route('add-sale') }}">Add Sale</a></li>
                         <li><a href="{{ route('all-sale') }}">Sales</a></li>
+                    </ul>
+                </li>
+
+                <li class="submenu">
+                    <a href="javascript:void(0);"><i class="fas fa-store"></i><span> Local Sale</span> <span class="menu-arrow"></span></a>
+                    <ul>
+                        <li><a href="{{ route('local-sale') }}">Add Sale</a></li>
+                        <li><a href="{{ route('all-local-sale') }}">Sales</a></li>
                     </ul>
                 </li>
                 
@@ -87,8 +95,13 @@
                     <a href="javascript:void(0);"><i class="fas fa-store"></i><span>Customer Management</span> <span class="menu-arrow"></span></a>
                     <ul>
                         <li><a href="{{ route('customer') }}">Add Cutomers </a></li>
+                        <li><a href="{{ route('customer-ledger') }}">Cutomers Ledger </a></li>
+                        <li><a href="{{ route('customer-recovery') }}">Cutomers Recoveries </a></li>
                     </ul>
                 </li>
+
+                
+
             </ul>
         </div>
     </div>

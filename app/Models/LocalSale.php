@@ -6,28 +6,22 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Purchase extends Model
+class LocalSale extends Model
 {
     use HasFactory;
     use SoftDeletes;
 
     protected $guarded = [];
 
-    public function vendor()
+    public function customer()
     {
-        return $this->belongsTo(Vendor::class, 'party_code', 'Party_code');
-    }
-    public function vendorLedger()
-    {
-        return $this->hasOne(VendorLedger::class, 'vendor_id', 'vendor_id')->orderBy('id', 'desc');
+        return $this->belongsTo(Customer::class, 'customer_id');
     }
 
-
-
-    public static function generateInvoiceNo()
+    public static function generateSaleInvoiceNo()
     {
         // Define the prefix for the invoice number
-        $prefix = 'INVPURC-';
+        $prefix = 'INVLCLSLE-';
 
         // Fetch the last invoice number from the database
         $lastInvoice = self::orderBy('id', 'desc')->first();
@@ -41,4 +35,5 @@ class Purchase extends Model
         // Return the new invoice number
         return $prefix . $newNumber;
     }
+
 }

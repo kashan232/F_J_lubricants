@@ -7,8 +7,8 @@
         <div class="content">
             <div class="page-header d-flex justify-content-between align-items-center">
                 <div class="page-title">
-                    <h4>Distributor Sales Management</h4>
-                    <h6>Manage Distributor Sales Efficiently</h6>
+                    <h4>Local Sales Management</h4>
+                    <h6>Manage Local Sales Efficiently</h6>
                 </div>
             </div>
 
@@ -20,7 +20,7 @@
                     </div>
                     @endif
 
-                    <form action="{{ route('store-sale') }}" method="POST">
+                    <form action="{{ route('store-local-sale') }}" method="POST">
                         @csrf
 
                         <div class="row">
@@ -30,16 +30,16 @@
                             </div>
 
                             <div class="col-md-6 mb-3">
-                                <label for="distributor" class="form-label">Select Distributor</label>
-                                <select class="form-control" name="distributor_id" id="distributor">
-                                    <option value="">Select Distributor</option>
-                                    @foreach($Distributors as $distributor)
-                                    <option value="{{ $distributor->id }}"
-                                        data-city="{{ $distributor->City }}"
-                                        data-area="{{ $distributor->Area }}"
-                                        data-address="{{ $distributor->Address }}"
-                                        data-phone="{{ $distributor->Contact }}">
-                                        {{ $distributor->Customer }}
+                                <label for="customer" class="form-label">Select Customer</label>
+                                <select class="form-control" name="customer_id" id="customer">
+                                    <option value="">Select Customer</option>
+                                    @foreach($Customers as $Customer)
+                                    <option value="{{ $Customer->id }}"
+                                        data-city="{{ $Customer->city }}"
+                                        data-area="{{ $Customer->area }}"
+                                        data-address="{{ $Customer->address }}"
+                                        data-phone="{{ $Customer->phone_number }}">
+                                        {{ $Customer->customer_name }}
                                     </option>
                                     @endforeach
                                 </select>
@@ -49,19 +49,19 @@
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">City</label>
-                                <input type="text" class="form-control" name="distributor_city" id="city" readonly>
+                                <input type="text" class="form-control" name="customer_city" id="city" readonly>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Area</label>
-                                <input type="text" class="form-control" name="distributor_area" id="area" readonly>
+                                <input type="text" class="form-control" name="customer_area" id="area" readonly>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Address</label>
-                                <input type="text" class="form-control" name="distributor_address" id="address" readonly>
+                                <input type="text" class="form-control" name="customer_address" id="address" readonly>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Phone</label>
-                                <input type="text" class="form-control" name="distributor_phone" id="phone" readonly>
+                                <input type="text" class="form-control" name="customer_phone" id="phone" readonly>
                             </div>
                         </div>
 
@@ -171,9 +171,9 @@
 </div>
 @include('admin_panel.include.footer_include')
 
-<!-- JavaScript to Auto-Fill Distributor Details -->
+<!-- JavaScript to Auto-Fill customer Details -->
 <script>
-    document.getElementById('distributor').addEventListener('change', function() {
+    document.getElementById('customer').addEventListener('change', function() {
         let selectedOption = this.options[this.selectedIndex];
 
         document.getElementById('city').value = selectedOption.getAttribute('data-city') || '';

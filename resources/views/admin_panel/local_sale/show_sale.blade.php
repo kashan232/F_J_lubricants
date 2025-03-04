@@ -7,8 +7,8 @@
         <div class="content">
             <div class="page-header d-flex justify-content-between align-items-center">
                 <div class="page-title">
-                    <h4>Distributor Sales Details</h4>
-                    <h6>Complete Distributor Sales Information</h6>
+                    <h4>Local Sales Details</h4>
+                    <h6>Complete Local Sales Information</h6>
                 </div>
             </div>
 
@@ -22,28 +22,32 @@
                             <td>{{ $sale->Date }}</td>
                         </tr>
                         <tr>
+                            <th>Customer:</th>
+                            <td>{{ $sale->customer->customer_name }}</td>
+                        </tr>
+                        <tr>
+                            <th>City:</th>
+                            <td>{{ $sale->customer_city }}</td>
+                        </tr>
+                        <tr>
+                            <th>Area:</th>
+                            <td>{{ $sale->customer_area }}</td>
+                        </tr>
+                        <tr>
+                            <th>Address:</th>
+                            <td>{{ $sale->customer_address }}</td>
+                        </tr>
+                        <tr>
+                            <th>Phone:</th>
+                            <td>{{ $sale->customer_phone }}</td>
+                        </tr>
+                        <tr>
                             <th>Booker:</th>
                             <td>{{ $sale->Booker }}</td>
                         </tr>
                         <tr>
                             <th>Salesman:</th>
                             <td>{{ $sale->Saleman }}</td>
-                        </tr>
-                        <tr>
-                            <th>Distributor:</th>
-                            <td>{{ $sale->distributor_id }}</td>
-                        </tr>
-                        <tr>
-                            <th>City:</th>
-                            <td>{{ $sale->distributor_city }}</td>
-                        </tr>
-                        <tr>
-                            <th>Address:</th>
-                            <td>{{ $sale->distributor_address }}</td>
-                        </tr>
-                        <tr>
-                            <th>Phone:</th>
-                            <td>{{ $sale->distributor_phone }}</td>
                         </tr>
                     </table>
 
@@ -115,7 +119,7 @@
                         </tr>
                     </table>
 
-                    <a href="{{ route('all-sale') }}" class="btn btn-primary mt-3">Back to Sales List</a>
+                    <a href="{{ route('all-local-sale') }}" class="btn btn-primary mt-3">Back to Sales List</a>
                 </div>
             </div>
         </div>

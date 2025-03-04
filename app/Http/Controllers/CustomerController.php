@@ -6,6 +6,8 @@ use App\Models\Customer;
 use App\Models\City;
 use App\Models\Area;
 use App\Models\BusinessType;
+use App\Models\CustomerLedger;
+use App\Models\CustomerRecovery;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -39,7 +41,7 @@ class CustomerController extends Controller
     {
         if (Auth::id()) {
             $userId = Auth::id();
-            Customer::create([
+            $customer = Customer::create([
                 'admin_or_user_id' => $userId,
                 'city' => $request->city,
                 'area' => $request->area,
@@ -51,18 +53,71 @@ class CustomerController extends Controller
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ]);
+
+            // Distributor Ledger Create (One-time Opening Balance)
+            CustomerLedger::create([
+                'admin_or_user_id' => $userId,
+                'customer_id' => $customer->id,
+                'previous_balance' => $request->opening_balance, // Pehli dafa opening balance = previous balance
+                'closing_balance' => $request->opening_balance, // Closing balance bhi initially same hoga
+                'created_at' => Carbon::now(),
+            ]);
+
             return redirect()->back()->with('success', 'Customer created successfully');
         } else {
             return redirect()->back();
         }
     }
-    
-    
 
-    
+
+    public function customer_ledger()
+    {
+        if (Auth::id()) {
+            $userId = Auth::id();
+            $CustomerLedgers = CustomerLedger::where('admin_or_user_id', $userId)->with('Customer')->get();
+            return view('admin_panel.customer.customer_ledger', compact('CustomerLedgers'));
+        } else {
+            return redirect()->back();
+        }
+    }
+
+    public function customer_recovery_store(Request $request)
+    {
+        $ledger = CustomerLedger::find($request->ledger_id);
+        $ledger->previous_balance -= $request->amount_paid;
+        $ledger->closing_balance -= $request->amount_paid;
+        $ledger->save();
+
+        $userId = Auth::id();
+
+        // Store recovery record (Optional)
+        CustomerRecovery::create([
+            'admin_or_user_id' => $userId,
+            'customer_ledger_id' => $ledger->id,
+            'amount_paid' => $request->amount_paid,
+            'salesman' => $request->salesman,
+            'date' => $request->date,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'new_closing_balance' => number_format($ledger->closing_balance, 0)
+        ]);
+    }
+
+    public function customer_recovery()
+    {
+        if (Auth::id()) {
+            $userId = Auth::id();
+            $Recoveries = CustomerRecovery::where('admin_or_user_id', $userId)->with('customer')->get();
+            return view('admin_panel.customer.customer_recovery', compact('Recoveries'));
+        } else {
+            return redirect()->back();
+        }
+    }
+
     public function update(Request $request)
     {
-        dd($request);
         $customer = Customer::findOrFail($request->customer_id);
         $customer->update($request->all());
         return redirect()->back()->with('success', 'Customer updated successfully');

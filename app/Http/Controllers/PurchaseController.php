@@ -8,6 +8,7 @@ use App\Models\Purchase;
 use App\Models\Size;
 use App\Models\SubCategory;
 use App\Models\Vendor;
+use App\Models\VendorLedger;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -19,7 +20,7 @@ class PurchaseController extends Controller
             $userId = Auth::id();
             $categories = Category::where('admin_or_user_id', $userId)->get();
             $Vendors = Vendor::where('admin_or_user_id', $userId)->get();
-            return view('admin_panel.purchase.add_purchase', compact('categories','Vendors'));
+            return view('admin_panel.purchase.add_purchase', compact('categories', 'Vendors'));
         } else {
             return redirect()->back();
         }
@@ -37,13 +38,14 @@ class PurchaseController extends Controller
     {
         $items = Product::where('category', $request->category_name)
             ->where('sub_category', $request->sub_category_name)
-            ->get(['id', 'item_name','item_code', 'pcs_in_carton','size','retail_price']); // Fetch all required fields
+            ->get(['id', 'item_name', 'item_code', 'pcs_in_carton', 'size', 'retail_price']); // Fetch all required fields
 
         return response()->json($items);
     }
 
     public function store_Purchase(Request $request)
     {
+
         $request->validate([
             'purchase_date' => 'required|date',
             'party_code' => 'required',
@@ -124,6 +126,27 @@ class PurchaseController extends Controller
         }
 
 
+        // Fetch previous balance for distributor
+        $previousBalance = VendorLedger::where('vendor_id', $request->party_name)
+            ->value('closing_balance') ?? 0; // If no previous balance, start from 0
+        // Calculate new balances
+
+        $newPreviousBalance = $request->grand_total;
+
+        $newClosingBalance = $previousBalance + $request->grand_total;
+
+        // Update or create distributor ledger
+        VendorLedger::updateOrCreate(
+            ['vendor_id' => $request->party_name],
+            [
+                'vendor_id' => $request->party_name,
+                'admin_or_user_id' => $userId,
+                'previous_balance' => $newPreviousBalance,
+                'closing_balance' => $newClosingBalance,
+            ]
+        );
+
+
         return redirect()->back()->with('success', 'Purchase saved successfully and stock updated!');
     }
 
@@ -131,7 +154,15 @@ class PurchaseController extends Controller
     {
         if (Auth::id()) {
             $userId = Auth::id();
-            $Purchases = Purchase::where('admin_or_user_id', $userId)->get();
+            $Purchases = Purchase::where('admin_or_user_id', $userId)
+                ->with('vendor')
+                ->get();
+
+            foreach ($Purchases as $purchase) {
+                if (!$purchase->vendor) {
+                    logger("Vendor not found for Purchase ID: {$purchase->id}, Party Code: {$purchase->party_code}");
+                }
+            }
 
             return view('admin_panel.purchase.all_purchase', compact('Purchases'));
         } else {

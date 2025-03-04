@@ -18,47 +18,49 @@
             </div>
 
             @if (session()->has('success'))
-                <div class="alert alert-success">
-                    <strong>Success!</strong> {{ session('success') }}.
-                </div>
-            @endif
-            
-            <div class="container">
-                <table class="table mt-3">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Name</th>
-                            <th>Phone</th>
-                            <th>City</th>
-                            <th>Area</th>
-                            <th>Address</th>
-                            <th>Shop Name</th>
-                            <th>Business Type</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($customers as $key => $customer)
-                        <tr>
-                            <td>{{ $key + 1 }}</td>
-                            <td>{{ $customer->customer_name }}</td>
-                            <td>{{ $customer->phone_number }}</td>
-                            <td>{{ $customer->city ?? 'N/A' }}</td>
-                            <td>{{ $customer->area ?? 'N/A' }}</td>
-                            <td>{{ $customer->address }}</td>
-                            <td>{{ $customer->shop_name }}</td>
-                            <td>{{ $customer->business_type_name ?? 'N/A' }}</td>
-                            <td>
-                                <button class="btn btn-sm btn-warning editCustomerBtn" data-id="{{ $customer->id }}">Edit</button>
-                                <button class="btn btn-sm btn-danger deleteCustomerBtn" data-id="{{ $customer->id }}">Delete</button>
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+            <div class="alert alert-success">
+                <strong>Success!</strong> {{ session('success') }}.
             </div>
-            
+            @endif
+
+            <div class="container">
+                <div class="table-responsive">
+                    <table class="table datanew">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Name</th>
+                                <th>Phone</th>
+                                <th>City</th>
+                                <th>Area</th>
+                                <th>Address</th>
+                                <th>Shop Name</th>
+                                <th>Business Type</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($customers as $key => $customer)
+                            <tr>
+                                <td>{{ $key + 1 }}</td>
+                                <td>{{ $customer->customer_name }}</td>
+                                <td>{{ $customer->phone_number }}</td>
+                                <td>{{ $customer->city ?? 'N/A' }}</td>
+                                <td>{{ $customer->area ?? 'N/A' }}</td>
+                                <td>{{ $customer->address }}</td>
+                                <td>{{ $customer->shop_name }}</td>
+                                <td>{{ $customer->business_type_name ?? 'N/A' }}</td>
+                                <td>
+                                    <button class="btn btn-sm btn-warning editCustomerBtn" data-id="{{ $customer->id }}">Edit</button>
+                                    <button class="btn btn-sm btn-danger deleteCustomerBtn" data-id="{{ $customer->id }}">Delete</button>
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
         </div>
     </div>
 </div>
@@ -88,15 +90,15 @@
                             <select class="form-control" name="area" id="areasSelect" required>
                                 <option value="">Select Areas</option>
                             </select>
-                            
                         </div>
                     </div>
-                    
+
                     <input type="text" name="customer_name" class="form-control" placeholder="Customer Name" required>
                     <input type="text" name="phone_number" class="form-control mt-2" placeholder="Phone Number" required>
-                   
+
                     <input type="text" name="address" class="form-control mt-2" placeholder="Address" required>
                     <input type="text" name="shop_name" class="form-control mt-2" placeholder="Shop Name" required>
+                    <input type="number" name="opening_balance" class="form-control mt-2" placeholder="Opening Balance" required>
                     <select name="business_type_id" id="businessTypeDropdown" class="form-control mt-2" required></select>
                 </div>
                 <div class="modal-footer">
@@ -180,40 +182,42 @@
     });
 
     $(document).ready(function() {
-    // Fetch Business Types
-    $.get("{{ route('fetch-business-types') }}", function(data) {
-        $('#businessTypeDropdown').html('<option value="">Select Business Type</option>');
-        $.each(data, function(index, type) {
-            $('#businessTypeDropdown').append('<option value="' + type.business_type_name + '">' + type.business_type_name + '</option>');
+        // Fetch Business Types
+        $.get("{{ route('fetch-business-types') }}", function(data) {
+            $('#businessTypeDropdown').html('<option value="">Select Business Type</option>');
+            $.each(data, function(index, type) {
+                $('#businessTypeDropdown').append('<option value="' + type.business_type_name + '">' + type.business_type_name + '</option>');
+            });
         });
-    });
 
-    // Delete Customer
-    $('.deleteCustomerBtn').click(function() {
-        let customerId = $(this).data('id');
-        Swal.fire({
-            title: "Are you sure?",
-            text: "You won't be able to revert this!",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#d33",
-            cancelButtonColor: "#3085d6",
-            confirmButtonText: "Yes, delete it!"
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $.ajax({
-                    url: "/customer/delete/" + customerId,
-                    type: "DELETE",
-                    data: { _token: "{{ csrf_token() }}" },
-                    success: function(response) {
-                        Swal.fire("Deleted!", response.success, "success").then(() => location.reload());
-                    }
-                });
-            }
+        // Delete Customer
+        $('.deleteCustomerBtn').click(function() {
+            let customerId = $(this).data('id');
+            Swal.fire({
+                title: "Are you sure?",
+                text: "You won't be able to revert this!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#3085d6",
+                confirmButtonText: "Yes, delete it!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: "/customer/delete/" + customerId,
+                        type: "DELETE",
+                        data: {
+                            _token: "{{ csrf_token() }}"
+                        },
+                        success: function(response) {
+                            Swal.fire("Deleted!", response.success, "success").then(() => location.reload());
+                        }
+                    });
+                }
+            });
         });
     });
-});
-$(document).ready(function() {
+    $(document).ready(function() {
         // Add Product Modal: Fetch areas on Category Change
         $('#citySelect').change(function() {
             var cityId = $(this).val();
@@ -241,8 +245,4 @@ $(document).ready(function() {
             }
         });
     });
-
-
-
 </script>
-

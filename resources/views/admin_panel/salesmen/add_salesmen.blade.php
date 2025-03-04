@@ -122,9 +122,11 @@
                             <!-- Area -->
                             <div class="col-md-6 mb-3">
                                 <label for="areasSelect" class="form-label">Area</label>
+
                                 <select class="form-control" name="area" id="areasSelect" required>
-                                    <option value="">Select Area</option>
+                                    <option value="">Select Areas</option>
                                 </select>
+
                             </div>
                         </div>
 
@@ -186,7 +188,6 @@
                 <form action="{{ route('update-salesman') }}" method="POST">
                     @csrf
                     <input type="hidden" name="salesman_id" value="{{ $salesman->id }}">
-
                     <input type="hidden" id="edit_salesman_id" name="salesman_id">
 
                     <div class="modal-body">
@@ -196,13 +197,7 @@
                         <label>Phone</label>
                         <input type="text" class="form-control" id="edit_phone" name="phone" required>
 
-                        <label>City</label>
-                        <select class="form-control" name="city" id="citySelect" required>
-                            <option value="">Select City</option>
-                            @foreach($city as $city)
-                            <option value="{{ $city->city_name }}">{{ $city->city_name }}</option>
-                            @endforeach
-                        </select>
+
 
                         <label>Area</label>
                         <select class="form-control" id="edit_area" name="area" required></select>
@@ -213,12 +208,7 @@
                         <label>Salary</label>
                         <input type="number" class="form-control" id="edit_salary" name="salary" required>
 
-                        {{-- <select class="form-control" name="designation" id="designationSelect" required>
-                        <option value="">Select Designation</option>
-                        @foreach($designation as $design)
-                            <option value="{{ $design->designation }}">{{ $design->designation }}</option>
-                        @endforeach
-                        </select> --}}
+
                         <label>Designation</label>
                         <select class="form-control" name="designation" id="edit_designation" required>
                             <option value="">Select Designation</option>
@@ -245,6 +235,35 @@
     @include('admin_panel.include.footer_include')
 
     <script>
+        $(document).ready(function() {
+            // Add Product Modal: Fetch areas on Category Change
+            $('#citySelect').change(function() {
+                var cityId = $(this).val();
+                $('#areasSelect').html('<option value="">Loading...</option>');
+
+                if (cityId) {
+                    $.ajax({
+                        url: "{{ route('fetch-areas') }}",
+                        type: "GET",
+                        data: {
+                            city_id: cityId
+                        },
+                        success: function(data) {
+                            $('#areasSelect').html('<option value="">Select Area</option>');
+                            $.each(data, function(key, area) {
+                                $('#areasSelect').append('<option value="' + area.area_name + '">' + area.area_name + '</option>');
+                            });
+                        },
+                        error: function() {
+                            alert('Error fetching areas.');
+                        }
+                    });
+                } else {
+                    $('#areasSelect').html('<option value=""> Area Not Found...</option>');
+                }
+            });
+        });
+
         $(document).on("click", ".editSalesmanBtn", function() {
             $("#edit_salesman_id").val($(this).data("id"));
             $("#edit_name").val($(this).data("name"));
