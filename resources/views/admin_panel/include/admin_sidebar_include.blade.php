@@ -79,7 +79,7 @@
                 <li class="submenu">
                     <a href="javascript:void(0);"><i class="fas fa-store"></i><span> Staff Management</span> <span class="menu-arrow"></span></a>
                     <ul>
-                        <li><a href="{{ route('designation') }}">Add Designation </a></li>
+                        <!-- <li><a href="{{ route('designation') }}">Add Designation </a></li> -->
                         <li><a href="{{ route('salesmen') }}">Add Staff</a></li>
 
                     </ul>

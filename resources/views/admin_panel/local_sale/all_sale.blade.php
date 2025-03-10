@@ -42,7 +42,7 @@
                                     <tr>
                                         <td>{{ $sale->invoice_number }}</td>
                                         <td>{{ $sale->Date }}</td>
-                                        <td>{{ $sale->customer->customer_name }} </td>
+                                        <td>{{ $sale->customer->customer_name ?? 'N/A' }} </td>
                                         <td>{{ $sale->customer_city	 }} <br> {{ $sale->customer_area }}</td>
                                         <td>{{ $sale->customer_address }} <br> {{ $sale->customer_phone }}</td>
                                         <td>{{ $sale->Booker }}</td>

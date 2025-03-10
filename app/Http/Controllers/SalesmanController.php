@@ -20,10 +20,8 @@ class SalesmanController extends Controller
             $salesmen = Salesman::where('admin_or_user_id', Auth::id())
                 ->with(['city', 'area', 'designationRelation']) // Use the renamed method
                 ->get();
-
             $city = City::all();
             $designation = Designation::all(); // Fetch all designations
-
             return view('admin_panel.salesmen.add_salesmen', compact('salesmen', 'city', 'designation'));
         } else {
             return redirect()->back();

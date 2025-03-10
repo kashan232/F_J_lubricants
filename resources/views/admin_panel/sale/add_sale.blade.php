@@ -45,7 +45,7 @@
                                 </select>
                             </div>
                         </div>
-                       
+
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">City</label>
@@ -68,12 +68,12 @@
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Order Booker</label>
-                                <input type="text" class="form-control" name="Booker" id="Booker" >
+                                <input type="text" class="form-control" name="Booker" id="Booker">
                             </div>
 
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Saleman</label>
-                                <input type="text" class="form-control" name="Saleman" id="Saleman" >
+                                <input type="text" class="form-control" name="Saleman" id="Saleman">
                             </div>
                         </div>
 

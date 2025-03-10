@@ -87,7 +87,12 @@
                     </div>
                     <div class="mb-3">
                         <label for="salesman" class="form-label">Salesman</label>
-                        <input type="text" class="form-control" id="salesman" name="salesman" required>
+                        <select class="form-control" id="salesman" name="salesman" required>
+                            <option value="" disabled>Select Salesman</option>
+                            @foreach($Salesmans as $saleman)
+                            <option value="{{ $saleman->id }}">{{ $saleman->name }}</option>
+                            @endforeach
+                        </select>
                     </div>
                     <div class="mb-3">
                         <label for="date" class="form-label">Date</label>

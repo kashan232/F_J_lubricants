@@ -8,6 +8,7 @@ use App\Models\Area;
 use App\Models\BusinessType;
 use App\Models\CustomerLedger;
 use App\Models\CustomerRecovery;
+use App\Models\Salesman;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -75,7 +76,8 @@ class CustomerController extends Controller
         if (Auth::id()) {
             $userId = Auth::id();
             $CustomerLedgers = CustomerLedger::where('admin_or_user_id', $userId)->with('Customer')->get();
-            return view('admin_panel.customer.customer_ledger', compact('CustomerLedgers'));
+            $Salesmans = Salesman::where('admin_or_user_id', $userId)->where('designation', 'Saleman')->get();
+            return view('admin_panel.customer.customer_ledger', compact('CustomerLedgers','Salesmans'));
         } else {
             return redirect()->back();
         }

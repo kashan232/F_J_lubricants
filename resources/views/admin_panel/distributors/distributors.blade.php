@@ -48,13 +48,11 @@
                                         <button class="btn btn-sm btn-primary editDistributorBtn"
                                             data-id="{{ $distributor->id }}"
                                             data-name="{{ $distributor->Customer }}"
-                                            data-owner="{{ $distributor->owner }}"
+                                            data-owner="{{ $distributor->Owner }}"
                                             data-city="{{ $distributor->City }}"
                                             data-area="{{ $distributor->Area }}"
-                                            data-address="{{ $distributor->address }}"
+                                            data-address="{{ $distributor->Address }}"
                                             data-contact="{{ $distributor->Contact }}"
-                                            data-email="{{ $distributor->email }}"
-                                            data-password="{{ $distributor->password }}"
                                             data-bs-toggle="modal" data-bs-target="#editDistributorModal">
                                             Edit
                                         </button>
@@ -192,21 +190,7 @@
                             <input type="text" class="form-control" name="contact" id="edit_contact" required>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Email</label>
-                            <input type="email" class="form-control" name="email" id="edit_email" required>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Password</label>
-                            <div class="input-group">
-                                <input type="password" class="form-control" name="password" id="edit_password" required>
-                                <button type="button" class="btn btn-outline-secondary" onclick="togglePassword()">
-                                    <i class="fa fa-eye" id="password_icon"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+                    
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary">Update</button>
@@ -219,56 +203,67 @@
 
 @include('admin_panel.include.footer_include')
 <script>
- function togglePassword() {
-      let passwordField = document.getElementById("edit_password");
-      let passwordIcon = document.getElementById("password_icon");
-      if (passwordField.type === "password") {
-          passwordField.type = "text";
-          passwordIcon.classList.remove("fa-eye");
-          passwordIcon.classList.add("fa-eye-slash");
-      } else {
-          passwordField.type = "password";
-          passwordIcon.classList.remove("fa-eye-slash");
-          passwordIcon.classList.add("fa-eye");
-      }
-  }
+    function togglePassword() {
+        let passwordField = document.getElementById("edit_password");
+        let passwordIcon = document.getElementById("password_icon");
+        if (passwordField.type === "password") {
+            passwordField.type = "text";
+            passwordIcon.classList.remove("fa-eye");
+            passwordIcon.classList.add("fa-eye-slash");
+        } else {
+            passwordField.type = "password";
+            passwordIcon.classList.remove("fa-eye-slash");
+            passwordIcon.classList.add("fa-eye");
+        }
+    }
 
-  $(document).on("click", ".editDistributorBtn", function() {
-      let id = $(this).data("id");
-      let name = $(this).data("name");
-      let owner = $(this).data("owner");
-      let city = $(this).data("city");
-      let area = $(this).data("area");
-      let address = $(this).data("address");
-      let contact = $(this).data("contact");
-      let email = $(this).data("email");
-      let password = $(this).data("password");
+    $(document).on("click", ".editDistributorBtn", function() {
+        $("#editDistributorForm")[0].reset(); // Form Reset
 
-      $("#edit_distributor_id").val(id);
-      $("#edit_name").val(name);
-      $("#edit_owner").val(owner);
-      $("#edit_address").val(address);
-      $("#edit_contact").val(contact);
-      $("#edit_email").val(email);
-      $("#edit_password").val(password);
-      $("#edit_city").val(city).trigger("change");
+        let id = $(this).data("id");
+        let name = $(this).data("name");
+        let owner = $(this).data("owner");
+        let city = $(this).data("city");
+        let area = $(this).data("area");
+        let address = $(this).data("address");
+        let contact = $(this).data("contact");
 
-      $.ajax({
-          url: '{{ route("get-areas") }}',
-          type: 'GET',
-          data: { city_id: city },
-          success: function(response) {
-              $('#edit_area').html('<option value="">Select Area</option>');
-              $.each(response, function(index, value) {
-                  let selected = (value === area) ? 'selected' : '';
-                  $('#edit_area').append('<option value="' + value + '" ' + selected + '>' + value + '</option>');
-              });
-          }
-      });
+        console.log({
+            id,
+            name,
+            owner,
+            city,
+            area,
+            address,
+            contact,
+        });
 
-      let updateUrl = "{{ url('Distributor/update') }}/" + id;
-      $("#editDistributorForm").attr("action", updateUrl);
-  });
+        $("#edit_distributor_id").val(id);
+        $("#edit_name").val(name);
+        $("#edit_owner").val(owner);
+        $("#edit_address").val(address);
+        $("#edit_contact").val(contact);
+        $("#edit_city").val(city).trigger("change");
+        
+
+        $.ajax({
+            url: '{{ route("get-areas") }}',
+            type: 'GET',
+            data: {
+                city_id: city
+            },
+            success: function(response) {
+                $('#edit_area').html('<option value="">Select Area</option>');
+                $.each(response, function(index, value) {
+                    let selected = (value === area) ? 'selected' : '';
+                    $('#edit_area').append('<option value="' + value + '" ' + selected + '>' + value + '</option>');
+                });
+            }
+        });
+
+        let updateUrl = "{{ url('Distributor/update') }}/" + id;
+        $("#editDistributorForm").attr("action", updateUrl);
+    });
 
 
     $('#citySelect').change(function() {

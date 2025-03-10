@@ -149,10 +149,8 @@
                             <div class="col-md-6 mb-3">
                                 <label for="designationSelect" class="form-label">Designation</label>
                                 <select class="form-control" name="designation" id="designationSelect" required>
-                                    <option value="">Select Designation</option>
-                                    @foreach($designation as $design)
-                                    <option value="{{ $design->designation }}">{{ $design->designation }}</option>
-                                    @endforeach
+                                    <option value="Order Booker">Order Booker</option>
+                                    <option value="Saleman">Saleman</option>
                                 </select>
                             </div>
 
@@ -187,7 +185,7 @@
 
                 <form action="{{ route('update-salesman') }}" method="POST">
                     @csrf
-                    <input type="hidden" name="salesman_id" value="{{ $salesman->id }}">
+                    <input type="hidden" name="salesman_id" value="{{ $salesman->id ?? 'N/A' }}">
                     <input type="hidden" id="edit_salesman_id" name="salesman_id">
 
                     <div class="modal-body">
@@ -211,10 +209,8 @@
 
                         <label>Designation</label>
                         <select class="form-control" name="designation" id="edit_designation" required>
-                            <option value="">Select Designation</option>
-                            @foreach($designation as $design)
-                            <option value="{{ $design->id }}">{{ $design->designation }}</option>
-                            @endforeach
+                            <option value="Order Booker">Order Booker</option>
+                            <option value="Saleman">Saleman</option>
                         </select>
 
 

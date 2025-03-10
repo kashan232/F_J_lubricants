@@ -7,6 +7,7 @@ use App\Models\City;
 use App\Models\Distributor;
 use App\Models\DistributorLedger;
 use App\Models\Recovery;
+use App\Models\Salesman;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -80,7 +81,6 @@ class DistributorController extends Controller
             'contact' => 'required',
             'city' => 'required',
             'area' => 'required',
-            'email' => 'required|email',
         ]);
 
         $distributor = Distributor::find($id);
@@ -95,8 +95,6 @@ class DistributorController extends Controller
             'Contact' => $request->contact,
             'City' => $request->city,
             'Area' => $request->area,
-            'email' => $request->email,
-            'password' => bcrypt($request->password),
             'updated_at' => now(),
         ]);
 
@@ -129,7 +127,8 @@ class DistributorController extends Controller
         if (Auth::id()) {
             $userId = Auth::id();
             $DistributorLedgers = DistributorLedger::where('admin_or_user_id', $userId)->with('distributor')->get();
-            return view('admin_panel.distributors.distributors_ledger', compact('DistributorLedgers'));
+            $Salesmans = Salesman::where('admin_or_user_id', $userId)->where('designation', 'Saleman')->get();
+            return view('admin_panel.distributors.distributors_ledger', compact('DistributorLedgers','Salesmans'));
         } else {
             return redirect()->back();
         }

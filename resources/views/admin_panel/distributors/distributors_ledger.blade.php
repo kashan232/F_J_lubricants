@@ -15,9 +15,9 @@
             <div class="card p-4">
                 <div class="card-body">
                     @if (session()->has('success'))
-                        <div class="alert alert-success">
-                            <strong>Success!</strong> {{ session('success') }}.
-                        </div>
+                    <div class="alert alert-success">
+                        <strong>Success!</strong> {{ session('success') }}.
+                    </div>
                     @endif
 
                     <div class="table-responsive">
@@ -35,25 +35,25 @@
                             </thead>
                             <tbody>
                                 @forelse($DistributorLedgers as $ledger)
-                                    <tr>
-                                        <td>{{ $ledger->distributor_id }}</td>
-                                        <td>{{ $ledger->distributor->Customer }}</td>
-                                        <td>{{ $ledger->distributor->Owner }}</td>
-                                        <td>{{ number_format($ledger->previous_balance, 0) }}</td>
-                                        <td id="closing_balance_{{ $ledger->id }}">{{ number_format($ledger->closing_balance, 0) }}</td>
-                                        <td>{{ $ledger->updated_at->format('Y-m-d H:i:s') }}</td>
-                                        <td>
-                                            <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#recoveryModal"
-                                                data-id="{{ $ledger->id }}"
-                                                data-closing-balance="{{ $ledger->closing_balance }}">
-                                                Add Recovery
-                                            </button>
-                                        </td>
-                                    </tr>
+                                <tr>
+                                    <td>{{ $ledger->distributor_id }}</td>
+                                    <td>{{ $ledger->distributor?->Customer ?? 'N/A' }}</td>
+                                    <td>{{ $ledger->distributor?->Owner ?? 'N/A' }}</td>
+                                    <td>{{ number_format($ledger->previous_balance, 0) }}</td>
+                                    <td id="closing_balance_{{ $ledger->id }}">{{ number_format($ledger->closing_balance, 0) }}</td>
+                                    <td>{{ $ledger->updated_at->format('Y-m-d H:i:s') }}</td>
+                                    <td>
+                                        <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#recoveryModal"
+                                            data-id="{{ $ledger->id }}"
+                                            data-closing-balance="{{ $ledger->closing_balance }}">
+                                            Add Recovery
+                                        </button>
+                                    </td>
+                                </tr>
                                 @empty
-                                    <tr>
-                                        <td colspan="8" class="text-center">No records found.</td>
-                                    </tr>
+                                <tr>
+                                    <td colspan="8" class="text-center">No records found.</td>
+                                </tr>
                                 @endforelse
                             </tbody>
                         </table>
@@ -87,7 +87,12 @@
                     </div>
                     <div class="mb-3">
                         <label for="salesman" class="form-label">Salesman</label>
-                        <input type="text" class="form-control" id="salesman" name="salesman" required>
+                        <select class="form-control" id="salesman" name="salesman" required>
+                            <option value="" disabled>Select Salesman</option>
+                            @foreach($Salesmans as $saleman)
+                            <option value="{{ $saleman->id }}">{{ $saleman->name }}</option>
+                            @endforeach
+                        </select>
                     </div>
                     <div class="mb-3">
                         <label for="date" class="form-label">Date</label>
@@ -105,7 +110,7 @@
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         var recoveryModal = document.getElementById('recoveryModal');
-        recoveryModal.addEventListener('show.bs.modal', function (event) {
+        recoveryModal.addEventListener('show.bs.modal', function(event) {
             var button = event.relatedTarget;
             var ledgerId = button.getAttribute('data-id');
             var closingBalance = button.getAttribute('data-closing-balance');
@@ -119,23 +124,23 @@
 
             var formData = new FormData(this);
             fetch("{{ route('recovery-store') }}", {
-                method: "POST",
-                headers: {
-                    "X-CSRF-TOKEN": document.querySelector('input[name="_token"]').value
-                },
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if(data.success) {
-                    var ledgerId = document.getElementById('ledger_id').value;
-                    var newClosingBalance = data.new_closing_balance;
-                    document.getElementById('closing_balance_' + ledgerId).innerText = newClosingBalance;
-                    var recoveryModal = bootstrap.Modal.getInstance(document.getElementById('recoveryModal'));
-                    recoveryModal.hide();
-                }
-            })
-            .catch(error => console.error('Error:', error));
+                    method: "POST",
+                    headers: {
+                        "X-CSRF-TOKEN": document.querySelector('input[name="_token"]').value
+                    },
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        var ledgerId = document.getElementById('ledger_id').value;
+                        var newClosingBalance = data.new_closing_balance;
+                        document.getElementById('closing_balance_' + ledgerId).innerText = newClosingBalance;
+                        var recoveryModal = bootstrap.Modal.getInstance(document.getElementById('recoveryModal'));
+                        recoveryModal.hide();
+                    }
+                })
+                .catch(error => console.error('Error:', error));
         });
     });
 </script>

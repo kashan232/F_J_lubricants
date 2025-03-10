@@ -42,7 +42,7 @@
                                     <tr>
                                         <td>{{ $sale->invoice_number }}</td>
                                         <td>{{ $sale->Date }}</td>
-                                        <td>{{ $sale->distributor->Customer }} <br> {{ $sale->distributor->Owner }}</td>
+                                        <td>{{ $sale->distributor->Customer ?? 'N/A' }} <br> {{ $sale->distributor->Owner ?? 'N/A' }}</td>
                                         <td>{{ $sale->distributor_city }} <br> {{ $sale->distributor_area }}</td>
                                         <td>{{ $sale->distributor_address }} <br> {{ $sale->distributor_phone }}</td>
                                         <td>{{ $sale->Booker }}</td>

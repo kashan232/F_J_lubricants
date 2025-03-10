@@ -51,13 +51,14 @@
                                         <th>Category</th>
                                         <th>Sub Category</th>
                                         <th>Item</th>
+                                        <th>Measurement</th>
+                                        <th>Pcs/Carton</th>
                                         <th>Rate (Per Carton)</th>
                                         <th>Carton Qty</th>
                                         <th>Pcs</th>
                                         <th>Gross Total</th>
                                         <th>Discount</th>
                                         <th>Amount</th>
-                                        <th>Pcs/Carton</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -81,13 +82,14 @@
                                                 <option>Select Item</option>
                                             </select>
                                         </td>
+                                        <td><input type="text" class="form-control form-control-lg size" name="size[]" style="width: 100px;" readonly></td>
+                                        <td><input type="number" class="form-control form-control-lg pcs-carton" name="pcs_carton[]" style="width: 100px;" readonly></td>
                                         <td><input type="number" class="form-control form-control-lg rate" name="rate[]" style="width: 100px;"></td>
                                         <td><input type="number" class="form-control form-control-lg carton-qty" name="carton_qty[]" style="width: 100px;"></td>
                                         <td><input type="number" class="form-control form-control-lg pcx" name="pcs[]" style="width: 100px;"></td>
                                         <td><input type="number" class="form-control form-control-lg gross-total" name="gross_total[]" style="width: 100px;" readonly></td>
                                         <td><input type="number" class="form-control form-control-lg discount" name="discount[]" style="width: 100px;"></td>
                                         <td><input type="number" class="form-control form-control-lg amount" name="amount[]" style="width: 100px;" readonly></td>
-                                        <td><input type="number" class="form-control form-control-lg pcs-carton" name="pcs_carton[]" style="width: 100px;" readonly></td>
                                         <td><button type="button" class="btn btn-danger remove-row">Delete</button></td>
                                     </tr>
                                 </tbody>
@@ -135,13 +137,14 @@
                 <option value="">Select Item</option>
             </select>
         </td>
+        <td><input type="text" class="form-control form-control-lg size" name="size[]" style="width: 100px;" readonly></td>
+        <td><input type="number" class="form-control form-control-lg pcs-carton" name="pcs_carton[]" style="width: 100px;" readonly></td>
         <td><input type="number" class="form-control form-control-lg rate" name="rate[]" style="width: 100px;"></td>
         <td><input type="number" class="form-control form-control-lg carton-qty" name="carton_qty[]" style="width: 100px;"></td>
         <td><input type="number" class="form-control form-control-lg pcx" name="pcs[]" style="width: 100px;"></td>
         <td><input type="number" class="form-control form-control-lg gross-total" name="gross_total[]" style="width: 100px;" readonly></td>
         <td><input type="number" class="form-control form-control-lg discount" name="discount[]" style="width: 100px;"></td>
         <td><input type="number" class="form-control form-control-lg amount" name="amount[]" style="width: 100px;" readonly></td>
-        <td><input type="number" class="form-control form-control-lg pcs-carton" name="pcs_carton[]" style="width: 100px;" readonly></td>
         <td><button type="button" class="btn btn-danger remove-row">Delete</button></td>
     </tr>`;
 
@@ -196,7 +199,7 @@
                     success: function(response) {
                         itemDropdown.html('<option value="">Select Item</option>');
                         $.each(response, function(index, item) {
-                            itemDropdown.append(`<option value="${item.item_name}" data-pcs="${item.pcs_in_carton}">${item.item_name}</option>`);
+                            itemDropdown.append(`<option value="${item.item_name}" data-size="${item.size}" data-pcs="${item.pcs_in_carton}">${item.item_name}</option>`);
                         });
                     },
                     error: function() {
@@ -219,6 +222,16 @@
             $(".party_code").val(partycode);
         });
         
+        $(document).on('change', '.item-select', function() {
+            let selectedOption = $(this).find(":selected");
+            let sizeValue = selectedOption.data('size') || 0;
+
+            console.log("Selected Item:", selectedOption.text());
+            console.log("Size Value:", sizeValue);
+
+            $(this).closest('tr').find('.size').prop('readonly', false).val(sizeValue).prop('readonly', true);
+        });
+
         // Auto-Calculate Amount and Gross Total
         $(document).on('input', '.rate, .carton-qty, .discount', function() {
             let row = $(this).closest('tr');
