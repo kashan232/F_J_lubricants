@@ -34,6 +34,15 @@
                                 </tr>
                             </thead>
                             <tbody>
+
+                                @if($DistributorLedgers->isEmpty())
+                                <script>
+                                    document.addEventListener("DOMContentLoaded", function() {
+                                        document.getElementById("global-loader").style.display = "none";
+                                    });
+                                </script>
+                                @endif
+
                                 @forelse($DistributorLedgers as $ledger)
                                 <tr>
                                     <td>{{ $ledger->distributor_id }}</td>
@@ -106,6 +115,16 @@
 </div>
 
 @include('admin_panel.include.footer_include')
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        let globalLoader = document.getElementById("global-loader");
+
+        // Agar globalLoader exist karta hai, to usko hide karo
+        if (globalLoader) {
+            globalLoader.style.display = "none";
+        }
+    });
+</script>
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {

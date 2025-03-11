@@ -31,6 +31,13 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                @if($Recoveries->isEmpty())
+                                    <script>
+                                        document.addEventListener("DOMContentLoaded", function() {
+                                            document.getElementById("global-loader").style.display = "none";
+                                        });
+                                    </script>
+                                @endif
                                 @foreach($Recoveries as $key => $recovery)
                                 <tr>
                                     <td>{{ $key + 1 }}</td>

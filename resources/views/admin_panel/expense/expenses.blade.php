@@ -45,7 +45,7 @@
                                         data-bs-toggle="modal" 
                                         data-bs-target="#editExpenseModal">Edit</button>
 
-                                        <button class="btn btn-sm btn-danger deleteAddExpenseBtn" data-id="{{ $expense->id }}">Delete</button>
+                                        <!-- <button class="btn btn-sm btn-danger deleteAddExpenseBtn" data-id="{{ $expense->id }}">Delete</button> -->
 
                                     </td>
 
@@ -129,7 +129,7 @@
         e.preventDefault();
 
         let id = $(this).data("id");
-        let deleteUrl = "{{ route('deleteAddExpenseBtn', ':id') }}".replace(':id', id);
+        let deleteUrl = "{{ route('delete-expense-category', ':id') }}".replace(':id', id);
 
         Swal.fire({
             title: "Are you sure?",

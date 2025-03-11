@@ -33,6 +33,13 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                @if($VendorLedgers->isEmpty())
+                                    <script>
+                                        document.addEventListener("DOMContentLoaded", function() {
+                                            document.getElementById("global-loader").style.display = "none";
+                                        });
+                                    </script>
+                                @endif
                                 @forelse($VendorLedgers as $ledger)
                                     <tr>
                                         <td>{{ $ledger->vendor_id }}</td>
