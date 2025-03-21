@@ -7,6 +7,7 @@ use App\Models\Customer;
 use App\Models\CustomerLedger;
 use App\Models\LocalSale;
 use App\Models\Product;
+use App\Models\Salesman;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -21,7 +22,8 @@ class LocalSaleController extends Controller
             $Customers = Customer::where('admin_or_user_id', $userId)->get();
             $categories = Category::where('admin_or_user_id', $userId)->get();
             // dd($Customers);
-            return view('admin_panel.local_sale.add_sale', compact('Customers', 'categories'));
+            $Staffs = Salesman::where('admin_or_user_id', $userId)->get();
+            return view('admin_panel.local_sale.add_sale', compact('Customers', 'categories','Staffs'));
         } else {
             return redirect()->back();
         }
@@ -38,6 +40,7 @@ class LocalSaleController extends Controller
                 'Saleman' => 'required|string',
                 'grand_total' => 'required|numeric',
                 'discount_value' => 'required|numeric',
+                'scheme_value' => 'required|numeric',
                 'net_amount' => 'required|numeric',
                 'category' => 'required|array',
                 'subcategory' => 'required|array',
@@ -59,6 +62,7 @@ class LocalSaleController extends Controller
                 'invoice_number' => $invoiceNo,
                 'Date' => $request->Date,
                 'customer_id' => $request->customer_id,
+                'customer_shopname' => $request->customer_shopname,
                 'customer_city' => $request->customer_city,
                 'customer_area' => $request->customer_area,
                 'customer_address' => $request->customer_address,
@@ -79,6 +83,7 @@ class LocalSaleController extends Controller
                 'amount' => json_encode($request->amount),
                 'grand_total' => $request->grand_total,
                 'discount_value' => $request->discount_value,
+                'scheme_value' => $request->scheme_value,
                 'net_amount' => $request->net_amount,
             ]);
 

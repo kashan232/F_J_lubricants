@@ -38,20 +38,25 @@
                                         data-city="{{ $Customer->city }}"
                                         data-area="{{ $Customer->area }}"
                                         data-address="{{ $Customer->address }}"
-                                        data-phone="{{ $Customer->phone_number }}">
+                                        data-phone="{{ $Customer->phone_number }}"
+                                        data-shopname="{{ $Customer->shop_name }}">
                                         {{ $Customer->customer_name }}
                                     </option>
                                     @endforeach
                                 </select>
                             </div>
                         </div>
-                       
+
                         <div class="row">
-                            <div class="col-md-6 mb-3">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">Shop Name</label>
+                                <input type="text" class="form-control" name="customer_shopname" id="shopname" readonly>
+                            </div>
+                            <div class="col-md-4 mb-3">
                                 <label class="form-label">City</label>
                                 <input type="text" class="form-control" name="customer_city" id="city" readonly>
                             </div>
-                            <div class="col-md-6 mb-3">
+                            <div class="col-md-4 mb-3">
                                 <label class="form-label">Area</label>
                                 <input type="text" class="form-control" name="customer_area" id="area" readonly>
                             </div>
@@ -59,21 +64,33 @@
                                 <label class="form-label">Address</label>
                                 <input type="text" class="form-control" name="customer_address" id="address" readonly>
                             </div>
+
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Phone</label>
                                 <input type="text" class="form-control" name="customer_phone" id="phone" readonly>
                             </div>
+
                         </div>
 
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Order Booker</label>
-                                <input type="text" class="form-control" name="Booker" id="Booker" >
+                                <select class="form-control" name="Booker" id="Booker" required>
+                                    <option disabled>Select Booker</option>
+                                    @foreach($Staffs as $Staff)
+                                    <option value="{{ $Staff->name }}">{{ $Staff->name }}</option>
+                                    @endforeach
+                                </select>
                             </div>
 
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Saleman</label>
-                                <input type="text" class="form-control" name="Saleman" id="Saleman" >
+                                <select class="form-control" name="Saleman" id="Saleman" required>
+                                    <option disabled>Select Salesman</option>
+                                    @foreach($Staffs as $Staff)
+                                    <option value="{{ $Staff->name }}">{{ $Staff->name }}</option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
 
@@ -112,7 +129,7 @@
                                                 <option>Select Subcategory</option>
                                             </select>
                                         </td>
-                                        <td><input type="number" class="form-control form-control-lg code" name="code[]" style="width: 100px;" readonly></td>
+                                        <td><input type="text" class="form-control form-control-lg code" name="code[]" style="width: 100px;" readonly></td>
                                         <td>
                                             <select class="form-control form-control-lg item-select" name="item[]" style="width: 180px;">
                                                 <option>Select Item</option>
@@ -149,12 +166,20 @@
                                         </td>
                                     </tr>
                                     <tr>
+                                        <td colspan="8" class="text-end fw-bold">Scheme:</td>
+                                        <td colspan="2">
+                                            <input type="number" class="form-control form-control-lg fw-bold text-center" id="schemeValue" name="scheme_value" value="0">
+                                        </td>
+                                    </tr>
+                                    <tr>
                                         <td colspan="8" class="text-end fw-bold">Net Amount:</td>
                                         <td colspan="2">
                                             <input type="number" class="form-control form-control-lg fw-bold text-center" id="netAmount" name="net_amount" readonly>
                                         </td>
                                     </tr>
+
                                 </tfoot>
+
 
                             </table>
                         </div>
@@ -180,6 +205,7 @@
         document.getElementById('area').value = selectedOption.getAttribute('data-area') || '';
         document.getElementById('address').value = selectedOption.getAttribute('data-address') || '';
         document.getElementById('phone').value = selectedOption.getAttribute('data-phone') || '';
+        document.getElementById('shopname').value = selectedOption.getAttribute('data-shopname') || '';
     });
 
 
@@ -202,7 +228,7 @@
                                             </select>
         </td>
         <td>
-                                            <input type="number" class="form-control form-control-lg code" name="code[]" style="width: 100px;" readonly>
+                                            <input type="text" class="form-control form-control-lg code" name="code[]" style="width: 100px;" readonly>
                                         </td>
         <td>
                                             <select class="form-control form-control-lg item-select" name="item[]" style="width: 180px;">
@@ -358,7 +384,6 @@
             calculateGrandTotal();
         });
 
-        // Function to Calculate Grand Total
         function calculateGrandTotal() {
             let grandTotal = 0;
             $(".amount").each(function() {
@@ -367,10 +392,12 @@
             $("#grandTotal").val(grandTotal.toFixed(2));
         }
 
-        $(document).on('input', '#discountValue, #discountType', function() {
+        // Function to Calculate Net Amount (including Discount & Scheme)
+        $(document).on('input', '#discountValue, #discountType, #schemeValue', function() {
             let grandTotal = parseFloat($('#grandTotal').val()) || 0;
             let discountValue = parseFloat($('#discountValue').val()) || 0;
             let discountType = $('#discountType').val();
+            let schemeValue = parseFloat($('#schemeValue').val()) || 0;
             let discountAmount = 0;
 
             if (discountType === "percent") {
@@ -379,10 +406,9 @@
                 discountAmount = discountValue;
             }
 
-            let netAmount = grandTotal - discountAmount;
+            let netAmount = grandTotal - discountAmount - schemeValue;
             $('#netAmount').val(netAmount.toFixed(2));
         });
-
 
     });
 </script>

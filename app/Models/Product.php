@@ -13,4 +13,14 @@ class Product extends Model
     use SoftDeletes;
 
     protected $guarded = [];
+
+    public static function generateItemcodeNo()
+    {
+        $prefix = 'COD-';
+        $lastcode = self::orderBy('id', 'desc')->first();
+        $lastNumber = $lastcode ? (int)substr($lastcode->item_code, strlen($prefix)) : 0;
+        $newNumber = str_pad($lastNumber + 1, 3, '0', STR_PAD_LEFT);
+        // Return the new invoice number
+        return $prefix . $newNumber;
+    }
 }

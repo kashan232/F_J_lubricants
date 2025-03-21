@@ -24,7 +24,7 @@
                 </li>
 
                 <li class="submenu">
-                    <a href="javascript:void(0);"><i class="fas fa-users"></i><span> Vendors</span> <span class="menu-arrow"></span></a>
+                    <a href="javascript:void(0);"><i class="fas fa-user-friends"></i><span> Vendors</span> <span class="menu-arrow"></span></a>
                     <ul>
                         <li><a href="{{ route('vendors') }}">Vendors</a></li>
                         <li><a href="{{ route('vendors-ledger') }}">Vendors Ledger </a></li>
@@ -41,11 +41,11 @@
                 </li>
 
                 <li>
-                    <a href="{{ route('size') }}"><i class="fas fa-oil-can"></i> <span> Size </span> </a>
+                    <a href="{{ route('size') }}"><i class="fas fa-wine-bottle"></i> <span> Size </span> </a>
                 </li>
 
                 <li>
-                    <a href="{{ route('business_type') }}"><i class="fas fa-oil-can"></i> <span> Business Type </span> </a>
+                    <a href="{{ route('business_type') }}"><i class="fas fa-business-time"></i> <span> Business Type </span> </a>
                 </li>
 
                 <li>
@@ -53,7 +53,7 @@
                 </li>
 
                 <li class="submenu">
-                    <a href="javascript:void(0);"><i class="fas fa-store"></i><span> Purchase</span> <span class="menu-arrow"></span></a>
+                    <a href="javascript:void(0);"><i class="fas fa-shopping-basket"></i><span> Purchase</span> <span class="menu-arrow"></span></a>
                     <ul>
                         <li><a href="{{ route('Purchase') }}">Add Purchase</a></li>
                         <li><a href="{{ route('all-Purchases') }}">All Purchase</a></li>
@@ -69,7 +69,7 @@
                 </li>
 
                 <li class="submenu">
-                    <a href="javascript:void(0);"><i class="fas fa-store"></i><span> Local Sale</span> <span class="menu-arrow"></span></a>
+                    <a href="javascript:void(0);"><i class="fas fa-shopping-bag"></i><span> Local Sale</span> <span class="menu-arrow"></span></a>
                     <ul>
                         <li><a href="{{ route('local-sale') }}">Add Sale</a></li>
                         <li><a href="{{ route('all-local-sale') }}">Sales</a></li>
@@ -77,7 +77,7 @@
                 </li>
                 
                 <li class="submenu">
-                    <a href="javascript:void(0);"><i class="fas fa-store"></i><span> Staff Management</span> <span class="menu-arrow"></span></a>
+                    <a href="javascript:void(0);"><i class="fas fa-user-tie"></i><span> Staff Management</span> <span class="menu-arrow"></span></a>
                     <ul>
                         <!-- <li><a href="{{ route('designation') }}">Add Designation </a></li> -->
                         <li><a href="{{ route('salesmen') }}">Add Staff</a></li>
@@ -85,18 +85,27 @@
                     </ul>
                 </li>
                 <li class="submenu">
-                    <a href="javascript:void(0);"><i class="fas fa-store"></i><span> Expenses</span> <span class="menu-arrow"></span></a>
+                    <a href="javascript:void(0);"><i class="fas fa-money-bill-wave"></i><span> Expenses</span> <span class="menu-arrow"></span></a>
                     <ul>
                         <li><a href="{{ route('expense') }}">Add Expense Categroy</a></li>
                         <li><a href="{{ route('add-expenses') }}">Add Expenss</a></li>
                     </ul>
                 </li>
                 <li class="submenu">
-                    <a href="javascript:void(0);"><i class="fas fa-store"></i><span>Customer Management</span> <span class="menu-arrow"></span></a>
+                    <a href="javascript:void(0);"><i class="fas fa-address-book"></i><span>Customer Management</span> <span class="menu-arrow"></span></a>
                     <ul>
                         <li><a href="{{ route('customer') }}">Add Cutomers </a></li>
-                        <li><a href="{{ route('customer-ledger') }}">Cutomers Ledger </a></li>
+                        <li><a href="{{ route('customer-ledger') }}">Cutomers Payments </a></li>
                         <li><a href="{{ route('customer-recovery') }}">Cutomers Recoveries </a></li>
+                    </ul>
+                </li>
+
+                <li class="submenu">
+                    <a href="javascript:void(0);"><i class="fas fa-chart-pie"></i><span>Reporting</span> <span class="menu-arrow"></span></a>
+                    <ul>
+                        <li><a href="{{ route('stock-Record') }}">Item Stock Report </a></li>
+                        <li><a href="{{ route('Distributor-Ledger-Record') }}">Distributor Ledger Record </a></li>
+                        <li><a href="{{ route('Customer-Ledger-Record') }}">Customer Ledger Record </a></li>
                     </ul>
                 </li>
 

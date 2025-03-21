@@ -96,10 +96,10 @@
                     </div>
                     <div class="mb-3">
                         <label for="salesman" class="form-label">Salesman</label>
-                        <select class="form-control" id="salesman" name="salesman" required>
-                            <option value="" disabled>Select Salesman</option>
+                        <select class="form-control" name="salesman" id="salesman" required>
+                            <option disabled>Select Salesman</option>
                             @foreach($Salesmans as $saleman)
-                            <option value="{{ $saleman->id }}">{{ $saleman->name }}</option>
+                            <option value="{{ $saleman->name }}">{{ $saleman->name }}</option>
                             @endforeach
                         </select>
                     </div>

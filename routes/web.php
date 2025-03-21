@@ -13,6 +13,7 @@ use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\SalesmanController;
 use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\LocalSaleController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SaleController;
 use App\Http\Controllers\VendorController;
 use App\Models\Product;
@@ -99,7 +100,7 @@ Route::get('/product', [ProductController::class, 'product'])->middleware(['auth
 Route::post('/store-product', [ProductController::class, 'store_product'])->name('store-product');
 Route::put('/product/update/{id}', [ProductController::class, 'update'])->name('product.update');
 Route::get('/fetch-subcategories', [ProductController::class, 'fetchSubCategories'])->name('fetch-subcategories');
-
+Route::get('/products/{id}/edit', [ProductController::class, 'edit'])->name('products.edit');
 
 
 // purchase 
@@ -159,6 +160,18 @@ Route::post('/store-local-sale', [LocalSaleController::class, 'store_local_sale'
 Route::get('/all-local-sale', [LocalSaleController::class, 'all_local_sale'])->middleware(['auth', 'admin'])->name('all-local-sale');
 Route::get('/show-local-sale/{id}', [LocalSaleController::class, 'show_local_sale'])->name('show-local-sale');
 Route::get('/local/sale/invoice/{id}', [LocalSaleController::class, 'localsaleInvoice'])->name('local.sale.invoice');
+
+// Reporting
+Route::get('/Distributor-Ledger-Record', [ReportController::class, 'Distributor_Ledger_Record'])->name('Distributor-Ledger-Record');
+Route::get('/fetch-distributor-ledger', [ReportController::class, 'fetchDistributorLedger'])->name('fetch-distributor-ledger');
+
+
+Route::get('/Customer-Ledger-Record', [ReportController::class, 'Customer_Ledger_Record'])->name('Customer-Ledger-Record');
+Route::get('/fetch-Customer-ledger', [ReportController::class, 'fetchCustomerledger'])->name('fetch-Customer-ledger');
+
+Route::get('/stock-Record', [ReportController::class, 'stock_Record'])->name('stock-Record');
+Route::get('/get-items-report/{subcategory}', [ReportController::class, 'getItems'])->name('get.items.report');
+Route::get('/get-item-details', [ReportController::class, 'getItemDetails'])->name('get.item.details');
 
 
 Route::get('/', function () {

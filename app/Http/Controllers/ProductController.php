@@ -24,7 +24,7 @@ class ProductController extends Controller
             return redirect()->back();
         }
     }
-    
+
 
     public function fetchSubCategories(Request $request)
     {
@@ -37,11 +37,13 @@ class ProductController extends Controller
     {
         if (Auth::id()) {
             $userId = Auth::id();
+            $itemcodeNo = Product::generateItemcodeNo();
+
             Product::create([
                 'admin_or_user_id' => $userId,
                 'category' => $request->category,
                 'sub_category' => $request->sub_category,
-                'item_code' => $request->item_code,
+                'item_code' => $itemcodeNo,
                 'item_name' => $request->item_name,
                 'size' => $request->size,
                 'carton_quantity' => $request->carton_quantity,
@@ -59,17 +61,14 @@ class ProductController extends Controller
             return redirect()->back();
         }
     }
-    
-    public function update(Request $request)
+
+    public function update(Request $request, $id)
     {
-        $product_id = $request->input('product_id');
+        $product_id = $id;
         Product::where('id', $product_id)->update([
             'category' => $request->category,
             'sub_category' => $request->sub_category,
-            'item_code' => $request->item_code,
             'item_name' => $request->item_name,
-            'size' => Size::where('id', $request->size_id)->value('size_name'),
-            'carton_quantity' => $request->carton_quantity,
             'pcs_in_carton' => $request->pcs_in_carton,
             'initial_stock' => $request->initial_stock,
             'wholesale_price' => $request->wholesale_price,
@@ -79,9 +78,10 @@ class ProductController extends Controller
         ]);
         return redirect()->back()->with('success', 'Product updated successfully');
     }
-    
-   
 
-
-    
+    public function edit($id)
+    {
+        $product = Product::findOrFail($id);
+        return view('admin_panel.product.edit_product', compact('product'));
+    }
 }

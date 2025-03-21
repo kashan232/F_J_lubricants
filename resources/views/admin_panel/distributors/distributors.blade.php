@@ -110,7 +110,7 @@
                     <div class="row">
                         <div class="col-md-4 mb-3">
                             <label class="form-label">Address</label>
-                            <input type="text" name="address" value="Address here" class="form-control">
+                            <input type="text" name="address" class="form-control" placeholder="Address here">
                         </div>
                         <div class="col-md-4 mb-3">
                             <label class="form-label">Contact</label>

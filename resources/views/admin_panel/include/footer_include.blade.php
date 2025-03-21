@@ -15,6 +15,7 @@
 <script src="/F_J_lubricants/public/assets/plugins/apexchart/chart-data.js"></script>
 
 <script src="/F_J_lubricants/public/assets/js/script.js"></script>
+
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         let globalLoader = document.getElementById("global-loader");

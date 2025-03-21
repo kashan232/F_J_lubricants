@@ -7,6 +7,7 @@ use App\Models\Distributor;
 use App\Models\DistributorLedger;
 use App\Models\Product;
 use App\Models\Sale;
+use App\Models\Salesman;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -20,8 +21,9 @@ class SaleController extends Controller
 
             $Distributors = Distributor::where('admin_or_user_id', $userId)->get();
             $categories = Category::where('admin_or_user_id', $userId)->get();
+            $Staffs = Salesman::where('admin_or_user_id', $userId)->get();
 
-            return view('admin_panel.sale.add_sale', compact('Distributors', 'categories'));
+            return view('admin_panel.sale.add_sale', compact('Distributors', 'categories','Staffs'));
         } else {
             return redirect()->back();
         }
@@ -38,6 +40,7 @@ class SaleController extends Controller
                 'Saleman' => 'required|string',
                 'grand_total' => 'required|numeric',
                 'discount_value' => 'required|numeric',
+                'scheme_value' => 'required|numeric',
                 'net_amount' => 'required|numeric',
                 'category' => 'required|array',
                 'subcategory' => 'required|array',
@@ -79,6 +82,7 @@ class SaleController extends Controller
                 'amount' => json_encode($request->amount),
                 'grand_total' => $request->grand_total,
                 'discount_value' => $request->discount_value,
+                'scheme_value' => $request->scheme_value,
                 'net_amount' => $request->net_amount,
             ]);
 
