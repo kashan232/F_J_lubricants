@@ -59,6 +59,7 @@ class CustomerController extends Controller
             CustomerLedger::create([
                 'admin_or_user_id' => $userId,
                 'customer_id' => $customer->id,
+                'opening_balance' => $request->opening_balance, // Pehli dafa opening balance = previous balance
                 'previous_balance' => $request->opening_balance, // Pehli dafa opening balance = previous balance
                 'closing_balance' => $request->opening_balance, // Closing balance bhi initially same hoga
                 'created_at' => Carbon::now(),

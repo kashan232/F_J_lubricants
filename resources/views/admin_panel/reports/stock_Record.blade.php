@@ -145,34 +145,44 @@
                 itemCode
             },
             success: function(response) {
-                console.log(response); // 🛠 Debugging ke liye JSON output dekhne ke liye
+                console.log(response);
 
                 let tableContent = '';
                 let totalStockValue = 0;
+                let totalPurchased = 0;
+                let totalDistributorSold = 0;
+                let totalLocalSale = 0;
+                let totalCartonQty = 0;
+                let totalLiters = 0;
+                let totalStock = 0;
 
                 $.each(response, function(index, item) {
-                    console.log(item); // 🛠 Check karo ke item object ke andar `purchased_quantity` hai ya nahi
-
                     let stockValue = item.carton_quantity * item.wholesale_price;
                     totalStockValue += stockValue;
 
-                    // 🔥 Size Calculation: Agar ml hai tu /1000, warna as it is
                     let sizeValue = item.size.toLowerCase().includes("ml") ?
                         parseFloat(item.size) / 1000 :
                         parseFloat(item.size);
 
-                    let totalLiters = sizeValue * item.pcs_in_carton * item.carton_quantity;
+                    let liters = sizeValue * item.pcs_in_carton * item.carton_quantity;
+
+                    totalPurchased += parseFloat(item.total_purchased) || 0;
+                    totalDistributorSold += parseFloat(item.total_distributor_sold) || 0;
+                    totalLocalSale += parseFloat(item.total_local_sold) || 0;
+                    totalCartonQty += parseFloat(item.carton_quantity) || 0;
+                    totalLiters += liters;
+                    totalStock += parseFloat(item.initial_stock) || 0;
 
                     tableContent += `<tr>
                     <td>${item.item_code}</td>
                     <td>${item.item_name}</td>
                     <td>${item.size}</td>
                     <td>${item.pcs_in_carton}</td>
-                    <td>${item.total_purchased ?? 'N/A'}</td> <!-- 🛠 Undefined ko avoid karne ke liye default value -->
+                    <td>${item.total_purchased ?? 'N/A'}</td>
                     <td>${item.total_distributor_sold ?? 'N/A'}</td>
                     <td>${item.total_local_sold ?? 'N/A'}</td>
                     <td>${item.carton_quantity}</td>
-                    <td>${totalLiters.toFixed(2)}</td> <!-- 🔥 Liters Calculation -->
+                    <td>${liters.toFixed(2)}</td>
                     <td>${item.wholesale_price}</td>
                     <td>${item.initial_stock}</td>
                     <td>${item.alert_quantity}</td>
@@ -181,33 +191,54 @@
                 });
 
                 $('#item-details').html(tableContent);
-                $("#subtotalStockValue").text(totalStockValue.toFixed(2));
+
+                let footerContent = `
+                <tr>
+                    <td colspan="4" class="text-end fw-bold">Total:</td>
+                    <td class="fw-bold">${totalPurchased}</td>
+                    <td class="fw-bold">${totalDistributorSold}</td>
+                    <td class="fw-bold">${totalLocalSale}</td>
+                    <td class="fw-bold">${totalCartonQty}</td>
+                    <td class="fw-bold">${totalLiters.toFixed(2)}</td>
+                    <td></td>
+                    <td class="fw-bold">${totalStock}</td>
+                    <td></td>
+                    <td class="fw-bold">${totalStockValue.toFixed(2)}</td>
+                </tr>`;
+
+                $('#stockReport tfoot').html(footerContent);
             }
         });
-
     });
+
 
 
     $(document).on('click', '#exportPdf', function() {
         const {
             jsPDF
         } = window.jspdf;
-        let pdf = new jsPDF('l', 'pt', 'a4'); // Landscape mode for full width
+        let pdf = new jsPDF('l', 'pt', 'a4'); // Landscape mode
 
-        pdf.setFontSize(14);
-        pdf.text("Item Stock Report", 40, 30);
+        // Center align title
+        let pageWidth = pdf.internal.pageSize.width;
+        let title = "Item Stock Report";
+        let textWidth = pdf.getTextWidth(title);
+        let xPosition = (pageWidth - textWidth) / 2; // Center calculation
+
+        pdf.setFontSize(16);
+        pdf.text(title, xPosition, 30); // Centered title at top
 
         pdf.autoTable({
             html: '#stockReport',
             theme: 'grid',
-            startY: 20,
+            startY: 50, // Move table down to avoid overlapping with title
             styles: {
                 fontSize: 8,
                 cellPadding: 4
             },
             headStyles: {
-                fillColor: [41, 128, 185]
-            }, // Blue header
+                fillColor: [41, 128, 185] // Blue header
+            }
         });
 
         pdf.save("Item_Stock_Report.pdf");

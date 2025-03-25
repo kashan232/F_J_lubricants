@@ -52,6 +52,7 @@ class DistributorController extends Controller
             DistributorLedger::create([
                 'admin_or_user_id' => $userId,
                 'distributor_id' => $distributor->id,
+                'opening_balance' => $request->opening_balance, // Pehli dafa opening balance = previous balance
                 'previous_balance' => $request->opening_balance, // Pehli dafa opening balance = previous balance
                 'closing_balance' => $request->opening_balance, // Closing balance bhi initially same hoga
                 'created_at' => Carbon::now(),
@@ -128,7 +129,7 @@ class DistributorController extends Controller
             $userId = Auth::id();
             $DistributorLedgers = DistributorLedger::where('admin_or_user_id', $userId)->with('distributor')->get();
             $Salesmans = Salesman::where('admin_or_user_id', $userId)->where('designation', 'Saleman')->get();
-            return view('admin_panel.distributors.distributors_ledger', compact('DistributorLedgers','Salesmans'));
+            return view('admin_panel.distributors.distributors_ledger', compact('DistributorLedgers', 'Salesmans'));
         } else {
             return redirect()->back();
         }
@@ -137,13 +138,17 @@ class DistributorController extends Controller
     public function recovery_store(Request $request)
     {
         $ledger = DistributorLedger::find($request->ledger_id);
-        $ledger->previous_balance -= $request->amount_paid;
+
+        // ❌ Previous balance ko nahi chhedna
+        // $ledger->previous_balance -= $request->amount_paid;  ❌ Remove this line
+
+        // ✅ Sirf closing_balance ko update karna hai
         $ledger->closing_balance -= $request->amount_paid;
         $ledger->save();
 
         $userId = Auth::id();
 
-        // Store recovery record (Optional)
+        // Recovery Record Save Karna Hai
         Recovery::create([
             'admin_or_user_id' => $userId,
             'distributor_ledger_id' => $ledger->id,
@@ -157,6 +162,7 @@ class DistributorController extends Controller
             'new_closing_balance' => number_format($ledger->closing_balance, 0)
         ]);
     }
+
 
     public function Distributor_recovery()
     {

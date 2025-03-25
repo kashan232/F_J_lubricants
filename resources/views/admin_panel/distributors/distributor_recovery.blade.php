@@ -24,10 +24,10 @@
                             <thead>
                                 <tr>
                                     <th>#</th>
+                                    <th>Date</th>
                                     <th>Distributor</th>
                                     <th>Salesman</th>
                                     <th>Amount Paid</th>
-                                    <th>Date</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -41,10 +41,10 @@
                                 @foreach($Recoveries as $key => $recovery)
                                 <tr>
                                     <td>{{ $key + 1 }}</td>
+                                    <td>{{ $recovery->date }}</td>
                                     <td>{{ $recovery->distributor->Customer ?? 'N/A' }}</td>
                                     <td>{{ $recovery->salesman }}</td>
                                     <td>{{ number_format($recovery->amount_paid, 0) }}</td>
-                                    <td>{{ $recovery->date }}</td>
                                    
                                 </tr>
                                 @endforeach

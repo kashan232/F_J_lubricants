@@ -27,6 +27,7 @@
                                     <th>ID</th>
                                     <th>Name</th>
                                     <th>Business Type</th>
+                                    <th>Opening Balance</th>
                                     <th>Previous Balance</th>
                                     <th>Closing Balance</th>
                                     <th>Updated At</th>
@@ -39,6 +40,7 @@
                                         <td>{{ $ledger->customer_id }}</td>
                                         <td>{{ $ledger->Customer->customer_name }}</td>
                                         <td>{{ $ledger->Customer->business_type_name }}</td>
+                                        <td>{{ number_format($ledger->opening_balance, 0) }}</td>
                                         <td>{{ number_format($ledger->previous_balance, 0) }}</td>
                                         <td id="closing_balance_{{ $ledger->id }}">{{ number_format($ledger->closing_balance, 0) }}</td>
                                         <td>{{ $ledger->updated_at->format('Y-m-d H:i:s') }}</td>

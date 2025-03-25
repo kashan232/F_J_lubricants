@@ -25,11 +25,12 @@
                             <thead>
                                 <tr>
                                     <th>ID</th>
+                                    <th>Date</th>
                                     <th>Party Code</th>
                                     <th>Party Name</th>
+                                    <th>Opening Balance</th>
                                     <th>Previous Balance</th>
                                     <th>Closing Balance</th>
-                                    <th>Updated At</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -43,11 +44,12 @@
                                 @forelse($VendorLedgers as $ledger)
                                     <tr>
                                         <td>{{ $ledger->vendor_id }}</td>
+                                        <td>{{ $ledger->updated_at->format('Y-m-d') }}</td>
                                         <td>{{ $ledger->vendor->Party_code }}</td>
                                         <td>{{ $ledger->vendor->Party_name }}</td>
+                                        <td>{{ number_format($ledger->opening_balance, 0) }}</td>
                                         <td>{{ number_format($ledger->previous_balance, 0) }}</td>
                                         <td id="closing_balance_{{ $ledger->id }}">{{ number_format($ledger->closing_balance, 0) }}</td>
-                                        <td>{{ $ledger->updated_at->format('Y-m-d H:i:s') }}</td>
                                        
                                     </tr>
                                 @empty

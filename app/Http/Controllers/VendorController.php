@@ -46,6 +46,7 @@ class VendorController extends Controller
             VendorLedger::create([
                 'admin_or_user_id' => $userId,
                 'vendor_id' => $Vendor->id,
+                'opening_balance' => $request->opening_balance, // Pehli dafa opening balance = previous balance
                 'previous_balance' => $request->opening_balance, // Pehli dafa opening balance = previous balance
                 'closing_balance' => $request->opening_balance, // Closing balance bhi initially same hoga
                 'created_at' => Carbon::now(),
@@ -97,18 +98,24 @@ class VendorController extends Controller
 
         $amountPaid = $request->amount_paid;
 
-        // Check if previous payments exist
+        // Check previous payments
         $previousPayments = VendorPayment::where('purchase_id', $purchase->id)->sum('amount_paid');
 
-        // Calculate Remaining Amount
-        $remainingAmount = $purchase->grand_total - ($previousPayments + $amountPaid);
+        // Calculate remaining amount
+        $remainingAmount = $purchase->grand_total - $previousPayments;
 
-        // Update Purchase Table with Remaining Amount & Status
-        $purchase->remaining_amount = $remainingAmount;
-        $purchase->status = ($remainingAmount <= 0) ? 'Paid' : 'Unpaid';
+        // ✅ Validation: Amount Paid should not exceed Remaining Amount
+        if ($amountPaid > $remainingAmount) {
+            return redirect()->back()->with('error', 'Amount Paid cannot be greater than the Remaining Amount.');
+        }
+
+        // Update remaining amount after payment
+        $newRemainingAmount = $remainingAmount - $amountPaid;
+        $purchase->remaining_amount = $newRemainingAmount;
+        $purchase->status = ($newRemainingAmount <= 0) ? 'Paid' : 'Unpaid';
         $purchase->save();
 
-        // Update Vendor Ledger (If Entry Exists, Update It)
+        // Update Vendor Ledger
         $vendorLedger = VendorLedger::where('vendor_id', $vendor->id)->first();
         if ($vendorLedger) {
             $vendorLedger->closing_balance -= $amountPaid;
@@ -135,6 +142,7 @@ class VendorController extends Controller
 
         return redirect()->back()->with('success', 'Payment recorded successfully.');
     }
+
 
     public function amount_paid_vendors()
     {

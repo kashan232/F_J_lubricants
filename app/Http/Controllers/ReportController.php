@@ -35,9 +35,9 @@ class ReportController extends Controller
         // Get distributor ledger record
         $ledger = DB::table('distributor_ledgers')
             ->where('distributor_id', $distributorId)
-            ->select('previous_balance', 'closing_balance')
+            ->select('opening_balance','previous_balance', 'closing_balance')
             ->first();
-
+        
         // Get recoveries
         $recoveries = DB::table('recoveries')
             ->where('distributor_ledger_id', $distributorId)
@@ -51,6 +51,7 @@ class ReportController extends Controller
             ->get();
 
         return response()->json([
+            'opening_balance' => $ledger->opening_balance ?? 0,
             'previous_balance' => $ledger->previous_balance ?? 0,
             'closing_balance' => $ledger->closing_balance ?? 0,
             'recoveries' => $recoveries,

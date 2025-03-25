@@ -70,6 +70,11 @@
                         <strong>Success!</strong> {{ session('success') }}.
                     </div>
                     @endif
+                    @if (session()->has('error'))
+                    <div class="alert alert-danger">
+                        <strong>Error!</strong> {{ session('error') }}.
+                    </div>
+                    @endif
                     <div class="table-responsive">
                         <table class="table datanew">
                             <thead>

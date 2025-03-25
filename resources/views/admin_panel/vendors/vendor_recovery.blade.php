@@ -24,10 +24,10 @@
                             <thead>
                                 <tr>
                                     <th>#</th>
+                                    <th>Date</th>
                                     <th>Party Code</th>
                                     <th>Party Name</th>
                                     <th>Paid Amount</th>
-                                    <th>Payment Date</th>
                                     <th>Description</th>
                                 </tr>
                             </thead>
@@ -35,10 +35,10 @@
                                 @foreach($VendorPayments as $key => $VendorPayment)
                                 <tr>
                                     <td>{{ $key + 1 }}</td>
+                                    <td>{{ $VendorPayment->payment_date }}</td>
                                     <td>{{ $VendorPayment->vendor->Party_code ?? 'N/A' }}</td>
                                     <td>{{ $VendorPayment->vendor->Party_name ?? 'N/A' }}</td>
                                     <td>{{ $VendorPayment->amount_paid }}</td>
-                                    <td>{{ $VendorPayment->payment_date }}</td>
                                     <td>{{ $VendorPayment->description }}</td>
                                 </tr>
                                 @endforeach
