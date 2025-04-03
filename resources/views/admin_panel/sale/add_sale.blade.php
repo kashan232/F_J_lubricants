@@ -132,7 +132,7 @@
                                         <td><input type="number" class="form-control form-control-lg pcs-carton" name="pcs_carton[]" style="width: 100px;" readonly></td>
                                         <td><input type="number" class="form-control form-control-lg carton-qty" name="carton_qty[]" style="width: 100px;"></td>
                                         <td><input type="number" class="form-control form-control-lg pcx" name="pcs[]" style="width: 100px;"></td>
-                                        <td><input type="number" class="form-control form-control-lg liter" name="liter[]" style="width: 100px;"></td>
+                                        <td><input type="number" class="form-control form-control-lg liter" name="liter[]" step="any" style="width: 100px;"></td>
                                         <td><input type="number" class="form-control form-control-lg rate" name="rate[]" style="width: 100px;"></td>
                                         <td><input type="number" class="form-control form-control-lg discount" name="discount[]" style="width: 100px;"></td>
                                         <td><input type="number" class="form-control form-control-lg amount" name="amount[]" style="width: 100px;" readonly></td>
@@ -230,7 +230,7 @@
                                         <td><input type="number" class="form-control form-control-lg pcs-carton" name="pcs_carton[]" style="width: 100px;" readonly></td>
                                         <td><input type="number" class="form-control form-control-lg carton-qty" name="carton_qty[]" style="width: 100px;"></td>
                                         <td><input type="number" class="form-control form-control-lg pcx" name="pcs[]" style="width: 100px;"></td>
-                                        <td><input type="number" class="form-control form-control-lg liter" name="liter[]" style="width: 100px;"></td>
+                                        <td><input type="number" class="form-control form-control-lg liter" name="liter[]" step="any" style="width: 100px;"></td>
                                         <td><input type="number" class="form-control form-control-lg rate" name="rate[]" style="width: 100px;"></td>
                                         <td><input type="number" class="form-control form-control-lg discount" name="discount[]" style="width: 100px;"></td>
                                         <td><input type="number" class="form-control form-control-lg amount" name="amount[]" style="width: 100px;" readonly></td>
@@ -333,43 +333,46 @@
         $(document).on('input', '.carton-qty, .pcs-carton, .size, .pcx, .rate, .discount', function() {
             let row = $(this).closest('tr');
 
-            let cartonQty = parseFloat(row.find('.carton-qty').val()) || 0; // Carton Qty
-            let packing = parseFloat(row.find('.pcs-carton').val()) || 0; // Packing (Pcs per Carton)
-            let pcsQty = parseFloat(row.find('.pcx').val()) || 0; // Pcs Qty
-            let rate = parseFloat(row.find('.rate').val()) || 0; // Rate per Carton
-            let discount = parseFloat(row.find('.discount').val()) || 0; // Discount
+            let cartonQty = parseFloat(row.find('.carton-qty').val()) || 0;
+            let packing = parseFloat(row.find('.pcs-carton').val()) || 0;
+            let pcsQty = parseFloat(row.find('.pcx').val()) || 0;
+            let rate = parseFloat(row.find('.rate').val()) || 0;
+            let discount = parseFloat(row.find('.discount').val()) || 0;
             let sizeText = row.find('.size').val().toLowerCase().trim();
 
-            // Measurement ko handle karna
-            let measurement = parseFloat(sizeText.replace(/[^0-9]/g, '')) || 0;
+            // Measurement ko handle karna (Extract numeric value from size)
+            let measurement = parseFloat(sizeText.replace(/[^0-9.]/g, '')) || 0;
             if (measurement > 1 && measurement < 1000) {
                 measurement = measurement / 1000;
             } else if (measurement === 1000) {
                 measurement = 1;
             }
 
-            // Liter calculation
-            let liters = cartonQty * packing * measurement;
-            row.find('.liter').val(Math.round(liters));
+            // ✅ **Updated Liter Calculation**
+            let litersFromCartons = cartonQty * packing * measurement;
+            let litersFromPcs = pcsQty * measurement;
+            let totalLiters = litersFromCartons + litersFromPcs;
 
+            // 🟢 Remove trailing zeros (17.50 → 17.5, 16.80 → 16.8)
+            row.find('.liter').val(parseFloat(totalLiters.toFixed(2)).toString());
 
-            // Carton Amount Calculation
+            // 🧮 **Carton Amount Calculation**
             let cartonAmount = rate * cartonQty;
 
-            // Per Piece Rate Calculation
+            // 🔢 **Per Piece Rate Calculation**
             let perPieceRate = (packing > 0) ? (rate / packing) : 0;
 
-            // Pcs Amount Calculation
+            // 💰 **Pcs Amount Calculation**
             let pcsAmount = perPieceRate * pcsQty;
 
-            // Total Before Discount
+            // 📊 **Total Before Discount**
             let totalBeforeDiscount = cartonAmount + pcsAmount;
 
-            // Final Amount After Applying Discount
+            // 💸 **Final Amount After Applying Discount**
             let finalAmount = totalBeforeDiscount - discount;
 
-            // Update the amount field
-            row.find('.amount').val(finalAmount.toFixed(2));
+            // 🟢 Remove trailing zeros from amount field
+            row.find('.amount').val(parseFloat(finalAmount.toFixed(2)).toString());
 
             // Recalculate Grand Total
             calculateGrandTotal();
@@ -380,7 +383,9 @@
             $(".amount").each(function() {
                 grandTotal += parseFloat($(this).val()) || 0;
             });
-            $("#grandTotal").val(grandTotal.toFixed(2));
+
+            // 🟢 Remove trailing zeros from Grand Total
+            $("#grandTotal").val(parseFloat(grandTotal.toFixed(2)).toString());
         }
 
         // Function to Calculate Net Amount (including Discount & Scheme)
@@ -398,8 +403,11 @@
             }
 
             let netAmount = grandTotal - discountAmount - schemeValue;
-            $('#netAmount').val(netAmount.toFixed(2));
+
+            // 🟢 Remove trailing zeros from Net Amount
+            $('#netAmount').val(parseFloat(netAmount.toFixed(2)).toString());
         });
+
 
 
     });

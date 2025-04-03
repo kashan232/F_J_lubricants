@@ -28,6 +28,7 @@
                                     <th>Salesman</th>
                                     <th>Amount Paid</th>
                                     <th>Date</th>
+                                    <th>Remarks</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -38,7 +39,7 @@
                                     <td>{{ $recovery->salesman }}</td>
                                     <td>{{ number_format($recovery->amount_paid, 0) }}</td>
                                     <td>{{ $recovery->date }}</td>
-                                   
+                                    <td>{{ $recovery->remarks }}</td>
                                 </tr>
                                 @endforeach
                                 @if($Recoveries->isEmpty())

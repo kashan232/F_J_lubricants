@@ -106,11 +106,9 @@
                         <li><a href="{{ route('stock-Record') }}">Item Stock Report </a></li>
                         <li><a href="{{ route('Distributor-Ledger-Record') }}">Distributor Ledger Record </a></li>
                         <li><a href="{{ route('Customer-Ledger-Record') }}">Customer Ledger Record </a></li>
+                        <li><a href="{{ route('date-wise-recovery-report') }}">Date Wise Recovery Report </a></li>
                     </ul>
                 </li>
-
-                
-
             </ul>
         </div>
     </div>

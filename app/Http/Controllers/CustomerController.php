@@ -100,6 +100,7 @@ class CustomerController extends Controller
             'amount_paid' => $request->amount_paid,
             'salesman' => $request->salesman,
             'date' => $request->date,
+            'remarks' => $request->remarks,
         ]);
 
         return response()->json([

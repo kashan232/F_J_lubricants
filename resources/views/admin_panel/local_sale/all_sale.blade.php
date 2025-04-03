@@ -61,7 +61,7 @@
                                         </td>
                                         <td>{{ number_format($sale->net_amount, 2) }}</td>
                                         <td>
-                                            <a href="{{ route('show-local-sale', $sale->id) }}" class="btn btn-sm btn-primary text-white">View</a>
+                                            <!-- <a href="{{ route('show-local-sale', $sale->id) }}" class="btn btn-sm btn-primary text-white">View</a> -->
                                             <a href="{{ route('local.sale.invoice', $sale->id) }}" class="btn btn-dark btn-sm text-white">
                                                 Invoice
                                             </a>

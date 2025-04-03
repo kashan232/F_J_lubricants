@@ -56,6 +56,7 @@ class PurchaseController extends Controller
             'rate' => 'required|array',
             'carton_qty' => 'required|array',
             'pcs' => 'required|array',
+            'liter' => 'required|array',
             'gross_total' => 'required|array',
             'discount' => 'nullable|array',
             'amount' => 'required|array',
@@ -77,6 +78,7 @@ class PurchaseController extends Controller
             'rate' => json_encode($request->rate),
             'carton_qty' => json_encode($request->carton_qty),
             'pcs' => json_encode($request->pcs),
+            'liter' => json_encode($request->liter),
             'gross_total' => json_encode($request->gross_total),
             'discount' => json_encode($request->discount ?? []),
             'amount' => json_encode($request->amount),
@@ -92,7 +94,7 @@ class PurchaseController extends Controller
             $category = $request->category[$key];
             $subcategory = $request->subcategory[$key];
             $carton_qty = $request->carton_qty[$key]; // Purchased cartons
-            $pcs = $request->pcs[$key]; // Purchased loose pieces
+            $pcs = $request->pcs[$key]; // Purchased pieces (added to stock directly)
             $rate = $request->rate[$key];
 
             // Find the product
@@ -104,26 +106,22 @@ class PurchaseController extends Controller
             if ($product) {
                 // Pehle ka stock
                 $previous_cartons = $product->carton_quantity;
-                $previous_pieces = $product->loose_pieces;
                 $pcs_in_carton = $product->pcs_in_carton; // Carton ke andar kitne pcs hain
                 $previous_stock = $product->initial_stock;
 
-                // Naye stock ki calculation
+                // ✅ Naye stock ki calculation
                 $new_carton_quantity = $previous_cartons + $carton_qty;
-                $new_loose_pieces = $previous_pieces + $pcs;
-
-                // Initial stock update
                 $new_initial_stock = $previous_stock + ($carton_qty * $pcs_in_carton) + $pcs;
 
-                // Stock update
+                // ✅ Stock update (Loose pieces field hata di)
                 $product->carton_quantity = $new_carton_quantity;
-                $product->loose_pieces = $new_loose_pieces;
                 $product->initial_stock = $new_initial_stock;
                 $product->wholesale_price = $rate;
 
                 $product->save();
             }
         }
+
 
 
         // Fetch previous balance for distributor

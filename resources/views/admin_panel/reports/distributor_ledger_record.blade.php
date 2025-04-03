@@ -38,6 +38,16 @@
                                 <label class="fw-bold">Area</label>
                                 <input type="text" id="area" class="form-control bg-light" readonly>
                             </div>
+
+                            <div class="col-md-6">
+                                <label class="fw-bold">Start Date</label>
+                                <input type="date" id="start_date" name="start_date" class="form-control bg-light" >
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="fw-bold">End Date</label>
+                                <input type="date" id="end_date" name="end_date" class="form-control bg-light" >
+                            </div>
                         </div>
                         <div class="text-center mt-4">
                             <button type="button" id="searchLedger" class="btn btn-primary btn-lg px-5">
@@ -101,7 +111,8 @@
         $('#searchLedger').click(function() {
             var distributorId = $('#distributor').val();
             var distributorName = $('#distributor option:selected').text();
-
+            let startDate = $('#start_date').val();
+            let endDate = $('#end_date').val();
             if (!distributorId) {
                 alert('Please select a distributor.');
                 return;
@@ -111,13 +122,15 @@
                 url: "{{ route('fetch-distributor-ledger') }}",
                 type: "GET",
                 data: {
-                    distributor_id: distributorId
+                    distributor_id: distributorId,
+                    start_date: startDate,
+                    end_date: endDate
                 },
                 success: function(response) {
                     $('#ledgerResult').show();
                     $('#distributorName').text(distributorName);
-                    $('#startDate').text(response.start_date);
-                    $('#endDate').text(response.end_date);
+                    $('#startDate').text(response.startDate);
+                    $('#endDate').text(response.endDate);
 
                     let openingBalance = parseFloat(response.opening_balance);
                     let balance = openingBalance;

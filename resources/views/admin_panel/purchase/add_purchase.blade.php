@@ -36,7 +36,7 @@
                                 <label class="form-label">Party Name</label>
                                 <!-- <input type="text"  name="party_name"> -->
                                 <select name="party_name" id="party_name" class="form-control vendor-select">
-                                    <option value="" selected disabled>Choose One</option> 
+                                    <option value="" selected disabled>Choose One</option>
                                     @foreach($Vendors as $Vendor)
                                     <option value="{{ $Vendor->id }}" data-code="{{ $Vendor->Party_code }}">{{ $Vendor->Party_name }}</option>
                                     @endforeach
@@ -56,6 +56,7 @@
                                         <th>Rate (Per Carton)</th>
                                         <th>Carton Qty</th>
                                         <th>Pcs</th>
+                                        <th>Liter</th>
                                         <th>Gross Total</th>
                                         <th>Discount</th>
                                         <th>Amount</th>
@@ -87,6 +88,7 @@
                                         <td><input type="number" class="form-control form-control-lg rate" name="rate[]" style="width: 100px;"></td>
                                         <td><input type="number" class="form-control form-control-lg carton-qty" name="carton_qty[]" style="width: 100px;"></td>
                                         <td><input type="number" class="form-control form-control-lg pcx" name="pcs[]" style="width: 100px;"></td>
+                                        <td><input type="number" class="form-control form-control-lg liter" name="liter[]" step="any" style="width: 100px;"></td>
                                         <td><input type="number" class="form-control form-control-lg gross-total" name="gross_total[]" style="width: 100px;" readonly></td>
                                         <td><input type="number" class="form-control form-control-lg discount" name="discount[]" style="width: 100px;"></td>
                                         <td><input type="number" class="form-control form-control-lg amount" name="amount[]" style="width: 100px;" readonly></td>
@@ -142,6 +144,7 @@
         <td><input type="number" class="form-control form-control-lg rate" name="rate[]" style="width: 100px;"></td>
         <td><input type="number" class="form-control form-control-lg carton-qty" name="carton_qty[]" style="width: 100px;"></td>
         <td><input type="number" class="form-control form-control-lg pcx" name="pcs[]" style="width: 100px;"></td>
+        <td><input type="number" class="form-control form-control-lg liter" name="liter[]" step="any" style="width: 100px;"></td>
         <td><input type="number" class="form-control form-control-lg gross-total" name="gross_total[]" style="width: 100px;" readonly></td>
         <td><input type="number" class="form-control form-control-lg discount" name="discount[]" style="width: 100px;"></td>
         <td><input type="number" class="form-control form-control-lg amount" name="amount[]" style="width: 100px;" readonly></td>
@@ -221,7 +224,7 @@
             let partycode = $(this).find(":selected").data('code') || 0;
             $(".party_code").val(partycode);
         });
-        
+
         $(document).on('change', '.item-select', function() {
             let selectedOption = $(this).find(":selected");
             let sizeValue = selectedOption.data('size') || 0;
@@ -232,32 +235,63 @@
             $(this).closest('tr').find('.size').prop('readonly', false).val(sizeValue).prop('readonly', true);
         });
 
-        // Auto-Calculate Amount and Gross Total
-        $(document).on('input', '.rate, .carton-qty, .discount', function() {
+        $(document).on('input', '.carton-qty, .pcs-carton, .size, .pcx, .rate, .discount', function() {
             let row = $(this).closest('tr');
-            let rate = parseFloat(row.find('.rate').val()) || 0;
+
             let cartonQty = parseFloat(row.find('.carton-qty').val()) || 0;
-            let pcsPerCarton = parseFloat(row.find('.pcs-carton').val()) || 0;
+            let packing = parseFloat(row.find('.pcs-carton').val()) || 0;
+            let pcsQty = parseFloat(row.find('.pcx').val()) || 0;
+            let rate = parseFloat(row.find('.rate').val()) || 0;
             let discount = parseFloat(row.find('.discount').val()) || 0;
+            let sizeText = row.find('.size').val().toLowerCase().trim();
 
-            // Calculate Gross Total (Rate * Carton Qty)
-            let grossTotal = rate * cartonQty;
-            row.find('.gross-total').val(grossTotal.toFixed(2));
+            // ✅ **Extract Numeric Value from Measurement (Size)**
+            let measurement = parseFloat(sizeText.replace(/[^0-9.]/g, '')) || 0;
+            if (measurement > 1 && measurement < 1000) {
+                measurement = measurement / 1000; // 700 ml → 0.7
+            } else if (measurement === 1000) {
+                measurement = 1; // 1000 ml → 1L
+            }
 
-            // Calculate Amount (Gross Total - Discount)
-            let amount = grossTotal - discount;
-            row.find('.amount').val(amount.toFixed(2));
+            // ✅ **Liter Calculation (Same as Sale)**
+            let litersFromCartons = cartonQty * packing * measurement;
+            let litersFromPcs = pcsQty * measurement;
+            let totalLiters = litersFromCartons + litersFromPcs;
 
-            calculateGrandTotal(); // Recalculate Grand Total whenever there is a change
+            row.find('.liter').val(parseFloat(totalLiters.toFixed(2)).toString());
+
+            // ✅ **Carton Amount Calculation**
+            let cartonAmount = rate * cartonQty;
+
+            // ✅ **Per Piece Rate Calculation**
+            let perPieceRate = (packing > 0) ? (rate / packing) : 0;
+
+            // ✅ **Pcs Amount Calculation**
+            let pcsAmount = perPieceRate * pcsQty;
+
+            // ✅ **Total Before Discount**
+            let totalBeforeDiscount = cartonAmount + pcsAmount;
+
+            // ✅ **Final Amount After Applying Discount**
+            let finalAmount = totalBeforeDiscount - discount;
+
+            row.find('.amount').val(parseFloat(finalAmount.toFixed(2)).toString());
+
+            // ✅ **Recalculate Grand Total**
+            calculateGrandTotal();
         });
 
-        // Calculate Grand Total
+        // ✅ **Calculate Grand Total (Same as Sale)**
         function calculateGrandTotal() {
             let grandTotal = 0;
             $(".amount").each(function() {
                 grandTotal += parseFloat($(this).val()) || 0;
             });
-            $("#grandTotal").val(grandTotal.toFixed(2));
+
+            $("#grandTotal").val(parseFloat(grandTotal.toFixed(2)).toString());
         }
+
+
+
     });
 </script>

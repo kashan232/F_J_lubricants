@@ -10,28 +10,23 @@
                 <div class="card-body">
 
                     <!-- Header Section -->
-                    <div class="row mb-2 align-items-center">
-                        <div class="col-md-4">
-                            <img src="{{ url('logo.jpeg') }}" alt="Logo" style="max-width: 120px;">
+                    <div class="row mb-2 align-items-center pt-2 pb-2" style="border-bottom: 3px solid #000;">
+                        <div class="col-md-4 d-flex align-items-center">
+                            <img src="{{ url('small-logo.png') }}" alt="Logo" style="max-width: 120px;">
+                            <h4 class="fw-bold ms-3" style="font-size: 16px;">FJL LUBRICANTS</h4>
                         </div>
                         <div class="col-md-4 text-center">
-                            <h4 class="fw-bold">FJ Lubricants</h4>
-                            <p>6-B Block-E, Latifabad No. 08, Hyderabad</p>
-                            <p>Phone: 0314-4021603 / 0334-2611233</p>
+                            <h5 class="font-weight-bold">FJLUBRICANTS</h5>
+                            <p class="mb-1" style="line-height: 1;">6-B Block-E, Latifabad No. 08, Hyderabad</p>
+                            <p class="mb-0" style="line-height: 1;">Phone: 0314-4021603 / 0334-2611233</p>
                         </div>
                         <div class="col-md-4 text-end">
                             <h4 class="fw-bold">MACKSOL</h4>
                         </div>
                     </div>
 
-                    <!-- Bottom Border -->
-                    <div class="border-bottom border-2 mb-3"></div>
-
-                    <!-- Invoice Title -->
-                    <h3 class="text-center fw-bold my-3">Purchase Invoice</h3>
-
-                    <!-- Invoice Details -->
-                    <div class="border p-3 mb-4">
+                    <h3 class="text-center fw-bold my-3"><span style="border-bottom: 2px solid #000;">Purchase Invoice</span></h3>
+                    <div class=" p-3 mb-4" style="border: 2px solid #000;">
                         <div class="row">
                             <div class="col-md-6">
                                 <h5>Invoice #: {{ $purchase->invoice_number }}</h5>
@@ -48,43 +43,45 @@
                     <table class="table table-bordered">
                         <thead class="table-light">
                             <tr class="text-center">
-                                <th>Item Name</th>
-                                <th>Pcs in Carton</th>
-                                <th>Carton Qty</th>
-                                <th>PCS Qty</th>
-                                <th>Rate</th>
-                                <th>Discount</th>
-                                <th>Amount</th>
+                                <th style="border: 1px solid #000;">Item Description</th>
+                                <th style="border: 1px solid #000;">Packing</th>
+                                <th style="border: 1px solid #000;">Carton Qty</th>
+                                <th style="border: 1px solid #000;">Pcs Qty</th>
+                                <th style="border: 1px solid #000;">Liter</th>
+                                <th style="border: 1px solid #000;">Rate</th>
+                                <th style="border: 1px solid #000;">Discount</th>
+                                <th style="border: 1px solid #000;">Amount</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach(json_decode($purchase->item) as $index => $item)
                             <tr>
-                                <td>{{ $item }}</td>
-                                <td class="text-center">{{ json_decode($purchase->pcs_carton)[$index] ?? 'N/A' }}</td>
-                                <td class="text-center">{{ json_decode($purchase->carton_qty)[$index] ?? 'N/A' }}</td>
-                                <td class="text-center">{{ json_decode($purchase->pcs)[$index] ?? 'N/A' }}</td>
-                                <td class="text-center">{{ json_decode($purchase->rate)[$index] ?? 'N/A' }}</td>
-                                <td class="text-center">{{ json_decode($purchase->discount)[$index] ?? 'N/A' }}</td>
-                                <td class="text-end">{{ json_decode($purchase->amount)[$index] ?? 'N/A' }}</td>
+                                <td style="border: 1px solid #000;">{{ $item }}</td>
+                                <td class="text-center" style="border: 1px solid #000;">{{ json_decode($purchase->pcs_carton)[$index] ?? 'N/A' }}</td>
+                                <td class="text-center" style="border: 1px solid #000;">{{ json_decode($purchase->carton_qty)[$index] ?? 'N/A' }}</td>
+                                <td class="text-center" style="border: 1px solid #000;">{{ json_decode($purchase->pcs)[$index] ?? 'N/A' }}</td>
+                                <td class="text-center" style="border: 1px solid #000;">{{ json_decode($purchase->liter)[$index] ?? 'N/A' }}</td>
+                                <td class="text-center" style="border: 1px solid #000;">{{ json_decode($purchase->rate)[$index] ?? 'N/A' }}</td>
+                                <td class="text-center" style="border: 1px solid #000;">{{ json_decode($purchase->discount)[$index] ?? 'N/A' }}</td>
+                                <td class="text-end" style="border: 1px solid #000;">{{ json_decode($purchase->amount)[$index] ?? 'N/A' }}</td>
                             </tr>
                             @endforeach
                         </tbody>
                         <tfoot class="table-light">
                             <tr>
-                                <td colspan="5"></td>
-                                <td class="fw-bold text-center">Gross Amount:</td>
-                                <td class="fw-bold text-end">{{ $purchase->gross_total_sum }}</td>
+                                <td colspan="6"></td>
+                                <td class="fw-bold text-center" style="border: 2px solid #000;">Gross Amount:</td>
+                                <td class="fw-bold text-end" style="border: 2px solid #000;">{{ $purchase->gross_total_sum }}</td>
                             </tr>
                             <tr>
-                                <td colspan="5"></td>
-                                <td class="fw-bold text-center">Discount:</td>
-                                <td class="fw-bold text-end">{{ $purchase->discount_total_sum }}</td>
+                                <td colspan="6"></td>
+                                <td class="fw-bold text-center" style="border: 2px solid #000;">Discount:</td>
+                                <td class="fw-bold text-end" style="border: 2px solid #000;">{{ $purchase->discount_total_sum }}</td>
                             </tr>
                             <tr>
-                                <td colspan="5"></td>
-                                <td class="fw-bold text-center">Net Total:</td>
-                                <td class="fw-bold text-end">{{ $purchase->grand_total }}</td>
+                                <td colspan="6"></td>
+                                <td class="fw-bold text-center" style="border: 2px solid #000;">Net Total:</td>
+                                <td class="fw-bold text-end" style="border: 2px solid #000;">{{ $purchase->grand_total }}</td>
                             </tr>
                         </tfoot>
                     </table>
@@ -101,7 +98,7 @@
 
             <!-- Print Button (Hidden in Print) -->
             <div class="text-end mt-4 no-print">
-                <button onclick="printInvoice()" class="btn btn-primary">
+                <button onclick="printInvoice()" class="btn btn-danger">
                     <i class="fa fa-print"></i> Print Invoice
                 </button>
             </div>
@@ -113,7 +110,27 @@
 @include('admin_panel.include.footer_include')
 
 <!-- Print Styles -->
+
+<!-- Print Styles -->
 <style>
+    tfoot {
+        display: table-footer-group;
+    }
+
+    tbody tr:last-child td {
+        padding-bottom: 10px;
+        /* Last row ke niche space */
+    }
+
+    tfoot tr:first-child td {
+        padding-top: 12px;
+        /* Tfoot aur tbody ke beech distance */
+    }
+
+    p {
+        font-size: 12px;
+    }
+
     @media print {
         body * {
             visibility: hidden;
@@ -133,6 +150,11 @@
 
         .no-print {
             display: none !important;
+        }
+
+        tfoot tr:first-child td {
+            padding-top: 15px !important;
+            /* Print ke liye extra space */
         }
     }
 </style>

@@ -173,6 +173,8 @@ Route::get('/stock-Record', [ReportController::class, 'stock_Record'])->name('st
 Route::get('/get-items-report/{subcategory}', [ReportController::class, 'getItems'])->name('get.items.report');
 Route::get('/get-item-details', [ReportController::class, 'getItemDetails'])->name('get.item.details');
 
+Route::get('/date-wise-recovery-report', [ReportController::class, 'date_wise_recovery_report'])->name('date-wise-recovery-report');
+Route::post('/get-recovery-report', [ReportController::class, 'getRecoveryReport'])->name('get-recovery-report');
 
 Route::get('/', function () {
     return view('welcome');

@@ -8,6 +8,7 @@ use App\Models\DistributorLedger;
 use App\Models\Product;
 use App\Models\Sale;
 use App\Models\Salesman;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -121,6 +122,7 @@ class SaleController extends Controller
                     'admin_or_user_id' => $userId,
                     'previous_balance' => $newPreviousBalance,
                     'closing_balance' => $newClosingBalance,
+                    'updated_at'        => Carbon::now(),
                 ]
             );
 

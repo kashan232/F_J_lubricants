@@ -43,16 +43,15 @@
                                 <tr>
                                     <th>Item Code</th>
                                     <th>Item Name</th>
-                                    <th>Size</th>
+                                    <th>Measurement</th>
                                     <th>Packing</th>
                                     <th>Purchased Qty</th>
                                     <th>Distributor Sold Qty</th>
                                     <th>Total Local Sale</th>
-                                    <th>Carton Qty</th>
+                                    <th>Carton Stock</th>
                                     <th>Liters</th>
                                     <th>Wholesale Price</th>
-                                    <th>Stock</th>
-                                    <th>Alert Qty</th>
+                                    <th>Stock(In Pcs)</th>
                                     <th>Total Stock Value</th>
                                 </tr>
                             </thead>
@@ -129,7 +128,6 @@
         });
         $("#subtotalStockValue").text(totalStockValue.toFixed(2));
     }
-
     $(document).on('click', '.search-item', function() {
         let category = $('.category-select').val();
         let subcategory = $('.subcategory-select').val();
@@ -173,6 +171,9 @@
                     totalLiters += liters;
                     totalStock += parseFloat(item.initial_stock) || 0;
 
+                    // ✅ Correct Liters Formatting
+                    let formattedLiters = liters % 1 === 0 ? liters.toFixed(0) : liters.toFixed(1);
+
                     tableContent += `<tr>
                     <td>${item.item_code}</td>
                     <td>${item.item_name}</td>
@@ -182,34 +183,36 @@
                     <td>${item.total_distributor_sold ?? 'N/A'}</td>
                     <td>${item.total_local_sold ?? 'N/A'}</td>
                     <td>${item.carton_quantity}</td>
-                    <td>${liters.toFixed(2)}</td>
+                    <td>${formattedLiters}</td>
                     <td>${item.wholesale_price}</td>
                     <td>${item.initial_stock}</td>
-                    <td>${item.alert_quantity}</td>
                     <td class="total-stock-value">${stockValue.toFixed(2)}</td>
                 </tr>`;
                 });
 
-                $('#item-details').html(tableContent);
+                // ✅ Correct Total Liters Formatting
+                let formattedTotalLiters = totalLiters % 1 === 0 ? totalLiters.toFixed(0) : totalLiters.toFixed(1);
 
                 let footerContent = `
-                <tr>
-                    <td colspan="4" class="text-end fw-bold">Total:</td>
-                    <td class="fw-bold">${totalPurchased}</td>
-                    <td class="fw-bold">${totalDistributorSold}</td>
-                    <td class="fw-bold">${totalLocalSale}</td>
-                    <td class="fw-bold">${totalCartonQty}</td>
-                    <td class="fw-bold">${totalLiters.toFixed(2)}</td>
-                    <td></td>
-                    <td class="fw-bold">${totalStock}</td>
-                    <td></td>
-                    <td class="fw-bold">${totalStockValue.toFixed(2)}</td>
-                </tr>`;
+            <tr>
+                <td colspan="4" class="text-end fw-bold">Total:</td>
+                <td class="fw-bold">${totalPurchased}</td>
+                <td class="fw-bold">${totalDistributorSold}</td>
+                <td class="fw-bold">${totalLocalSale}</td>
+                <td class="fw-bold">${totalCartonQty}</td>
+                <td class="fw-bold">${formattedTotalLiters}</td>
+                <td></td>
+                <td class="fw-bold">${totalStock}</td>
+                <td></td>
+                <td class="fw-bold">${totalStockValue.toFixed(2)}</td>
+            </tr>`;
 
+                $('#item-details').html(tableContent);
                 $('#stockReport tfoot').html(footerContent);
             }
         });
     });
+
 
 
 
@@ -219,28 +222,42 @@
         } = window.jspdf;
         let pdf = new jsPDF('l', 'pt', 'a4'); // Landscape mode
 
-        // Center align title
         let pageWidth = pdf.internal.pageSize.width;
         let title = "Item Stock Report";
         let textWidth = pdf.getTextWidth(title);
-        let xPosition = (pageWidth - textWidth) / 2; // Center calculation
+        let titleX = (pageWidth - textWidth) / 2; // Center title
 
-        pdf.setFontSize(16);
-        pdf.text(title, xPosition, 30); // Centered title at top
+        // ✅ Add Logo at Center
+        let logoUrl = "{{ url('logo.jpeg') }}"; // Logo URL
+        let logoWidth = 100; // Adjust width as needed
+        let logoHeight = 30; // Adjust height as needed
+        let logoX = (pageWidth - logoWidth) / 2; // Center logo
 
-        pdf.autoTable({
-            html: '#stockReport',
-            theme: 'grid',
-            startY: 50, // Move table down to avoid overlapping with title
-            styles: {
-                fontSize: 8,
-                cellPadding: 4
-            },
-            headStyles: {
-                fillColor: [41, 128, 185] // Blue header
-            }
-        });
+        let img = new Image();
+        img.src = logoUrl;
+        img.onload = function() {
+            pdf.addImage(img, 'JPEG', logoX, 10, logoWidth, logoHeight); // Logo position
 
-        pdf.save("Item_Stock_Report.pdf");
+            // ✅ Add Title Below Logo
+            pdf.setFontSize(16);
+            pdf.text(title, titleX, 80); // Adjust Y position (below logo)
+
+            // ✅ Add Table
+            pdf.autoTable({
+                html: '#stockReport',
+                theme: 'grid',
+                startY: 100, // Move table down (after logo + title)
+                styles: {
+                    fontSize: 8,
+                    cellPadding: 4
+                },
+                headStyles: {
+                    fillColor: [41, 128, 185] // Blue header
+                }
+            });
+
+            // ✅ Save PDF
+            pdf.save("Item_Stock_Report.pdf");
+        };
     });
 </script>

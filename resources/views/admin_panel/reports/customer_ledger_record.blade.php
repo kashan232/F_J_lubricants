@@ -38,6 +38,16 @@
                                 <label class="fw-bold">Area</label>
                                 <input type="text" id="area" class="form-control bg-light" readonly>
                             </div>
+
+                            <div class="col-md-6">
+                                <label class="fw-bold">Start Date</label>
+                                <input type="date" id="start_date" name="start_date" class="form-control bg-light">
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="fw-bold">End Date</label>
+                                <input type="date" id="end_date" name="end_date" class="form-control bg-light">
+                            </div>
                         </div>
                         <div class="text-center mt-4">
                             <button type="button" id="searchLedger" class="btn btn-primary btn-lg px-5">
@@ -45,74 +55,40 @@
                             </button>
                         </div>
                     </form>
-
-                    <h4 class="text-primary fw-bold text-center mt-4">Local Sales</h4>
-                    <table class="table table-bordered">
-                        <thead class="table-secondary">
-                            <tr>
-                                <th>Invoice No</th>
-                                <th>Date</th>
-                                <th>Shop Name</th>
-                                <th>Salesman</th>
-                                <th>Grand Total</th>
-                                <th>Discount</th>
-                                <th>Scheme</th>
-                                <th>Net Amount</th>
-                            </tr>
-                        </thead>
-                        <tbody id="localSalesData"></tbody>
-                        <tfoot class="table-light">
-                            <tr>
-                                <td colspan="7" class="text-end fw-bold">Total Sales:</td>
-                                <td class="fw-bold text-warning" id="totalSales">Rs. 0</td>
-                            </tr>
-                        </tfoot>
-                    </table>
-
-
-                    <hr class="my-4">
-
                     <div id="ledgerResult" style="display: none;">
-                        <h4 class="text-success fw-bold text-center">Recoveries</h4>
-                        <table class="table table-striped table-hover">
-                            <thead class="table-secondary">
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Amount Paid</th>
-                                    <th>Salesman</th>
-                                    <th>Date</th>
-                                </tr>
-                            </thead>
-                            <tbody id="recoveriesData"></tbody>
-                            <tfoot class="table-light">
-                                <tr>
-                                    <td colspan="3" class="text-end fw-bold">Total Recoveries:</td>
-                                    <td class="fw-bold text-success" id="totalRecoveries">Rs. 0</td>
-                                </tr>
-                            </tfoot>
-                        </table>
-
-                        <h4 class="text-primary fw-bold text-center mt-4">Customer Ledger Summary</h4>
-                        <table class="table table-bordered">
-                            <thead class="table-secondary">
-                                <tr>
-                                    <th>Previous Balance</th>
-                                    <th>Closing Balance</th>
-                                </tr>
-                            </thead>
-                            <tbody id="ledgerData"></tbody>
-                        </table>
+                        <div class="ledger-container mt-4">
+                            <div class="ledger-header">CUSTOMER LEDGER</div>
+                            <div class="ledger-info">
+                                <span><strong>Customer:</strong> <span id="CustomerName"></span></span>
+                                <span><strong>Duration:</strong> From <span id="startDate"></span> To <span id="endDate"></span></span>
+                            </div>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>INV-No</th>
+                                        <th>Description</th>
+                                        <th>Debit</th>
+                                        <th>Credit</th>
+                                        <th>Balance</th>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="5" class="opening-balance">Opening Balance:</td>
+                                        <td id="openingBalance">Rs. 0</td>
+                                    </tr>
+                                </thead>
+                                <tbody id="ledgerData"></tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="3"><strong>Totals:</strong></td>
+                                        <td id="totalDebit">0</td>
+                                        <td id="totalCredit">0</td>
+                                        <td id="closingBalance">0</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
                     </div>
-
-                    <!-- Ledger Summary at the End -->
-                    <div id="ledgerSummary" class="text-center mt-5">
-                        <h4 class="fw-bold text-success">Total Recoveries: <span id="totalRecoveriesPrint">Rs. 0</span></h4>
-                        <h4 class="fw-bold text-primary">Total Previous Balance: <span id="prevBalancePrint">Rs. 0</span></h4>
-                        <h4 class="fw-bold text-danger">Total Closing Balance: <span id="closingBalancePrint">Rs. 0</span></h4>
-
-                        <!-- <button id="printLedger" class="btn btn-danger mt-3">Print Ledger</button> -->
-                    </div>
-
                 </div>
             </div>
         </div>
@@ -120,6 +96,54 @@
 </div>
 
 @include('admin_panel.include.footer_include')
+
+<style>
+    .ledger-container {
+        border: 2px solid black;
+        padding: 10px;
+        max-width: 900px;
+        margin: 20px auto;
+        background: #fff;
+    }
+
+    .ledger-header {
+        text-align: center;
+        font-size: 20px;
+        font-weight: bold;
+        padding: 10px;
+        border-bottom: 2px solid black;
+    }
+
+    .ledger-info {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px;
+        border-bottom: 2px solid black;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th,
+    td {
+        border: 1px solid black;
+        padding: 8px;
+        text-align: center;
+    }
+
+    thead th {
+        background: #f2f2f2;
+    }
+
+    .opening-balance {
+        text-align: right;
+        font-weight: bold;
+        padding: 8px;
+        border: 1px solid black;
+    }
+</style>
 
 <script>
     $(document).ready(function() {
@@ -130,8 +154,12 @@
             $('#area').val(selected.data('area'));
         });
 
+
         $('#searchLedger').click(function() {
             var CustomerId = $('#Customer').val();
+            let startDate = $('#start_date').val();
+            let endDate = $('#end_date').val();
+
             if (!CustomerId) {
                 alert('Please select a Customer.');
                 return;
@@ -141,76 +169,109 @@
                 url: "{{ route('fetch-Customer-ledger') }}",
                 type: "GET",
                 data: {
-                    Customer_id: CustomerId
+                    Customer_id: CustomerId,
+                    start_date: startDate,
+                    end_date: endDate
                 },
                 success: function(response) {
                     $('#ledgerResult').show();
+                    $('#CustomerName').text($('#Customer option:selected').text()); // Customer name show karein
+                    $('#startDate').text(response.startDate || "N/A"); // Agar start_date nahi hai to "N/A"
+                    $('#endDate').text(response.endDate || "N/A");
 
-                    // **Recoveries Handling**
-                    let totalRecovery = 0;
-                    let recoveriesHTML = response.recoveries.map(recovery => {
-                        totalRecovery += parseFloat(recovery.amount_paid);
-                        return `
+                    let openingBalance = parseFloat(response.opening_balance) || 0;
+                    let balance = openingBalance;
+                    let totalDebit = 0,
+                        totalCredit = 0;
+                    let ledgerHTML = "";
+
+                    let allEntries = [];
+
+                    // ✅ Opening Balance Entry
+                    ledgerHTML += `
                 <tr>
-                    <td>${recovery.id}</td>
-                    <td><b class="text-success">Rs. ${recovery.amount_paid}</b></td>
-                    <td>${recovery.salesman}</td>
-                    <td>${recovery.date}</td>
-                </tr>`;
-                    }).join('');
+                    <td>${response.start_date || "N/A"}</td>
+                    <td>-</td>
+                    <td class="fw-bold">Opening Balance</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td class="fw-bold text-primary">Rs. ${balance.toFixed(2)}</td>
+                </tr>
+            `;
 
-                    $('#recoveriesData').html(recoveriesHTML);
-                    $('#totalRecoveries').text(`Rs. ${totalRecovery.toFixed(2)}`);
+                    // ✅ Sales Entries (local_sales)
+                    response.local_sales.forEach(entry => {
+                        allEntries.push({
+                            date: entry.Date,
+                            type: 'sale',
+                            invoice_number: entry.invoice_number,
+                            salesman: entry.Saleman,
+                            amount: parseFloat(entry.net_amount) || 0
+                        });
+                    });
 
-                    // **Local Sales Handling**
-                    let totalSales = 0;
-                    let localSalesHTML = response.local_sales.map(sale => {
-                        totalSales += parseFloat(sale.net_amount);
-                        return `
-                <tr>
-                    <td>${sale.invoice_number}</td>
-                    <td>${sale.Date}</td>
-                    <td>${sale.customer_shopname}</td>
-                    <td>${sale.Saleman}</td>
-                    <td><b class="text-primary">Rs. ${sale.grand_total}</b></td>
-                    <td>${sale.discount_value}</td>
-                    <td>${sale.scheme_value}</td>
-                    <td><b class="text-success">Rs. ${sale.net_amount}</b></td>
-                </tr>`;
-                    }).join('');
+                    // ✅ Recovery Entries
+                    response.recoveries.forEach(entry => {
+                        allEntries.push({
+                            date: entry.date,
+                            type: 'recovery',
+                            salesman: entry.salesman,
+                            amount: parseFloat(entry.amount_paid) || 0
+                        });
+                    });
 
-                    $('#localSalesData').html(localSalesHTML);
-                    $('#totalSales').text(`Rs. ${totalSales.toFixed(2)}`); // **Total Sales Update**
+                    // ✅ Sort Entries by Date (Sales pehle, Recovery baad me agar date same ho)
+                    allEntries.sort((a, b) => {
+                        let dateA = new Date(a.date);
+                        let dateB = new Date(b.date);
+                        if (dateA - dateB === 0) {
+                            return a.type === 'sale' ? -1 : 1; // Sale pehle ayegi, Recovery baad me
+                        }
+                        return dateA - dateB;
+                    });
 
-                    // **Ledger Summary**
-                    $('#ledgerData').html(`
-                <tr>
-                    <td class="text-primary fw-bold">Rs. ${response.previous_balance}</td>
-                    <td class="text-danger fw-bold">Rs. ${response.closing_balance}</td>
-                </tr>`);
+                    // ✅ Maintain Correct Ledger Balance
+                    allEntries.forEach(entry => {
+                        if (entry.type === 'sale') {
+                            let debit = entry.amount;
+                            totalDebit += debit;
+                            balance += debit; // Sale ka amount balance me add hoga
+                            ledgerHTML += `
+                        <tr>
+                            <td>${entry.date}</td>
+                            <td>${entry.invoice_number}</td>
+                            <td>To Sale A/c (${entry.salesman})</td>
+                            <td>Rs. ${debit.toFixed(2)}</td>
+                            <td>-</td>
+                            <td class="fw-bold ${balance < 0 ? 'text-danger' : 'text-success'}">Rs. ${balance.toFixed(2)}</td>
+                        </tr>
+                    `;
+                        } else if (entry.type === 'recovery') {
+                            let credit = entry.amount;
+                            totalCredit += credit;
+                            balance -= credit; // Recovery ka amount balance se minus hoga
+                            ledgerHTML += `
+                        <tr>
+                            <td>${entry.date}</td>
+                            <td>-</td>
+                            <td>Cash Received (${entry.salesman})</td>
+                            <td>-</td>
+                            <td>Rs. ${credit.toFixed(2)}</td>
+                            <td class="fw-bold ${balance < 0 ? 'text-danger' : 'text-success'}">Rs. ${balance.toFixed(2)}</td>
+                        </tr>
+                    `;
+                        }
+                    });
+
+                    // ✅ Update Totals
+                    $('#ledgerData').html(ledgerHTML);
+                    $('#openingBalance').text(`Rs. ${openingBalance.toFixed(2)}`);
+                    $('#totalDebit').text(`Rs. ${totalDebit.toFixed(2)}`);
+                    $('#totalCredit').text(`Rs. ${totalCredit.toFixed(2)}`);
+                    $('#closingBalance').text(`Rs. ${balance.toFixed(2)}`);
                 }
             });
         });
 
-
-        $('#printLedger').click(function() {
-            $('body').addClass('print-mode');
-            window.print();
-            $('body').removeClass('print-mode');
-        });
     });
-
-    // Print styling
-    $('<style>')
-        .prop('type', 'text/css')
-        .html(`
-        @media print {
-            #ledgerSummary {
-                display: block !important;
-                text-align: center;
-                margin-top: 50px;
-                font-size: 22px;
-            }
-        }
-    `).appendTo('head');
 </script>

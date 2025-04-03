@@ -109,6 +109,10 @@
                         <label for="date" class="form-label">Date</label>
                         <input type="date" class="form-control" id="date" name="date" required>
                     </div>
+                    <div class="mb-3">
+                        <label for="remarks" class="form-label">Remarks</label>
+                        <textarea class="form-control" id="remarks" name="remarks"></textarea>
+                    </div>
                     <button type="submit" class="btn btn-success">Save Recovery</button>
                 </form>
             </div>
@@ -131,6 +135,7 @@
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         var recoveryModal = document.getElementById('recoveryModal');
+
         recoveryModal.addEventListener('show.bs.modal', function(event) {
             var button = event.relatedTarget;
             var ledgerId = button.getAttribute('data-id');
@@ -157,11 +162,38 @@
                         var ledgerId = document.getElementById('ledger_id').value;
                         var newClosingBalance = data.new_closing_balance;
                         document.getElementById('closing_balance_' + ledgerId).innerText = newClosingBalance;
+
                         var recoveryModal = bootstrap.Modal.getInstance(document.getElementById('recoveryModal'));
                         recoveryModal.hide();
+
+                        // ✅ Show SweetAlert Success Message
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Recovery Added!',
+                            text: 'Closing balance updated successfully.',
+                            timer: 2000,
+                            showConfirmButton: false
+                        }).then(() => {
+                            location.reload(); // ✅ Page refresh after alert closes
+                        });
+                    } else {
+                        // ✅ Show SweetAlert Error Message
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!',
+                            text: data.message || 'Something went wrong!',
+                        });
                     }
                 })
-                .catch(error => console.error('Error:', error));
+                .catch(error => {
+                    console.error('Error:', error);
+                    // ✅ Show Error Alert
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: 'An error occurred while processing your request.',
+                    });
+                });
         });
     });
 </script>

@@ -155,12 +155,15 @@ class DistributorController extends Controller
             'amount_paid' => $request->amount_paid,
             'salesman' => $request->salesman,
             'date' => $request->date,
-        ]);
+            'remarks' => $request->remarks,
+            ]);
 
         return response()->json([
             'success' => true,
             'new_closing_balance' => number_format($ledger->closing_balance, 0)
         ]);
+
+
     }
 
 
