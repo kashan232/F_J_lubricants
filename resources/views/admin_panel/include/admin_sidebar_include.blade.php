@@ -57,6 +57,7 @@
                     <ul>
                         <li><a href="{{ route('Purchase') }}">Add Purchase</a></li>
                         <li><a href="{{ route('all-Purchases') }}">All Purchase</a></li>
+                        <li><a href="{{ route('all-purchase-return') }}"> Purchase Returns</a></li>
                     </ul>
                 </li>
 

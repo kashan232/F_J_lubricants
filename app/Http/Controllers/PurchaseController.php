@@ -75,6 +75,7 @@ class PurchaseController extends Controller
             'category' => json_encode($request->category),
             'subcategory' => json_encode($request->subcategory),
             'item' => json_encode($request->item),
+            'size' => json_encode($request->size),
             'rate' => json_encode($request->rate),
             'carton_qty' => json_encode($request->carton_qty),
             'pcs' => json_encode($request->pcs),
@@ -176,4 +177,6 @@ class PurchaseController extends Controller
         $purchase->grand_total = $purchase->gross_total_sum - $purchase->discount_total_sum;
         return view('admin_panel.purchase.invoice', compact('purchase'));
     }
+
+    
 }

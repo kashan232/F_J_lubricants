@@ -13,6 +13,7 @@ use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\SalesmanController;
 use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\LocalSaleController;
+use App\Http\Controllers\PurchaseReturnController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SaleController;
 use App\Http\Controllers\VendorController;
@@ -110,6 +111,11 @@ Route::get('/get-items', [PurchaseController::class, 'getItems'])->name('get.ite
 Route::post('/store-Purchase', [PurchaseController::class, 'store_Purchase'])->name('store-Purchase');
 Route::get('/all-Purchases', [PurchaseController::class, 'all_Purchases'])->middleware(['auth', 'admin'])->name('all-Purchases');
 Route::get('/purchase/invoice/{id}', [PurchaseController::class, 'purchaseInvoice'])->name('purchase.invoice');
+
+Route::get('/purchase-return/{id}', [PurchaseReturnController::class, 'showReturnForm'])->name('purchase.return.form');
+Route::post('/purchase-return/store', [PurchaseReturnController::class, 'store'])->name('purchase.return.store');
+Route::get('/all-purchase-return', [PurchaseReturnController::class, 'all_purchase_return'])->middleware(['auth', 'admin'])->name('all-purchase-return');
+
 
 Route::get('/add-sale', [SaleController::class, 'add_sale'])->middleware(['auth', 'admin'])->name('add-sale');
 Route::post('/store-sale', [SaleController::class, 'store_sale'])->name('store-sale');

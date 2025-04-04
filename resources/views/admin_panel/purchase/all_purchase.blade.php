@@ -146,6 +146,9 @@
                                         </span>
                                     </td>
                                     <td>
+                                        <a href="{{ route('purchase.return.form', $purchase->id) }}" class="btn btn-dark btn-sm text-white">
+                                            Purchase Return
+                                        </a>
                                         <a href="{{ route('purchase.invoice', $purchase->id) }}" class="btn btn-primary btn-sm text-white">
                                             Invoice
                                         </a>
