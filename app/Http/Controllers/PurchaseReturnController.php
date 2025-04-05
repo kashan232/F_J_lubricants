@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Models\Purchase;
 use App\Models\PurchaseReturn;
+use App\Models\VendorLedger;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -35,7 +36,7 @@ class PurchaseReturnController extends Controller
         $purchaseId = $request->purchase_id;
         $userId = Auth::id();
 
-        // Save the return record
+        // Step 1: Save the return record
         PurchaseReturn::create([
             'admin_or_user_id' => $userId,
             'purchase_id' => $purchaseId,
@@ -51,20 +52,19 @@ class PurchaseReturnController extends Controller
             'return_liters' => json_encode($request->return_liters),
         ]);
 
-        // Update return status in purchase
+        // Step 2: Update return status in purchase
         Purchase::where('id', $purchaseId)->update(['return_status' => 1]);
 
-        // Step 2: Adjust stock in products table
+        // Step 3: Adjust stock in products table
         for ($i = 0; $i < count($request->item); $i++) {
             $category = $request->category[$i];
             $subcategory = $request->subcategory[$i];
             $item_name = $request->item[$i];
 
-            $returnQty = (int)$request->return_qty[$i]; // cartons returned
-            $pcsPerCarton = (int)$request->pcs_carton[$i]; // pieces per carton
+            $returnQty = (int)$request->return_qty[$i];
+            $pcsPerCarton = (int)$request->pcs_carton[$i];
             $totalReturnedPcs = $returnQty * $pcsPerCarton;
 
-            // Fetch the product record
             $product = Product::where('category', $category)
                 ->where('sub_category', $subcategory)
                 ->where('item_name', $item_name)
@@ -77,8 +77,25 @@ class PurchaseReturnController extends Controller
             }
         }
 
-        return redirect()->back()->with('success', 'Purchase return saved and stock updated successfully.');
+        // Step 4: Calculate return amount total
+        $returnAmounts = $request->return_amount;
+        $totalReturnAmount = 0;
+
+        foreach ($returnAmounts as $amount) {
+            $totalReturnAmount += floatval($amount);
+        }
+        // Step 5: Update closing_balance of vendor
+        $vendorId = $request->party_name; // assuming this is vendor_id
+        $vendorLedger = VendorLedger::where('vendor_id', $vendorId)->first();
+
+        if ($vendorLedger) {
+            $vendorLedger->closing_balance = $vendorLedger->closing_balance - $totalReturnAmount;
+            $vendorLedger->save();
+        }
+
+        return redirect()->back()->with('success', 'Purchase return saved, stock updated, and vendor ledger adjusted successfully.');
     }
+
 
 
     public function all_purchase_return()
