@@ -120,21 +120,29 @@
 @include('admin_panel.include.footer_include')
 <script>
     document.querySelectorAll('.return-qty').forEach((input) => {
-        input.addEventListener('input', function() {
+        input.addEventListener('input', function () {
             let index = this.dataset.index;
             let rate = parseFloat(this.dataset.rate);
             let pcs = parseFloat(this.dataset.pcs);
-            let measurement = parseFloat(this.dataset.measurement); // ml or liters
+            let measurementRaw = this.dataset.measurement.trim().toLowerCase(); // "700 ml" or "1 liter"
             let qty = parseFloat(this.value) || 0;
 
-            // Return Amount = qty * rate
+            // Return Amount
             let amount = qty * rate;
             document.getElementById(`return-amount-${index}`).value = amount.toFixed(2);
 
-            // Return Liters = return_qty * pcs_carton * measurement
-            let total = qty * pcs * measurement;
+            // Convert measurement to liters
+            let measurementValue = 0;
+            if (measurementRaw.includes('ml')) {
+                measurementValue = parseFloat(measurementRaw) / 1000;
+            } else if (measurementRaw.includes('liter')) {
+                measurementValue = parseFloat(measurementRaw);
+            } else {
+                measurementValue = 0; // fallback
+            }
 
-            // Remove trailing .00 for clean display
+            // Return Liters = return_qty * pcs_per_carton * measurement_in_liters
+            let total = qty * pcs * measurementValue;
             let litersFormatted = (total % 1 === 0) ? total.toFixed(0) : total.toFixed(1);
             document.getElementById(`return-liters-${index}`).value = litersFormatted;
         });

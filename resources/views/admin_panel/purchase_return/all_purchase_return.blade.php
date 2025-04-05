@@ -13,11 +13,16 @@
 
             <div class="card p-4">
                 <div class="card-body">
+                @if (session()->has('success'))
+                    <div class="alert alert-success">
+                        <strong>Success!</strong> {{ session('success') }}.
+                    </div>
+                    @endif
                     <div class="table-responsive">
                         <table class="table datanew">
                             <thead>
                                 <tr>
-                                    <th>ID</th>
+                                    <th>Invoice</th>
                                     <th>Category</th>
                                     <th>Subcategory</th>
                                     <th>Item</th>
@@ -29,13 +34,12 @@
                                     <th>Return Amount</th>
                                     <th>Return Liters</th>
                                     <th>Created At</th>
-                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach($Purchases as $purchase)
                                 <tr>
-                                    <td>{{ $purchase->id }}</td>
+                                    <td>{{ $purchase->purchase->invoice_number }}</td>
                                     <td>
                                         @foreach(json_decode($purchase->category) as $cat)
                                         {{ $cat }}<br>
@@ -87,8 +91,6 @@
                                         @endforeach
                                     </td>
                                     <td>{{ \Carbon\Carbon::parse($purchase->created_at)->format('d M Y h:i A') }}</td>
-                                    <td>
-                                    </td>
                                 </tr>
                                 @endforeach
                             </tbody>

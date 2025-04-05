@@ -97,7 +97,12 @@
                             <tbody>
                                 @foreach($Purchases as $purchase)
                                 <tr>
-                                    <td>{{ $purchase->invoice_number }}</td>
+                                    <td>
+                                        {{ $purchase->invoice_number }}
+                                        @if($purchase->return_status == 1)
+                                        <span class="badge bg-danger text-white ms-2">Returned</span>
+                                        @endif
+                                    </td>
                                     <td>{{ $purchase->purchase_date }} <br>{{ $purchase->vendorLedger->closing_balance ?? 'N/A' }}</td>
                                     <td>{{ $purchase->vendor?->Party_name ?? 'N/A' }}</td>
 
