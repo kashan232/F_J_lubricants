@@ -40,6 +40,8 @@ class PurchaseReturnController extends Controller
         PurchaseReturn::create([
             'admin_or_user_id' => $userId,
             'purchase_id' => $purchaseId,
+            'party_name' => $request->party_name,
+            'return_date' => $request->return_date,
             'category' => json_encode($request->category),
             'subcategory' => json_encode($request->subcategory),
             'item' => json_encode($request->item),

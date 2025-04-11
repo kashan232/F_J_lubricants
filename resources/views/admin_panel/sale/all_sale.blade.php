@@ -15,13 +15,13 @@
             <div class="card p-4">
                 <div class="card-body">
                     @if (session()->has('success'))
-                        <div class="alert alert-success">
-                            <strong>Success!</strong> {{ session('success') }}.
-                        </div>
+                    <div class="alert alert-success">
+                        <strong>Success!</strong> {{ session('success') }}.
+                    </div>
                     @endif
 
                     <div class="table-responsive">
-                    <table class="table datanew">
+                        <table class="table datanew">
                             <thead>
                                 <tr>
                                     <th>Invoice No</th>
@@ -39,34 +39,38 @@
                             </thead>
                             <tbody>
                                 @foreach ($Sales as $sale)
-                                    <tr>
-                                        <td>{{ $sale->invoice_number }}</td>
-                                        <td>{{ $sale->Date }}</td>
-                                        <td>{{ $sale->distributor->Customer ?? 'N/A' }} <br> {{ $sale->distributor->Owner ?? 'N/A' }}</td>
-                                        <td>{{ $sale->distributor_city }} <br> {{ $sale->distributor_area }}</td>
-                                        <td>{{ $sale->distributor_address }} <br> {{ $sale->distributor_phone }}</td>
-                                        <td>{{ $sale->Booker }}</td>
-                                        <td>{{ $sale->Saleman }}</td>
-                                        <td>
-                                            @php
-                                                $categories = json_decode($sale->category, true);
-                                            @endphp
-                                            {{ is_array($categories) ? implode(', ', $categories) : $categories }}
-                                        </td>
-                                        <td>
-                                            @php
-                                                $items = json_decode($sale->item, true);
-                                            @endphp
-                                            {{ is_array($items) ? implode(', ', $items) : $items }}
-                                        </td>
-                                        <td>{{ number_format($sale->net_amount, 2) }}</td>
-                                        <td>
-                                            <!-- <a href="{{ route('show_sale', $sale->id) }}" class="btn btn-sm btn-primary text-white">View</a> -->
-                                            <a href="{{ route('sale.invoice', $sale->id) }}" class="btn btn-dark btn-sm text-white">
-                                                Invoice
-                                            </a>
-                                        </td>
-                                    </tr>
+                                <tr>
+                                    <td>{{ $sale->invoice_number }}
+                                        @if($sale->return_status == 1)
+                                        <span class="badge bg-danger text-white ms-2">Returned</span>
+                                        @endif
+                                    </td>
+                                    <td>{{ $sale->Date }}</td>
+                                    <td>{{ $sale->distributor->Customer ?? 'N/A' }} <br> {{ $sale->distributor->Owner ?? 'N/A' }}</td>
+                                    <td>{{ $sale->distributor_city }} <br> {{ $sale->distributor_area }}</td>
+                                    <td>{{ $sale->distributor_address }} <br> {{ $sale->distributor_phone }}</td>
+                                    <td>{{ $sale->Booker }}</td>
+                                    <td>{{ $sale->Saleman }}</td>
+                                    <td>
+                                        @php
+                                        $categories = json_decode($sale->category, true);
+                                        @endphp
+                                        {{ is_array($categories) ? implode(', ', $categories) : $categories }}
+                                    </td>
+                                    <td>
+                                        @php
+                                        $items = json_decode($sale->item, true);
+                                        @endphp
+                                        {{ is_array($items) ? implode(', ', $items) : $items }}
+                                    </td>
+                                    <td>{{ number_format($sale->net_amount, 2) }}</td>
+                                    <td>
+                                        <a href="{{ route('sale.invoice', $sale->id) }}" class="btn btn-dark btn-sm text-white">
+                                            Invoice
+                                        </a>
+                                    </td>
+
+                                </tr>
                                 @endforeach
                             </tbody>
                         </table>

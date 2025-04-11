@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Distributor;
 use App\Models\DistributorLedger;
+use App\Models\DistributorSaleReturn;
 use App\Models\Product;
 use App\Models\Sale;
 use App\Models\Salesman;
@@ -24,7 +25,7 @@ class SaleController extends Controller
             $categories = Category::where('admin_or_user_id', $userId)->get();
             $Staffs = Salesman::where('admin_or_user_id', $userId)->get();
 
-            return view('admin_panel.sale.add_sale', compact('Distributors', 'categories','Staffs'));
+            return view('admin_panel.sale.add_sale', compact('Distributors', 'categories', 'Staffs'));
         } else {
             return redirect()->back();
         }
@@ -163,4 +164,6 @@ class SaleController extends Controller
         $sale = Sale::with('distributor')->findOrFail($id);
         return view('admin_panel.sale.invoice', compact('sale'));
     }
+
+    
 }

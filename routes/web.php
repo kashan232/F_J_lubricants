@@ -16,6 +16,7 @@ use App\Http\Controllers\LocalSaleController;
 use App\Http\Controllers\PurchaseReturnController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SaleController;
+use App\Http\Controllers\SaleReturnController;
 use App\Http\Controllers\VendorController;
 use App\Models\Product;
 use Illuminate\Support\Facades\Route;
@@ -122,8 +123,13 @@ Route::post('/store-sale', [SaleController::class, 'store_sale'])->name('store-s
 Route::get('/all-sale', [SaleController::class, 'all_sale'])->middleware(['auth', 'admin'])->name('all-sale');
 Route::get('/sale/{id}', [SaleController::class, 'show_sale'])->name('show_sale');
 Route::get('/sale/invoice/{id}', [SaleController::class, 'saleInvoice'])->name('sale.invoice');
+// web.php
 
-// sales men
+Route::get('/add-sale-return', [SaleReturnController::class, 'add_sale_return'])->middleware(['auth', 'admin'])->name('add-sale-return');
+Route::get('/get-sale-invoices', [SaleReturnController::class, 'getSaleInvoices'])->name('get-sale-invoices');
+Route::get('/fetch-sale-details', [SaleReturnController::class, 'fetchSaleDetails'])->name('fetch-sale-details');
+Route::post('/sale-return', [SaleReturnController::class, 'store'])->name('sale-return.store');
+Route::get('/all-sale-return', [SaleReturnController::class, 'all_sale_return'])->middleware(['auth', 'admin'])->name('all-sale-return');
 
 // Salesmen Routes
 Route::get('/salesmen', [SalesmanController::class, 'salesmen'])->middleware(['auth', 'admin'])->name('salesmen'); // Displays Salesmen List
@@ -170,6 +176,10 @@ Route::get('/local/sale/invoice/{id}', [LocalSaleController::class, 'localsaleIn
 // Reporting
 Route::get('/Distributor-Ledger-Record', [ReportController::class, 'Distributor_Ledger_Record'])->name('Distributor-Ledger-Record');
 Route::get('/fetch-distributor-ledger', [ReportController::class, 'fetchDistributorLedger'])->name('fetch-distributor-ledger');
+
+Route::get('/vendor-Ledger-Record', [ReportController::class, 'vendor_Ledger_Record'])->name('vendor-Ledger-Record');
+Route::get('/fetch-vendor-ledger', [ReportController::class, 'fetchvendorLedger'])->name('fetch-vendor-ledger');
+
 
 
 Route::get('/Customer-Ledger-Record', [ReportController::class, 'Customer_Ledger_Record'])->name('Customer-Ledger-Record');

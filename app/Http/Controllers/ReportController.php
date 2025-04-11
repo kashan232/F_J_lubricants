@@ -11,6 +11,7 @@ use App\Models\Product;
 use App\Models\Purchase;
 use App\Models\Recovery;
 use App\Models\Sale;
+use App\Models\Vendor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -61,6 +62,82 @@ class ReportController extends Controller
             'closing_balance' => $ledger->closing_balance ?? 0,
             'recoveries' => $recoveries,
             'sales' => $sales,
+            'startDate' => $startDate,
+            'endDate' => $endDate,
+        ]);
+    }
+
+    public function vendor_Ledger_Record()
+    {
+        if (Auth::id()) {
+            $userId = Auth::id();
+            $Vendors = Vendor::where('admin_or_user_id', $userId)->get(); // Adjust according to your database structure
+            return view('admin_panel.reports.vendor_ledger_record', [
+                'Vendors' => $Vendors,
+            ]);
+        } else {
+            return redirect()->back();
+        }
+    }
+
+    public function fetchvendorLedger(Request $request)
+    {
+        $vendorId = $request->input('Vendor_id');
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+
+        // Ledger record including balances
+        $ledger = DB::table('vendor_ledgers')
+            ->where('vendor_id', $vendorId)
+            ->select('opening_balance', 'previous_balance', 'closing_balance')
+            ->first();
+
+        $opening_balance = $ledger->opening_balance ?? 0;
+        $previous_balance = $ledger->previous_balance ?? 0;
+        $closing_balance = $ledger->closing_balance ?? 0;
+
+        // ✅ Fetch Purchases
+        $purchases = DB::table('purchases')
+            ->where('party_name', $vendorId)
+            ->whereBetween('purchase_date', [$startDate, $endDate])
+            ->select('id', 'invoice_number', 'purchase_date', 'grand_total')
+            ->get()
+            ->map(function ($purchase) {
+                return [
+                    'invoice_number' => $purchase->invoice_number,
+                    'date' => $purchase->purchase_date,
+                    'grand_total' => $purchase->grand_total,
+                    'net_amount' => $purchase->grand_total, // assuming no discounts/scheme
+                    'salesman' => null, // optional
+                ];
+            });
+
+        // ✅ Fetch Returns
+        $returnsRaw = DB::table('purchase_returns')
+            ->where('party_name', $vendorId)
+            ->whereBetween('return_date', [$startDate, $endDate])
+            ->select('id', 'purchase_id', 'return_date', 'return_amount')
+            ->get();
+
+        $returns = [];
+        foreach ($returnsRaw as $return) {
+            $amountArray = json_decode($return->return_amount, true);
+            $amountSum = collect($amountArray)->sum();
+
+            $returns[] = [
+                'id' => $return->id,
+                'invoice_number' => 'PURRET-' . str_pad($return->id, 3, '0', STR_PAD_LEFT),
+                'date' => $return->return_date,
+                'net_amount' => $amountSum,
+            ];
+        }
+
+        return response()->json([
+            'opening_balance' => $opening_balance,
+            'previous_balance' => $previous_balance,
+            'closing_balance' => $closing_balance,
+            'purchases' => $purchases,
+            'returns' => $returns,
             'startDate' => $startDate,
             'endDate' => $endDate,
         ]);
@@ -217,10 +294,30 @@ class ReportController extends Controller
                 }
             }
 
+            // 4️⃣ **Total Purchase Return Quantity**
+            $returnData = DB::table('purchase_returns')->whereJsonContains('item', $item->item_name)->get();
+            $totalPurchaseReturnQty = 0;
+
+            foreach ($returnData as $return) {
+                $itemNames = json_decode($return->item, true);
+                $returnQtyArray = json_decode($return->return_qty, true);
+
+                if (is_array($itemNames) && is_array($returnQtyArray)) {
+                    foreach ($itemNames as $index => $returnItem) {
+                        if ($returnItem === $item->item_name) {
+                            $totalPurchaseReturnQty += isset($returnQtyArray[$index]) ? intval($returnQtyArray[$index]) : 0;
+                        }
+                    }
+                }
+            }
+
+
             // ✅ Assign the Correct Values (Separate Counts)
             $item->total_purchased = $totalPurchasedQty;
+            $item->total_purchase_return = $totalPurchaseReturnQty; // New Line
             $item->total_distributor_sold = $totalDistributorSoldQty;
             $item->total_local_sold = $totalLocalSoldQty;
+            
         }
 
         return response()->json($items);

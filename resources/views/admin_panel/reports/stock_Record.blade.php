@@ -46,6 +46,7 @@
                                     <th>Measurement</th>
                                     <th>Packing</th>
                                     <th>Purchased Qty</th>
+                                    <th>Purchased Returned Qty</th>
                                     <th>Distributor Sold Qty</th>
                                     <th>Total Local Sale</th>
                                     <th>Carton Stock</th>
@@ -148,6 +149,7 @@
                 let tableContent = '';
                 let totalStockValue = 0;
                 let totalPurchased = 0;
+                let totalPurchaseReturn = 0; // 🔁 NEW
                 let totalDistributorSold = 0;
                 let totalLocalSale = 0;
                 let totalCartonQty = 0;
@@ -165,47 +167,48 @@
                     let liters = sizeValue * item.pcs_in_carton * item.carton_quantity;
 
                     totalPurchased += parseFloat(item.total_purchased) || 0;
+                    totalPurchaseReturn += parseFloat(item.total_purchase_return) || 0; // 🔁 NEW
                     totalDistributorSold += parseFloat(item.total_distributor_sold) || 0;
                     totalLocalSale += parseFloat(item.total_local_sold) || 0;
                     totalCartonQty += parseFloat(item.carton_quantity) || 0;
                     totalLiters += liters;
                     totalStock += parseFloat(item.initial_stock) || 0;
 
-                    // ✅ Correct Liters Formatting
                     let formattedLiters = liters % 1 === 0 ? liters.toFixed(0) : liters.toFixed(1);
 
                     tableContent += `<tr>
-                    <td>${item.item_code}</td>
-                    <td>${item.item_name}</td>
-                    <td>${item.size}</td>
-                    <td>${item.pcs_in_carton}</td>
-                    <td>${item.total_purchased ?? 'N/A'}</td>
-                    <td>${item.total_distributor_sold ?? 'N/A'}</td>
-                    <td>${item.total_local_sold ?? 'N/A'}</td>
-                    <td>${item.carton_quantity}</td>
-                    <td>${formattedLiters}</td>
-                    <td>${item.wholesale_price}</td>
-                    <td>${item.initial_stock}</td>
-                    <td class="total-stock-value">${stockValue.toFixed(2)}</td>
-                </tr>`;
+        <td>${item.item_code}</td>
+        <td>${item.item_name}</td>
+        <td>${item.size}</td>
+        <td>${item.pcs_in_carton}</td>
+        <td>${item.total_purchased ?? 'N/A'}</td>
+        <td>${item.total_purchase_return  ?? 'N/A'}</td>
+        <td>${item.total_distributor_sold ?? 'N/A'}</td>
+        <td>${item.total_local_sold ?? 'N/A'}</td>
+        <td>${item.carton_quantity}</td>
+        <td>${formattedLiters}</td>
+        <td>${item.wholesale_price}</td>
+        <td>${item.initial_stock}</td>
+        <td class="total-stock-value">${stockValue.toFixed(2)}</td>
+    </tr>`;
                 });
 
-                // ✅ Correct Total Liters Formatting
+                // ✅ Footer Update:
                 let formattedTotalLiters = totalLiters % 1 === 0 ? totalLiters.toFixed(0) : totalLiters.toFixed(1);
 
                 let footerContent = `
-            <tr>
-                <td colspan="4" class="text-end fw-bold">Total:</td>
-                <td class="fw-bold">${totalPurchased}</td>
-                <td class="fw-bold">${totalDistributorSold}</td>
-                <td class="fw-bold">${totalLocalSale}</td>
-                <td class="fw-bold">${totalCartonQty}</td>
-                <td class="fw-bold">${formattedTotalLiters}</td>
-                <td></td>
-                <td class="fw-bold">${totalStock}</td>
-                <td></td>
-                <td class="fw-bold">${totalStockValue.toFixed(2)}</td>
-            </tr>`;
+<tr>
+    <td colspan="4" class="text-end fw-bold">Total:</td>
+    <td class="fw-bold">${totalPurchased}</td>
+    <td class="fw-bold">${totalPurchaseReturn}</td> <!-- 🔁 NEW -->
+    <td class="fw-bold">${totalDistributorSold}</td>
+    <td class="fw-bold">${totalLocalSale}</td>
+    <td class="fw-bold">${totalCartonQty}</td>
+    <td class="fw-bold">${formattedTotalLiters}</td>
+    <td></td>
+    <td class="fw-bold">${totalStock}</td>
+    <td class="fw-bold">${totalStockValue.toFixed(2)}</td>
+</tr>`;
 
                 $('#item-details').html(tableContent);
                 $('#stockReport tfoot').html(footerContent);

@@ -76,7 +76,13 @@
                         <li><a href="{{ route('all-local-sale') }}">Sales</a></li>
                     </ul>
                 </li>
-                
+                <li class="submenu">
+                    <a href="javascript:void(0);"><i class="fas fa-shopping-bag"></i><span>  Sale Return</span> <span class="menu-arrow"></span></a>
+                    <ul>
+                        <li><a href="{{ route('add-sale-return') }}">Add Sale Return</a></li>
+                        <li><a href="{{ route('all-sale-return') }}">Sales Return</a></li>
+                    </ul>
+                </li>
                 <li class="submenu">
                     <a href="javascript:void(0);"><i class="fas fa-user-tie"></i><span> Staff Management</span> <span class="menu-arrow"></span></a>
                     <ul>
@@ -106,6 +112,7 @@
                     <ul>
                         <li><a href="{{ route('stock-Record') }}">Item Stock Report </a></li>
                         <li><a href="{{ route('Distributor-Ledger-Record') }}">Distributor Ledger Record </a></li>
+                        <li><a href="{{ route('vendor-Ledger-Record') }}">Vendor Ledger Record </a></li>
                         <li><a href="{{ route('Customer-Ledger-Record') }}">Customer Ledger Record </a></li>
                         <li><a href="{{ route('date-wise-recovery-report') }}">Date Wise Recovery Report </a></li>
                     </ul>

@@ -23,17 +23,21 @@
                     <input type="hidden" name="purchase_id" value="{{ $purchase->id }}">
 
                     <div class="row mb-3">
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <label class="form-label">Purchase Date</label>
                             <input type="text" class="form-control wide-input" value="{{ $purchase->purchase_date }}" readonly>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <label class="form-label">Party Code</label>
                             <input type="text" name="Party_code" class="form-control wide-input" value="{{ $purchase->vendor->Party_code }}" readonly>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <label class="form-label">Party Name</label>
                             <input type="text" class="form-control wide-input" name="party_name" value="{{ $purchase->party_name }}" readonly>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">Return Date</label>
+                            <input type="date" name="return_date" class="form-control wide-input" >
                         </div>
                     </div>
 
