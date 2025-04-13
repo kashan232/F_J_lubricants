@@ -41,12 +41,12 @@
 
                             <div class="col-md-6">
                                 <label class="fw-bold">Start Date</label>
-                                <input type="date" id="start_date" name="start_date" class="form-control bg-light" >
+                                <input type="date" id="start_date" name="start_date" class="form-control bg-light">
                             </div>
 
                             <div class="col-md-6">
                                 <label class="fw-bold">End Date</label>
-                                <input type="date" id="end_date" name="end_date" class="form-control bg-light" >
+                                <input type="date" id="end_date" name="end_date" class="form-control bg-light">
                             </div>
                         </div>
                         <div class="text-center mt-4">
@@ -100,6 +100,14 @@
 @include('admin_panel.include.footer_include')
 
 <script>
+    function formatDate(dateString) {
+        const date = new Date(dateString);
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+        const year = date.getFullYear();
+        return `${day}/${month}/${year}`;
+    }
+
     $(document).ready(function() {
         $('#distributor').change(function() {
             var selected = $(this).find(':selected');
@@ -127,10 +135,16 @@
                     end_date: endDate
                 },
                 success: function(response) {
+                    const startDateObj = new Date(response.startDate);
+                    const endDateObj = new Date(response.endDate);
+                    // Format dates to 'dd/mm/yyyy'
+                    const formattedStartDate = formatDate(response.startDate);
+                    const formattedEndDate = formatDate(response.endDate);
+
                     $('#ledgerResult').show();
                     $('#distributorName').text(distributorName);
-                    $('#startDate').text(response.startDate);
-                    $('#endDate').text(response.endDate);
+                    $('#startDate').text(formattedStartDate || "N/A");
+                    $('#endDate').text(formattedEndDate || "N/A");
 
                     let openingBalance = parseFloat(response.opening_balance);
                     let balance = openingBalance;
@@ -142,17 +156,19 @@
 
                     // ✅ Opening Balance Entry
                     ledgerHTML += `
-                <tr>
-                    <td>${response.start_date}</td>
-                    <td>-</td>
-                    <td class="fw-bold">Opening Balance</td>
-                    <td>-</td>
-                    <td>-</td>
-                    <td class="fw-bold text-primary">Rs. ${balance.toFixed(2)}</td>
-                </tr>
-            `;
+    <tr>
+    
+        <td>${formatDate(response.startDate)}</td>
+        <td>-</td>
+        <td class="fw-bold">Opening Balance</td>
+        <td>-</td>
+        <td>-</td>
+        <td class="fw-bold text-primary">Rs. ${balance.toFixed(2)}</td>
+    </tr>
+`;
 
-                    // ✅ Sales Entries
+
+                    // Sales Entries
                     response.sales.forEach(entry => {
                         allEntries.push({
                             date: entry.Date,
@@ -163,13 +179,23 @@
                         });
                     });
 
-                    // ✅ Recovery Entries
+                    // Recovery Entries
                     response.recoveries.forEach(entry => {
                         allEntries.push({
                             date: entry.date,
                             type: 'recovery',
                             salesman: entry.salesman,
                             amount: parseFloat(entry.amount_paid)
+                        });
+                    });
+
+                    // Sale Return Entries
+                    response.sale_returns.forEach(entry => {
+                        allEntries.push({
+                            date: entry.created_at,
+                            type: 'sale_return',
+                            invoice_number: entry.invoice_number,
+                            amount: parseFloat(entry.total_return_amount)
                         });
                     });
 
@@ -184,35 +210,50 @@
                     });
 
                     // ✅ Maintain Correct Ledger Balance
+                    // Process Entries
                     allEntries.forEach(entry => {
                         if (entry.type === 'sale') {
                             let debit = entry.amount;
                             totalDebit += debit;
-                            balance += debit; // Sale ka amount balance me add hoga
+                            balance += debit;
                             ledgerHTML += `
-                        <tr>
-                            <td>${entry.date}</td>
-                            <td>${entry.invoice_number}</td>
-                            <td>To Sale A/c (${entry.booker})</td>
-                            <td>Rs. ${debit.toFixed(2)}</td>
-                            <td>-</td>
-                            <td class="fw-bold ${balance < 0 ? 'text-danger' : 'text-success'}">Rs. ${balance.toFixed(2)}</td>
-                        </tr>
-                    `;
+            <tr>
+                <td>${formatDate(entry.date)}</td>
+                <td>${entry.invoice_number}</td>
+                <td>To Sale A/c (${entry.booker})</td>
+                <td>Rs. ${debit.toFixed(2)}</td>
+                <td>-</td>
+                <td class="fw-bold ${balance < 0 ? 'text-danger' : 'text-success'}">Rs. ${balance.toFixed(2)}</td>
+            </tr>
+        `;
                         } else if (entry.type === 'recovery') {
                             let credit = entry.amount;
                             totalCredit += credit;
-                            balance -= credit; // Recovery ka amount balance se minus hoga
+                            balance -= credit;
                             ledgerHTML += `
-                        <tr>
-                            <td>${entry.date}</td>
-                            <td>-</td>
-                            <td>Cash Received (${entry.salesman})</td>
-                            <td>-</td>
-                            <td>Rs. ${credit.toFixed(2)}</td>
-                            <td class="fw-bold ${balance < 0 ? 'text-danger' : 'text-success'}">Rs. ${balance.toFixed(2)}</td>
-                        </tr>
-                    `;
+            <tr>
+                <td>${formatDate(entry.date)}</td>
+                <td>-</td>
+                <td>Cash Received (${entry.salesman})</td>
+                <td>-</td>
+                <td>Rs. ${credit.toFixed(2)}</td>
+                <td class="fw-bold ${balance < 0 ? 'text-danger' : 'text-success'}">Rs. ${balance.toFixed(2)}</td>
+            </tr>
+        `;
+                        } else if (entry.type === 'sale_return') {
+                            let credit = entry.amount;
+                            totalCredit += credit;
+                            balance -= credit;
+                            ledgerHTML += `
+            <tr>
+                <td>${formatDate(entry.date)}</td>
+                <td>${entry.invoice_number}</td>
+                <td>Sale Return</td>
+                <td>-</td>
+                <td>Rs. ${credit.toFixed(2)}</td>
+                <td class="fw-bold ${balance < 0 ? 'text-danger' : 'text-success'}">Rs. ${balance.toFixed(2)}</td>
+            </tr>
+        `;
                         }
                     });
 

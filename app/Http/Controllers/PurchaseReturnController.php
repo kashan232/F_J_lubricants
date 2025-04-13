@@ -34,11 +34,12 @@ class PurchaseReturnController extends Controller
     public function store(Request $request)
     {
         $purchaseId = $request->purchase_id;
+        $invoicenumber = $request->invoice_number;
         $userId = Auth::id();
-
         // Step 1: Save the return record
         PurchaseReturn::create([
             'admin_or_user_id' => $userId,
+            'invoice_number' => $invoicenumber,
             'purchase_id' => $purchaseId,
             'party_name' => $request->party_name,
             'return_date' => $request->return_date,

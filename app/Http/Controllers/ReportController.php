@@ -56,12 +56,21 @@ class ReportController extends Controller
             ->select('invoice_number', 'Date', 'Booker', 'Saleman', 'grand_total', 'discount_value', 'scheme_value', 'net_amount')
             ->get();
 
+        // Fetch sale returns
+        $saleReturns = DB::table('sale_returns')
+            ->where('sale_type', 'distributor')
+            ->where('party_id', $distributorId)
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->select('invoice_number', 'created_at', 'total_return_amount')
+            ->get();
+
         return response()->json([
             'opening_balance' => $ledger->opening_balance ?? 0,
             'previous_balance' => $ledger->previous_balance ?? 0,
             'closing_balance' => $ledger->closing_balance ?? 0,
             'recoveries' => $recoveries,
             'sales' => $sales,
+            'sale_returns' => $saleReturns,
             'startDate' => $startDate,
             'endDate' => $endDate,
         ]);
@@ -116,7 +125,7 @@ class ReportController extends Controller
         $returnsRaw = DB::table('purchase_returns')
             ->where('party_name', $vendorId)
             ->whereBetween('return_date', [$startDate, $endDate])
-            ->select('id', 'purchase_id', 'return_date', 'return_amount')
+            ->select('id', 'invoice_number','purchase_id', 'return_date', 'return_amount')
             ->get();
 
         $returns = [];
@@ -126,7 +135,7 @@ class ReportController extends Controller
 
             $returns[] = [
                 'id' => $return->id,
-                'invoice_number' => 'PURRET-' . str_pad($return->id, 3, '0', STR_PAD_LEFT),
+                'invoice_number' => $return->invoice_number,
                 'date' => $return->return_date,
                 'net_amount' => $amountSum,
             ];
@@ -195,12 +204,21 @@ class ReportController extends Controller
             )
             ->get();
 
+
+        $saleReturns = DB::table('sale_returns')
+            ->where('sale_type', 'customer')
+            ->where('party_id', $CustomerId)
+            ->whereBetween('created_at', [$startDate, $endDate])
+            ->select('invoice_number', 'total_return_amount', 'created_at')
+            ->get();
+
         return response()->json([
             'opening_balance' => $ledger->opening_balance ?? 0,
             'previous_balance' => $ledger->previous_balance ?? 0,
             'closing_balance' => $ledger->closing_balance ?? 0,
             'recoveries' => $recoveries,
             'local_sales' => $localSales, // Local Sales Data
+            'sale_returns' => $saleReturns,
             'startDate' => $startDate, // Local Sales Data
             'endDate' => $endDate, // Local Sales Data
         ]);
@@ -317,7 +335,6 @@ class ReportController extends Controller
             $item->total_purchase_return = $totalPurchaseReturnQty; // New Line
             $item->total_distributor_sold = $totalDistributorSoldQty;
             $item->total_local_sold = $totalLocalSoldQty;
-            
         }
 
         return response()->json($items);

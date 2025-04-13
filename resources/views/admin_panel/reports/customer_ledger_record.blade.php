@@ -146,13 +146,24 @@
 </style>
 
 <script>
+    function formatDate(dateString) {
+        const date = new Date(dateString);
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+        const year = date.getFullYear();
+        return `${day}/${month}/${year}`;
+    }
+
     $(document).ready(function() {
+
+
         $('#Customer').change(function() {
             var selected = $(this).find(':selected');
             $('#contact').val(selected.data('contact'));
             $('#city').val(selected.data('city'));
             $('#area').val(selected.data('area'));
         });
+
 
 
         $('#searchLedger').click(function() {
@@ -174,10 +185,16 @@
                     end_date: endDate
                 },
                 success: function(response) {
+                    const startDateObj = new Date(response.startDate);
+                    const endDateObj = new Date(response.endDate);
+                    // Format dates to 'dd/mm/yyyy'
+                    const formattedStartDate = formatDate(response.startDate);
+                    const formattedEndDate = formatDate(response.endDate);
+
                     $('#ledgerResult').show();
                     $('#CustomerName').text($('#Customer option:selected').text()); // Customer name show karein
-                    $('#startDate').text(response.startDate || "N/A"); // Agar start_date nahi hai to "N/A"
-                    $('#endDate').text(response.endDate || "N/A");
+                    $('#startDate').text(formattedStartDate || "N/A");
+                    $('#endDate').text(formattedEndDate || "N/A");
 
                     let openingBalance = parseFloat(response.opening_balance) || 0;
                     let balance = openingBalance;
@@ -220,12 +237,26 @@
                         });
                     });
 
+                    response.sale_returns.forEach(entry => {
+                        allEntries.push({
+                            date: entry.created_at,
+                            type: 'sale_return',
+                            invoice_number: entry.invoice_number,
+                            amount: parseFloat(entry.total_return_amount) || 0
+                        });
+                    });
+
                     // ✅ Sort Entries by Date (Sales pehle, Recovery baad me agar date same ho)
                     allEntries.sort((a, b) => {
                         let dateA = new Date(a.date);
                         let dateB = new Date(b.date);
                         if (dateA - dateB === 0) {
-                            return a.type === 'sale' ? -1 : 1; // Sale pehle ayegi, Recovery baad me
+                            const typeOrder = {
+                                'sale': 1,
+                                'sale_return': 2,
+                                'recovery': 3
+                            };
+                            return typeOrder[a.type] - typeOrder[b.type];
                         }
                         return dateA - dateB;
                     });
@@ -235,31 +266,45 @@
                         if (entry.type === 'sale') {
                             let debit = entry.amount;
                             totalDebit += debit;
-                            balance += debit; // Sale ka amount balance me add hoga
+                            balance += debit;
                             ledgerHTML += `
-                        <tr>
-                            <td>${entry.date}</td>
-                            <td>${entry.invoice_number}</td>
-                            <td>To Sale A/c (${entry.salesman})</td>
-                            <td>Rs. ${debit.toFixed(2)}</td>
-                            <td>-</td>
-                            <td class="fw-bold ${balance < 0 ? 'text-danger' : 'text-success'}">Rs. ${balance.toFixed(2)}</td>
-                        </tr>
-                    `;
+            <tr>
+                <td>${formatDate(entry.date)}</td>
+                <td>${entry.invoice_number}</td>
+                <td>To Sale A/c (${entry.salesman})</td>
+                <td>Rs. ${debit.toFixed(2)}</td>
+                <td>-</td>
+                <td class="fw-bold ${balance < 0 ? 'text-danger' : 'text-success'}">Rs. ${balance.toFixed(2)}</td>
+            </tr>
+        `;
                         } else if (entry.type === 'recovery') {
                             let credit = entry.amount;
                             totalCredit += credit;
-                            balance -= credit; // Recovery ka amount balance se minus hoga
+                            balance -= credit;
                             ledgerHTML += `
-                        <tr>
-                            <td>${entry.date}</td>
-                            <td>-</td>
-                            <td>Cash Received (${entry.salesman})</td>
-                            <td>-</td>
-                            <td>Rs. ${credit.toFixed(2)}</td>
-                            <td class="fw-bold ${balance < 0 ? 'text-danger' : 'text-success'}">Rs. ${balance.toFixed(2)}</td>
-                        </tr>
-                    `;
+            <tr>
+                <td>${formatDate(entry.date)}</td>
+                <td>-</td>
+                <td>Cash Received (${entry.salesman})</td>
+                <td>-</td>
+                <td>Rs. ${credit.toFixed(2)}</td>
+                <td class="fw-bold ${balance < 0 ? 'text-danger' : 'text-success'}">Rs. ${balance.toFixed(2)}</td>
+            </tr>
+        `;
+                        } else if (entry.type === 'sale_return') {
+                            let credit = entry.amount;
+                            totalCredit += credit;
+                            balance -= credit;
+                            ledgerHTML += `
+            <tr>
+                <td>${formatDate(entry.date)}</td>
+                <td>${entry.invoice_number}</td>
+                <td>Sale Return</td>
+                <td>-</td>
+                <td>Rs. ${credit.toFixed(2)}</td>
+                <td class="fw-bold ${balance < 0 ? 'text-danger' : 'text-success'}">Rs. ${balance.toFixed(2)}</td>
+            </tr>
+        `;
                         }
                     });
 

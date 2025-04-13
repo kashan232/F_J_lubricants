@@ -190,18 +190,22 @@ class SaleReturnController extends Controller
         ]);
 
         // Update the return status based on sale_type
-        if ($validatedData['sale_type'] === 'distributor') {
-            // Update the sales table where sale_type is distributor and invoice_number matches
+        if ($validatedData['sale_type'] == 'distributor') {
+            // Update the sales table
             $sale = Sale::where('invoice_number', $validatedData['invoice_number'])->first();
-
             if ($sale) {
-                $sale->return_status = 1;  // Set return status to 1 (indicating return)
+                $sale->return_status = 1;
                 $sale->save();
             }
 
             // Update distributor ledger
-            DistributorLedger::where('distributor_id', $validatedData['party_id'])
-                ->decrement('closing_balance', $totalReturnAmount);
+            $ledger = DB::table('distributor_ledgers')->where('distributor_id', $validatedData['party_id'])->first();
+            if ($ledger) {
+                $newClosingBalance = $ledger->closing_balance - $saleReturn->total_return_amount;
+                DB::table('distributor_ledgers')
+                    ->where('distributor_id', $validatedData['party_id'])
+                    ->update(['closing_balance' => $newClosingBalance]);
+            }
         } elseif ($validatedData['sale_type'] === 'customer') {
             // Update the local_sales table where sale_type is customer and invoice_number matches
             $localSale = LocalSale::where('invoice_number', $validatedData['invoice_number'])->first();

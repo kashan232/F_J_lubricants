@@ -21,6 +21,7 @@
                 <form action="{{ route('purchase.return.store') }}" method="POST">
                     @csrf
                     <input type="hidden" name="purchase_id" value="{{ $purchase->id }}">
+                    <input type="hidden" name="invoice_number" value="{{ $purchase->invoice_number }}">
 
                     <div class="row mb-3">
                         <div class="col-md-3">

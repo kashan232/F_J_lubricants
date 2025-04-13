@@ -100,6 +100,13 @@
 @include('admin_panel.include.footer_include')
 
 <script>
+    function formatDate(dateString) {
+        const date = new Date(dateString);
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+        const year = date.getFullYear();
+        return `${day}/${month}/${year}`;
+    }
     $(document).ready(function() {
         $('#Vendor').change(function() {
             var selected = $(this).find(':selected');
@@ -127,10 +134,18 @@
                     end_date: endDate
                 },
                 success: function(response) {
+
+                    const startDateObj = new Date(response.startDate);
+                    const endDateObj = new Date(response.endDate);
+                    // Format dates to 'dd/mm/yyyy'
+                    const formattedStartDate = formatDate(response.startDate);
+                    const formattedEndDate = formatDate(response.endDate);
+
                     $('#ledgerResult').show();
                     $('#vendorName').text(vendorName);
-                    $('#startDate').text(response.startDate);
-                    $('#endDate').text(response.endDate);
+                    $('#startDate').text(formattedStartDate || "N/A");
+                    $('#endDate').text(formattedEndDate || "N/A");
+
 
                     let openingBalance = parseFloat(response.opening_balance);
                     let balance = openingBalance;
@@ -155,7 +170,7 @@
                     // ✅ Sales Entries
                     response.purchases.forEach(entry => {
                         allEntries.push({
-                            date: entry.purchase_date,
+                            date: entry.date,
                             type: 'purchase',
                             invoice_number: entry.invoice_number,
                             amount: parseFloat(entry.net_amount)
@@ -165,9 +180,9 @@
                     // ✅ Recovery Entries
                     response.returns.forEach(entry => {
                         allEntries.push({
-                            date: entry.return_date,
+                            date: entry.date,
                             type: 'return',
-                            invoice_number: entry.return_no,
+                            invoice_number: entry.invoice_number,
                             amount: parseFloat(entry.net_amount)
                         });
                     });
@@ -190,7 +205,7 @@
                             balance += debit;
                             ledgerHTML += `
         <tr>
-            <td>${entry.date}</td>
+            <td>${formatDate(entry.date)}</td>
             <td>${entry.invoice_number}</td>
             <td>To Purchase A/c</td>
             <td>Rs. ${debit.toFixed(2)}</td>
@@ -203,7 +218,7 @@
                             balance -= credit;
                             ledgerHTML += `
         <tr>
-            <td>${entry.date}</td>
+            <td>${formatDate(entry.date)}</td>
             <td>${entry.invoice_number}</td>
             <td>Purchase Return</td>
             <td>-</td>
